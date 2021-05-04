@@ -12,6 +12,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const team_routes_1 = __importDefault(require("./routes/team.routes"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
 //Inicializamos express
 const app = express_1.default();
 //Configuración
@@ -27,5 +28,6 @@ app.use(body_parser_1.default.json());
 app.use('/user', user_routes_1.default);
 app.use('/team', team_routes_1.default);
 app.use('/auth', auth_routes_1.default);
+app.use('/admin', admin_routes_1.default);
 //Exportamos fichero como 'app'
 exports.default = app;
