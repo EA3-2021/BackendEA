@@ -8,6 +8,7 @@ const auth_controller_1 = __importDefault(require("../controllers/auth.controlle
 // Router nos permite gestionar rutas de la API
 const router = express_1.Router();
 router.post('/loginAdmin', auth_controller_1.default.loginAdmin);
+router.post('/loginUser', auth_controller_1.default.loginUser);
 //router.put('/signout', authController.signout);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

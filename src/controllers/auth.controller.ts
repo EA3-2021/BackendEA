@@ -11,12 +11,33 @@ async function loginAdmin(req: Request, res: Response) {
         
         admin = await Admin.findOne({ $or: [{ "name": name }, { "email": name }]});
     
-        if(!admin) return res.status(404).json({message: "User not found"});
+        if(!admin) return res.status(404).json({message: "Admin not found"});
         else{
             if(admin.password != password) return res.status(409).json({message: "Password don't match"});
             else {
                 try{
-                    let t = {token: createToken(admin)}
+                    let t = {token: createTokenAdmin(admin)}
+                    return res.status(200).json(t);
+                } catch (err) {
+                    return res.status(500).json(err);
+                }
+            }
+        }
+    }
+
+async function loginUser(req: Request, res: Response) {
+    let user;
+        const name = req.body.name;
+        const password = req.body.password;
+
+        user = await User.findOne({ $or: [{ "name": name }, { "email": name }]});
+
+        if(!user) return res.status(404).json({message: "User not found"});
+        else{
+            if(user.password != password) return res.status(409).json({message: "Password don't match"});
+            else {
+                try{
+                    let t = {token: createTokenUser(user)}
                     return res.status(200).json(t);
                 } catch (err) {
                     return res.status(500).json(err);
@@ -34,9 +55,16 @@ async function loginAdmin(req: Request, res: Response) {
     }
 }*/
 
-function createToken(admin: IAdmin){
+function createTokenAdmin(admin: IAdmin){
     const expirationTime = 3600; //1h
     return jwt.sign({id:admin.id, name: admin.name, email: admin.email}, config.jwtSecret, {
+        expiresIn: expirationTime
+    });
+}
+
+function createTokenUser(user: IUser){
+    const expirationTime = 3600; //1h
+    return jwt.sign({id:user.id, name: user.name, email: user.email}, config.jwtSecret, {
         expiresIn: expirationTime
     });
 }
@@ -50,4 +78,4 @@ function createToken(admin: IAdmin){
                     
 }*/
 
-export default { loginAdmin, createToken };
+export default { loginAdmin, loginUser, createTokenAdmin, createTokenUser };

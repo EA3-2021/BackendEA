@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+//Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield user_1.default.find({});
@@ -22,6 +23,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
+//Obtener 1 usuario a partir del id
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield user_1.default.find({ "_id": req.params.id });
@@ -31,6 +33,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
+//Añadir 1 nuevo usuario
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let user = new user_1.default({
@@ -47,7 +50,7 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).json(err);
     }
 });
-//Actualizar name/address student segun id
+//Actualizar name/address user a partir del id
 function updateUser(req, res) {
     const id = req.params.id;
     const name = req.body.name;
@@ -60,7 +63,7 @@ function updateUser(req, res) {
         res.status(500).json(err);
     });
 }
-//Borrar student segun id
+//Borrar user a partir del id
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield user_1.default.deleteOne({ "name": req.params.name });

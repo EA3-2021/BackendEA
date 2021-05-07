@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Admin from "../models/admin";
 import License from "../models/license"
 
-    async function register(req:Request, res:Response) {
+    async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
         let checkEmail = await Admin.findOne({"email": admin.email});
         let checkPhone = await Admin.findOne({"phone": admin.phone});
@@ -30,7 +30,7 @@ import License from "../models/license"
         }
     }
 
-    async function checklicense(req:Request, res:Response) {
+    async function checklicense (req:Request, res:Response) {
         let license = req.params.licenseCode;
         let checkLicense = await License.findOne({"licenseCode": license});
 
@@ -55,4 +55,4 @@ import License from "../models/license"
         }
     }
 
-export default { register, checklicense, newLicense };
+export default { registerAdmin, checklicense, newLicense };

@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
@@ -22,13 +23,36 @@ function loginAdmin(req, res) {
         const password = req.body.password;
         admin = yield admin_1.default.findOne({ $or: [{ "name": name }, { "email": name }] });
         if (!admin)
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "Admin not found" });
         else {
             if (admin.password != password)
                 return res.status(409).json({ message: "Password don't match" });
             else {
                 try {
-                    let t = { token: createToken(admin) };
+                    let t = { token: createTokenAdmin(admin) };
+                    return res.status(200).json(t);
+                }
+                catch (err) {
+                    return res.status(500).json(err);
+                }
+            }
+        }
+    });
+}
+function loginUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user;
+        const name = req.body.name;
+        const password = req.body.password;
+        user = yield user_1.default.findOne({ $or: [{ "name": name }, { "email": name }] });
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
+        else {
+            if (user.password != password)
+                return res.status(409).json({ message: "Password don't match" });
+            else {
+                try {
+                    let t = { token: createTokenUser(user) };
                     return res.status(200).json(t);
                 }
                 catch (err) {
@@ -46,9 +70,15 @@ function loginAdmin(req, res) {
         return res.status(200).json({message: "Usuario desconectado"});
     }
 }*/
-function createToken(admin) {
+function createTokenAdmin(admin) {
     const expirationTime = 3600; //1h
     return jsonwebtoken_1.default.sign({ id: admin.id, name: admin.name, email: admin.email }, config_1.default.jwtSecret, {
+        expiresIn: expirationTime
+    });
+}
+function createTokenUser(user) {
+    const expirationTime = 3600; //1h
+    return jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email }, config_1.default.jwtSecret, {
         expiresIn: expirationTime
     });
 }
@@ -59,4 +89,4 @@ function createToken(admin) {
     await User.updateOne({"_id":id}, {$set: {"online":value}});
                     
 }*/
-exports.default = { loginAdmin, createToken };
+exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser };

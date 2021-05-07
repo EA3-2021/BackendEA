@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin_1 = __importDefault(require("../models/admin"));
 const license_1 = __importDefault(require("../models/license"));
-function register(req, res) {
+function registerAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin = req.body;
         let checkEmail = yield admin_1.default.findOne({ "email": admin.email });
@@ -69,4 +69,4 @@ const newLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(500).json(err);
     }
 });
-exports.default = { register, checklicense, newLicense };
+exports.default = { registerAdmin, checklicense, newLicense };

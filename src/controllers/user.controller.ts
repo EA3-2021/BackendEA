@@ -1,6 +1,7 @@
 import { Request, Response} from "express";
 import User from "../models/user"
 
+//Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
     try{
         const results = await User.find({});
@@ -10,6 +11,7 @@ const getUsers = async (req: Request, res: Response) => {
     }
 }
 
+//Obtener 1 usuario a partir del id
 const getUser = async (req: Request, res: Response) => {
     try{
         const results = await User.find({"_id": req.params.id});
@@ -19,6 +21,7 @@ const getUser = async (req: Request, res: Response) => {
     }
 }
 
+//Añadir 1 nuevo usuario
 const newUser = async (req: Request, res: Response) => {
     try{
     let user = new User({
@@ -35,7 +38,7 @@ const newUser = async (req: Request, res: Response) => {
     }
 }
 
-//Actualizar name/address student segun id
+//Actualizar name/address user a partir del id
 function updateUser (req: Request, res: Response){
     const id: string = req.params.id;
     const name: string = req.body.name;
@@ -50,7 +53,7 @@ function updateUser (req: Request, res: Response){
     })
 }
 
-//Borrar student segun id
+//Borrar user a partir del id
 const deleteUser = async (req: Request, res: Response) => {
     try{
         const results = await User.deleteOne({"name": req.params.name});

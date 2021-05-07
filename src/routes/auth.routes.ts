@@ -5,6 +5,7 @@ import authController from '../controllers/auth.controller'
 const router = Router();
 
 router.post('/loginAdmin', authController.loginAdmin);
+router.post('/loginUser', authController.loginUser);
 //router.put('/signout', authController.signout);
 
 // Exportamos router para usar rutas en app.ts
