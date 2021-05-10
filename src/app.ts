@@ -5,9 +5,10 @@ import morgan from 'morgan';
 import bodyParser from'body-parser';
 
 //Importamos fichero de rutas
-import UserRoutes from './routes/user.routes'
+import userRoutes from './routes/user.routes'
 import teamRoutes from './routes/team.routes'
 import authRoutes from './routes/auth.routes'
+import adminRoutes from './routes/admin.routes'
 
 //Inicializamos express
 const app = express();
@@ -24,9 +25,10 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 //Llama a las rutas de la API
-app.use('/user', UserRoutes);
+app.use('/user', userRoutes);
 app.use('/team', teamRoutes);
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
