@@ -36,11 +36,11 @@ const addUserToTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let teamName = req.params.teamName;
     let userName = req.body.name;
     let userEmail = req.body.email;
-    let userBirthdate = req.body.birthdate;
     let userPhone = req.body.phone;
+    let userPassword = req.body.password;
     let s = yield user_1.default.findOne({ name: userName });
     if (!s) {
-        let user = new user_1.default({ "name": userName, "email": userEmail, "birthdate": userBirthdate, "phone": userPhone });
+        let user = new user_1.default({ "name": userName, "email": userEmail, "phone": userPhone, "password": userPassword, });
         yield user.save().then((data) => {
             s = data;
         });

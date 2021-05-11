@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     email: {
         type: String
     },
-    birthdate: {
+    phone: {
         type: String
     },
     password: {
@@ -20,7 +20,7 @@ const UserSchema = new Schema({
 export interface IUser extends Document {
     name: string;
     email: string;
-    birthdate: string;
+    phone: string;
     password: string;
     
 }

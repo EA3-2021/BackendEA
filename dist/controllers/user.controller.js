@@ -39,8 +39,8 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let user = new user_1.default({
             "name": req.body.name,
             "email": req.body.email,
-            "birthdate": req.body.birthdate,
-            "phone": req.body.phone
+            "phone": req.body.phone,
+            "password": req.body.password
         });
         user.save().then((data) => {
             return res.status(201).json(data);
@@ -55,15 +55,38 @@ function updateUser(req, res) {
     const id = req.params.id;
     const name = req.body.name;
     const email = req.body.email;
-    const birthdate = req.body.birthdate;
     const phone = req.body.phone;
-    user_1.default.update({ "_id": id }, { $set: { "name": name, "email": email, "birthdate": birthdate, "phone": phone } }).then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    });
+    const password = req.body.password;
+    if (name != "") {
+        user_1.default.updateMany({ "_id": id }, { $set: { "name": name } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (email != "") {
+        user_1.default.updateMany({ "_id": id }, { $set: { "email": email } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (phone != "") {
+        user_1.default.updateMany({ "_id": id }, { $set: { "phone": phone } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (password != "") {
+        user_1.default.updateMany({ "_id": id }, { $set: { "password": password } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+        return;
+    }
 }
-//Borrar user a partir del id
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield user_1.default.deleteOne({ "name": req.params.name });

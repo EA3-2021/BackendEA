@@ -25,12 +25,12 @@ const addUserToTeam = async (req: Request, res: Response) => {
     
     let userName = req.body.name; 
     let userEmail = req.body.email;
-    let userBirthdate = req.body.birthdate;
     let userPhone = req.body.phone;
+    let userPassword = req.body.password;
     
     let s = await User.findOne({name: userName});  
     if(!s) { 
-        let user = new User({ "name": userName, "email": userEmail, "birthdate": userBirthdate, "phone": userPhone });
+        let user = new User({ "name": userName, "email": userEmail, "phone": userPhone, "password": userPassword, });
 
         await user.save().then((data) => { 
             s = data;  

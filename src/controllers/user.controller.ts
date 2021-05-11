@@ -27,8 +27,8 @@ const newUser = async (req: Request, res: Response) => {
     let user = new User({
         "name" : req.body.name,
         "email" : req.body.email,
-        "birthdate" : req.body.birthdate,
-        "phone" : req.body.phone
+        "phone" : req.body.phone,
+        "password" : req.body.password
     });
     user.save().then((data) => {
         return res.status(201).json(data);
@@ -43,17 +43,43 @@ function updateUser (req: Request, res: Response){
     const id: string = req.params.id;
     const name: string = req.body.name;
     const email: string = req.body.email;
-    const birthdate: string = req.body.birthdate;
     const phone: string = req.body.phone;
+    const password: string = req.body.password;
 
-    User.update({"_id": id}, {$set: {"name": name, "email": email, "birthdate": birthdate, "phone": phone}}).then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    })
+    if (name != ""){
+        User.updateMany({"_id": id}, {$set: {"name": name}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (email != ""){
+        User.updateMany({"_id": id}, {$set: {"email": email}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (phone != ""){
+        User.updateMany({"_id": id}, {$set: {"phone": phone}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (password != ""){
+        User.updateMany({"_id": id}, {$set: {"password": password}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+        return;
+    }
 }
 
-//Borrar user a partir del id
 const deleteUser = async (req: Request, res: Response) => {
     try{
         const results = await User.deleteOne({"name": req.params.name});
