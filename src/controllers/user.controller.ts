@@ -10,7 +10,9 @@ const getUsers = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
-
+function getHola(){
+    return "Holi"
+}
 //Obtener 1 usuario a partir del id
 const getUser = async (req: Request, res: Response) => {
     try{
@@ -99,4 +101,4 @@ const deleteUsers = async (req: Request, res: Response) => {
     }
 }
 
-export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers };
+export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, getHola };

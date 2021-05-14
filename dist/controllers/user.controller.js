@@ -23,6 +23,9 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
+function getHola() {
+    return "Holi";
+}
 //Obtener 1 usuario a partir del id
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -106,4 +109,4 @@ const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers };
+exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, getHola };
