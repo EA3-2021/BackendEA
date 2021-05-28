@@ -4,7 +4,7 @@ import authController from '../controllers/auth.controller'
 // Router nos permite gestionar rutas de la API
 const router = Router();
 
-router.post('/loginAdmin', authController.loginAdmin);
+router.post('/login-admin', authController.loginAdmin);
 router.post('/loginUser', authController.loginUser);
 //router.put('/signout', authController.signout);
 
