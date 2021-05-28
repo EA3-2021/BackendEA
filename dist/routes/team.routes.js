@@ -10,6 +10,6 @@ const router = express_1.Router();
 router.get('/all', team_controller_1.default.getTeams);
 router.get('/:id', team_controller_1.default.getTeam);
 router.post('/new', team_controller_1.default.addTeam);
-router.post('/newUser/:teamName', team_controller_1.default.addUserToTeam);
+router.post('/user-to-team/:teamName', team_controller_1.default.addUserToTeam);
 //Exportamos router para usar rutas en app.ts
 exports.default = router;

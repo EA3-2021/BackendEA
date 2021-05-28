@@ -20,17 +20,33 @@ const getTeam = async (req: Request, res: Response) => {
     }
 }
 
+/*const addUserToTeam = async (req: Request, res: Response) => {
+    let teamName = req.params.teamName;
+    console.log(req.params.id);
+    console.log(req.params.teamName);
+    try{
+        const results = await User.findOne({"_id": req.params._id});
+        const team = new Team ({ "name": teamName, "User": results});
+        await team.save();
+
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}*/
+
 const addUserToTeam = async (req: Request, res: Response) => {
     let teamName = req.params.teamName;
     
+    let userId = req.body.id; 
     let userName = req.body.name; 
     let userEmail = req.body.email;
     let userPhone = req.body.phone;
     let userPassword = req.body.password;
     
-    let s = await User.findOne({name: userName});  
+    let s = await User.findOne({name: userName}); 
     if(!s) { 
-        let user = new User({ "name": userName, "email": userEmail, "phone": userPhone, "password": userPassword, });
+        let user = new User({ "name": userName, "email": userEmail, "phone": userPhone, "password": userPassword});
 
         await user.save().then((data) => { 
             s = data;  
