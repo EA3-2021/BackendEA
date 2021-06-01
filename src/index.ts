@@ -10,27 +10,26 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
 
 io.on("connection", (socket: Socket) => {
-  console.log("nova connexió");
+    console.log("nova connexió");
 
-//console.log(socket);
-/*
+    //console.log(socket);
+    /*
     socket.on('disconnect', function(){
         io.emit('users-changed', {user: socket.username, event: 'left'});
     });
-*/
+    */
+
+    //                                                   HAY QUE VINCULARLO CON EL NAME CON EL QUE TE LOGGEAS
     socket.on('set-name', (name) => {
          console.log('SER NAME: ', name)
         // socket.username = name;
          io.emit('users-changed', {user: name, event: 'joined'});
     });
 
+    //enviar mensaje CHAT
     socket.on('send-message', (message) => {
           io.emit('message', {msg: message.text, createdAt: new Date()});   //, user: socket.username,
     });
-
-
-
-
 });
 
 httpServer.listen(app.get('port')); //Recuperamos puerto de app.ts

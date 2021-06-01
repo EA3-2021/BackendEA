@@ -10,6 +10,7 @@ import teamRoutes from './routes/team.routes'
 import authRoutes from './routes/auth.routes'
 import adminRoutes from './routes/admin.routes'
 import licenseRoutes from './routes/license.routes'
+import reportRoutes from './routes/report.routes'
 
 //Inicializamos express
 const app = express();
@@ -30,7 +31,8 @@ app.use('/user', userRoutes);
 app.use('/team', teamRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
-app.use('/license', licenseRoutes)
+app.use('/license', licenseRoutes);
+app.use('/report', reportRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
