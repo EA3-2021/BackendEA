@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes'
 import adminRoutes from './routes/admin.routes'
 import licenseRoutes from './routes/license.routes'
 import reportRoutes from './routes/report.routes'
+import settingRoutes from './routes/setting.routes'
 
 //Inicializamos express
 const app = express();
@@ -33,6 +34,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/license', licenseRoutes);
 app.use('/report', reportRoutes);
+app.use('/setting', settingRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
