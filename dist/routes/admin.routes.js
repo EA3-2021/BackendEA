@@ -10,5 +10,9 @@ const router = express_1.Router();
 router.post('/register-admin', admin_controller_1.default.registerAdmin);
 router.post('/license', admin_controller_1.default.newLicense);
 router.get('/:licenseCode', admin_controller_1.default.checklicense);
+<<<<<<< HEAD
+=======
+router.post('/configuration', admin_controller_1.default.updateConfiguation);
+>>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

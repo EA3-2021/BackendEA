@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
 import License from "../models/license"
+<<<<<<< HEAD
+=======
+import Configuration from "../models/configuration"
+>>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
@@ -55,4 +59,21 @@ import License from "../models/license"
         }
     }
 
+<<<<<<< HEAD
 export default { registerAdmin, checklicense, newLicense };
+=======
+    const updateConfiguation = async (req: Request, res: Response) => {
+        const configuration = new Configuration({
+            "notification": req.body.notification,
+            "private": req.body.private,
+            "authentication": req.body.authentication
+        });
+        configuration.save().then((data) => {
+            return res.status(201).json(data);
+        }).catch((err) => {
+            return res.status(500).json(err);
+        })
+    }
+
+export default { registerAdmin, checklicense, newLicense, updateConfiguation };
+>>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345

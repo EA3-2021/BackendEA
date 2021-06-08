@@ -1,3 +1,14 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# Datasource local storage ignored files
+/../../../../../../../../../:\Users\ivanl\OneDrive\Escritorio\EETAC\EA_Proyecto\BackendEA\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+=======
+>>>>>>> 6a8544d103921111c2b1ebb0f79d0cabd8e7e518
+>>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345
