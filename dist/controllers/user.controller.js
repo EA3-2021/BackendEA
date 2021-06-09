@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const tarea_1 = __importDefault(require("../models/tarea"));
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -23,9 +24,6 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-function getHola() {
-    return "Holi";
-}
 //Obtener 1 usuario a partir del id
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -109,4 +107,20 @@ const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, getHola };
+const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tarea = new tarea_1.default({
+            "descripcion": req.body.descripcion,
+            "fecha": req.body.fecha,
+            "hora": req.body.hora,
+            "duracion": req.body.duracion,
+        });
+        tarea.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask };

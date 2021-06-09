@@ -1,5 +1,6 @@
 import { Request, Response} from "express";
-import User from "../models/user"
+import User from "../models/user";
+import Tarea from "../models/tarea";
 
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
@@ -10,9 +11,7 @@ const getUsers = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
-function getHola(){
-    return "Holi"
-}
+
 //Obtener 1 usuario a partir del id
 const getUser = async (req: Request, res: Response) => {
     try{
@@ -101,4 +100,20 @@ const deleteUsers = async (req: Request, res: Response) => {
     }
 }
 
-export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, getHola };
+const newTask = async (req: Request, res: Response) => {
+    try{
+    let tarea = new Tarea({
+        "descripcion" : req.body.descripcion,
+        "fecha":req.body.fecha,
+        "hora" : req.body.hora,
+        "duracion" : req.body.duracion,
+    });
+    tarea.save().then((data) => {
+        return res.status(201).json(data);
+    });
+    } catch(err) {
+        return res.status(500).json(err);
+    }
+}
+
+export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers,newTask};
