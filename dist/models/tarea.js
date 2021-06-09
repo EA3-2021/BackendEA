@@ -21,16 +21,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const TareaSchema = new mongoose_1.Schema({
+    titulo: {
+        type: String
+    },
     descripcion: {
         type: String
     },
     fecha: {
         type: String
     },
-    hora: {
+    horaI: {
         type: String
     },
-    duracion: {
+    horaF: {
         type: String
     }
 });

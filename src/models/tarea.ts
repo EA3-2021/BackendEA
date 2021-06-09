@@ -1,25 +1,32 @@
 import mongoose, { Schema, Document} from 'mongoose';
 
 const TareaSchema = new Schema({
+    titulo: {
+        type: String
+    },
     descripcion: {
         type: String
     },
     fecha: {
         type: String
     },
-    hora: {
+    horaI :{
         type: String
     },
-    duracion: {
+    horaF: {
         type: String
     }
 });
 
 export interface ITarea extends Document {
+    titulo: string;
     descripcion: string;
     fecha: string;
-    hora: string;
-    duracion: string;
+    horaI: string;
+    horaF: string;
 }
 
 export default mongoose.model<ITarea>('tarea', TareaSchema);
+
+
+

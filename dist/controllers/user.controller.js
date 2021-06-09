@@ -110,10 +110,11 @@ const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let tarea = new tarea_1.default({
+            "titulo": req.body.titulo,
             "descripcion": req.body.descripcion,
             "fecha": req.body.fecha,
-            "hora": req.body.hora,
-            "duracion": req.body.duracion,
+            "horaI": req.body.horaI,
+            "horaF": req.body.horaF
         });
         tarea.save().then((data) => {
             return res.status(201).json(data);
@@ -123,4 +124,22 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).json(err);
     }
 });
-exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask };
+const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield tarea_1.default.find({ "fecha": req.params.fecha });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield tarea_1.default.deleteOne({ "titulo": req.params.titulo });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, getTask, deleteTask };
