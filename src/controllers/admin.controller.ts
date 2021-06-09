@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
 import License from "../models/license"
+import Location from "../models/location"
 import Configuration from "../models/configuration"
 
     async function registerAdmin(req:Request, res:Response) {
@@ -69,4 +70,15 @@ import Configuration from "../models/configuration"
         })
     }
 
-export default { registerAdmin, checklicense, newLicense, updateConfiguation };
+    //Obtener todos las localizaciones de los usuarios
+    const getLocations = async (req: Request, res: Response) => {
+        try{
+            const results = await Location.find({});
+            console.log(results);
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
+export default { registerAdmin, checklicense, newLicense, updateConfiguation, getLocations };

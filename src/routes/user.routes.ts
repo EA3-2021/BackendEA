@@ -13,6 +13,7 @@ router.put('/update/:id',userController.updateUser);
 router.post('/newtask', userController.newTask);
 router.get('/taskall/:fecha', userController.getTask);
 router.delete('/droptask/:titulo',userController.deleteTask);
+router.post('/newlocation', userController.newLocation);
 
 //Exportamos router para usar rutas en app.ts
 export default router;
