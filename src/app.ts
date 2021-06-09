@@ -10,10 +10,7 @@ import teamRoutes from './routes/team.routes'
 import authRoutes from './routes/auth.routes'
 import adminRoutes from './routes/admin.routes'
 import licenseRoutes from './routes/license.routes'
-<<<<<<< HEAD
 import faqRoutes from './routes/faq.routes'
-=======
->>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345
 
 //Inicializamos express
 const app = express();
@@ -35,10 +32,7 @@ app.use('/team', teamRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/license', licenseRoutes)
-<<<<<<< HEAD
 app.use('/faq', faqRoutes);
-=======
->>>>>>> 6c881eccf9b1c3e004e329a26612b0239fe4b345
 
 //Exportamos fichero como 'app'
 export default app;
