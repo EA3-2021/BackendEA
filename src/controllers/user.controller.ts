@@ -1,6 +1,7 @@
 import { Request, Response} from "express";
 import User from "../models/user";
 import Tarea from "../models/tarea";
+import Location from "../models/location";
 
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
@@ -116,4 +117,19 @@ const newTask = async (req: Request, res: Response) => {
     }
 }
 
-export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers,newTask};
+//Añadir nueva localización de un usuario
+const newLocation = async (req: Request, res: Response) => {
+    try{
+    let location = new Location({
+        "latitude" : req.body.latitude,
+        "longitude" : req.body.longitude
+    });
+    location.save().then((data) => {
+        return res.status(201).json(data);
+    });
+    } catch(err) {
+        return res.status(500).json(err);
+    }
+}
+
+export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers,newTask, newLocation};

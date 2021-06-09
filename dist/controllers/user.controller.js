@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const tarea_1 = __importDefault(require("../models/tarea"));
+const location_1 = __importDefault(require("../models/location"));
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -123,4 +124,19 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).json(err);
     }
 });
-exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask };
+//Añadir nueva localización de un usuario
+const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let location = new location_1.default({
+            "latitude": req.body.latitude,
+            "longitude": req.body.longitude
+        });
+        location.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation };
