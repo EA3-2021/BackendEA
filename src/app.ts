@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes'
 import adminRoutes from './routes/admin.routes'
 import licenseRoutes from './routes/license.routes'
 import faqRoutes from './routes/faq.routes'
+import locationRoutes from './routes/location.routes'
 
 //Inicializamos express
 const app = express();
@@ -31,8 +32,9 @@ app.use('/user', userRoutes);
 app.use('/team', teamRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
-app.use('/license', licenseRoutes)
+app.use('/license', licenseRoutes);
 app.use('/faq', faqRoutes);
+app.use('/location', locationRoutes);
 
 //Exportamos fichero como 'app'
 export default app;

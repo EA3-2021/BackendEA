@@ -15,6 +15,7 @@ const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
 const license_routes_1 = __importDefault(require("./routes/license.routes"));
 const faq_routes_1 = __importDefault(require("./routes/faq.routes"));
+const location_routes_1 = __importDefault(require("./routes/location.routes"));
 //Inicializamos express
 const app = express_1.default();
 //Configuración
@@ -33,5 +34,6 @@ app.use('/auth', auth_routes_1.default);
 app.use('/admin', admin_routes_1.default);
 app.use('/license', license_routes_1.default);
 app.use('/faq', faq_routes_1.default);
+app.use('/location', location_routes_1.default);
 //Exportamos fichero como 'app'
 exports.default = app;
