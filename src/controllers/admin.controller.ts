@@ -81,4 +81,15 @@ import Configuration from "../models/configuration"
         }
     }
 
-export default { registerAdmin, checklicense, newLicense, updateConfiguation, getLocations };
+    const getAdminName = async (req: Request, res: Response) => {
+        try{
+            const results = await Admin.find({});
+            console.log(results);
+            //{ projection: { _id: 0, name: 1, email:0, cif:0, address:0, postalCode:0, phone:0, password:0} }
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+    
+export default {registerAdmin, checklicense, newLicense, updateConfiguation, getLocations, getAdminName};

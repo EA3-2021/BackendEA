@@ -94,4 +94,15 @@ const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(404).json(err);
     }
 });
-exports.default = { registerAdmin, checklicense, newLicense, updateConfiguation, getLocations };
+const getAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield admin_1.default.find({});
+        console.log(results);
+        //{ projection: { _id: 0, name: 1, email:0, cif:0, address:0, postalCode:0, phone:0, password:0} }
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { registerAdmin, checklicense, newLicense, updateConfiguation, getLocations, getAdminName };

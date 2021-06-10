@@ -12,5 +12,6 @@ router.post('/license', admin_controller_1.default.newLicense);
 router.get('/:licenseCode', admin_controller_1.default.checklicense);
 router.post('/configuration', admin_controller_1.default.updateConfiguation);
 router.get('/getLocations', admin_controller_1.default.getLocations);
+router.get('/getAdminName', admin_controller_1.default.getAdminName);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;
