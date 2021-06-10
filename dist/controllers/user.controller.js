@@ -47,7 +47,7 @@ function registerUser(req, res) {
 }
 function generateRandomString(length) {
     var result = [];
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
         result.push(characters.charAt(Math.floor(Math.random() *

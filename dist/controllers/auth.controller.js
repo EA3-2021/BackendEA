@@ -42,21 +42,25 @@ function loginAdmin(req, res) {
 function loginUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user;
-        const name = req.body.name;
+        const workerID = req.body.workerID;
         const password = req.body.password;
-        user = yield user_1.default.findOne({ $or: [{ "name": name }, { "email": name }] });
+        user = yield user_1.default.findOne({ "workerID": workerID });
         if (!user)
             return res.status(404).json({ message: "User not found" });
         else {
             if (user.password != password)
                 return res.status(409).json({ message: "Password don't match" });
             else {
-                try {
-                    let t = { token: createTokenUser(user) };
-                    return res.status(200).json(t);
-                }
-                catch (err) {
-                    return res.status(500).json(err);
+                if (user.petition == false)
+                    return res.status(409).json({ message: "Petition don't accepted yet" });
+                else {
+                    try {
+                        let t = { token: createTokenUser(user) };
+                        return res.status(200).json(t);
+                    }
+                    catch (err) {
+                        return res.status(500).json(err);
+                    }
                 }
             }
         }
