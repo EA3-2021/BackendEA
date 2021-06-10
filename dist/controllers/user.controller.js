@@ -35,6 +35,30 @@ function registerUser(req, res) {
                     "workerID": generateRandomString(6),
                     "petition": false
                 });
+                var nodemailer = require('nodemailer');
+                var mail = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: 'firefighteradventure@gmail.com',
+                        pass: 'Mazinger72'
+                    }
+                });
+                var mailOptions = {
+                    from: 'firefighteradventure@gmail.com',
+                    to: user.email,
+                    subject: 'Here it is your Worker ID and your password!',
+                    text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + u.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
+                };
+                mail.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    }
+                    else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
                 u.save().then((data) => {
                     return res.status(201).json(data);
                 });
@@ -47,7 +71,7 @@ function registerUser(req, res) {
 }
 function generateRandomString(length) {
     var result = [];
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
         result.push(characters.charAt(Math.floor(Math.random() *
