@@ -31,31 +31,6 @@ import Configuration from "../models/configuration"
             }
         }
     }
-
-    async function checklicense (req:Request, res:Response) {
-        let license = req.params.licenseCode;
-        let checkLicense = await License.findOne({"licenseCode": license});
-
-        let data:boolean;
-
-        if(checkLicense) return res.status(202).json(data = true);
-        else {
-            return res.status(409).json(data = false);
-        }
-    }
-
-    const newLicense = async (req: Request, res: Response) => {
-        try{
-        let licenseCode = new License({
-            "licenseCode" : req.body.licenseCode,
-        });
-        licenseCode.save().then((data) => {
-            return res.status(201).json(data);
-        });
-        } catch(err) {
-            return res.status(500).json(err);
-        }
-    }
     
     const updateConfiguation = async (req: Request, res: Response) => {
         const configuration = new Configuration({
@@ -83,13 +58,12 @@ import Configuration from "../models/configuration"
 
     const getAdminName = async (req: Request, res: Response) => {
         try{
-            const results = await Admin.find({});
-            console.log(results);
-            //{ projection: { _id: 0, name: 1, email:0, cif:0, address:0, postalCode:0, phone:0, password:0} }
+            const results = await Admin.find({}, { "_id": 0, "name": 1});
             return res.status(200).json(results);
         } catch (err) {
             return res.status(404).json(err);
         }
     }
+
     
-export default {registerAdmin, checklicense, newLicense, updateConfiguation, getLocations, getAdminName};
+export default {registerAdmin, updateConfiguation, getLocations, getAdminName};

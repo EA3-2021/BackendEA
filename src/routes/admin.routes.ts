@@ -5,8 +5,6 @@ import adminController from '../controllers/admin.controller'
 const router = Router();
 
 router.post('/register-admin', adminController.registerAdmin);
-router.post('/license', adminController.newLicense);
-router.get('/:licenseCode', adminController.checklicense);
 router.post('/configuration', adminController.updateConfiguation );
 router.get('/getLocations', adminController.getLocations);
 router.get('/getAdminName', adminController.getAdminName);

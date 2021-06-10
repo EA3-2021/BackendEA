@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin_1 = __importDefault(require("../models/admin"));
-const license_1 = __importDefault(require("../models/license"));
 const location_1 = __importDefault(require("../models/location"));
 const configuration_1 = __importDefault(require("../models/configuration"));
 function registerAdmin(req, res) {
@@ -46,31 +45,6 @@ function registerAdmin(req, res) {
         }
     });
 }
-function checklicense(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let license = req.params.licenseCode;
-        let checkLicense = yield license_1.default.findOne({ "licenseCode": license });
-        let data;
-        if (checkLicense)
-            return res.status(202).json(data = true);
-        else {
-            return res.status(409).json(data = false);
-        }
-    });
-}
-const newLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let licenseCode = new license_1.default({
-            "licenseCode": req.body.licenseCode,
-        });
-        licenseCode.save().then((data) => {
-            return res.status(201).json(data);
-        });
-    }
-    catch (err) {
-        return res.status(500).json(err);
-    }
-});
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const configuration = new configuration_1.default({
         "notification": req.body.notification,
@@ -96,13 +70,11 @@ const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 const getAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield admin_1.default.find({});
-        console.log(results);
-        //{ projection: { _id: 0, name: 1, email:0, cif:0, address:0, postalCode:0, phone:0, password:0} }
+        const results = yield admin_1.default.find({}, { "_id": 0, "name": 1 });
         return res.status(200).json(results);
     }
     catch (err) {
         return res.status(404).json(err);
     }
 });
-exports.default = { registerAdmin, checklicense, newLicense, updateConfiguation, getLocations, getAdminName };
+exports.default = { registerAdmin, updateConfiguation, getLocations, getAdminName };
