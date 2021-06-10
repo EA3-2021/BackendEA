@@ -13,6 +13,8 @@ import licenseRoutes from './routes/license.routes'
 import faqRoutes from './routes/faq.routes'
 import locationRoutes from './routes/location.routes'
 import commentRoutes from './routes/comment.routes'
+import chatRoutes from './routes/chat.routes'
+import messageRoutes from './routes/message.routes'
 
 //Inicializamos express
 const app = express();
@@ -37,6 +39,8 @@ app.use('/license', licenseRoutes);
 app.use('/faq', faqRoutes);
 app.use('/location', locationRoutes);
 app.use('/comment', commentRoutes);
+app.use('/chat', chatRoutes);
+app.use('/message', messageRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
