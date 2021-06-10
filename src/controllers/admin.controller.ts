@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
-import License from "../models/license"
-import Location from "../models/location"
-import Configuration from "../models/configuration"
+import Location from "../models/location";
+import Configuration from "../models/configuration";
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
