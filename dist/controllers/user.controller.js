@@ -15,6 +15,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
+function registerUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user = req.body;
+        let checkEmail = yield user_1.default.findOne({ "email": user.email });
+        let checkPhone = yield user_1.default.findOne({ "phone": user.phone });
+        if (checkEmail)
+            return res.status(409).json({ code: 409, message: "This email already exists" });
+        else if (checkPhone)
+            return res.status(410).json({ code: 410, message: "This phone number already exists" });
+        else {
+            try {
+                let u = new user_1.default({
+                    "company": user.company,
+                    "name": user.name,
+                    "email": user.email,
+                    "phone": user.phone,
+                    "password": user.password,
+                    "workerID": generateRandomString(6),
+                    "petition": false
+                });
+                u.save().then((data) => {
+                    return res.status(201).json(data);
+                });
+            }
+            catch (err) {
+                return res.status(500).json(err);
+            }
+        }
+    });
+}
+function generateRandomString(length) {
+    var result = [];
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+    }
+    return result.join('');
+}
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -158,4 +198,4 @@ const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(500).json(err);
     }
 });
-exports.default = { getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+exports.default = { registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };

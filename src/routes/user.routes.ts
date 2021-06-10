@@ -4,6 +4,7 @@ import userController from '../controllers/user.controller'
 //Router nos permite gestionar rutas de la API
 const router = Router();
 
+router.post('/registerUser', userController.registerUser);
 router.get('/all', userController.getUsers);
 router.get('/:id', userController.getUser);
 router.post('/new',userController.newUser);

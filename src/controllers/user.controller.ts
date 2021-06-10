@@ -3,6 +3,46 @@ import User from "../models/user";
 import Tarea from "../models/tarea";
 import Location from "../models/location";
 
+
+async function registerUser(req:Request, res:Response) {
+    let user = req.body;
+    let checkEmail = await User.findOne({"email": user.email});
+    let checkPhone = await User.findOne({"phone": user.phone});
+
+    if(checkEmail) return res.status(409).json({code: 409, message: "This email already exists"});
+    else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
+    else {
+        try{
+
+        let u = new User({
+            "company": user.company,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "password": user.password,
+            "workerID": generateRandomString(6),
+            "petition": false
+        });
+        u.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+}
+
+function generateRandomString(length: number) {
+    var result           = [];
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * 
+ charactersLength)));
+   }
+   return result.join('');
+}
+
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
     try{
@@ -152,4 +192,4 @@ const newLocation = async (req: Request, res: Response) => {
     }
 }
 
-export default {getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+export default {registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};

@@ -22,6 +22,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const UserSchema = new mongoose_1.Schema({
+    company: {
+        type: String
+    },
     name: {
         type: String
     },
@@ -33,6 +36,12 @@ const UserSchema = new mongoose_1.Schema({
     },
     password: {
         type: String
+    },
+    workerID: {
+        type: String
+    },
+    petition: {
+        type: Boolean
     }
 });
 //Exportamos modelo para poder usarlo
