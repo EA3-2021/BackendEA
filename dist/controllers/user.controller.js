@@ -367,4 +367,36 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest };
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+exports.default = {
+    getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+    newLocation, newTask, getTask, deleteTask, getWorkerID, holidayRequest /*,clockIn, clockOut*/
+};
