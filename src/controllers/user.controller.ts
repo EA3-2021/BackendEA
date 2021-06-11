@@ -230,9 +230,40 @@ const registerRequests = async (req: Request, res: Response) => {
 }
 
 const deleteRegisterRequest = async (req: Request, res: Response) => {
+
+    console.log (req.params.email);
+
+    var nodemailer = require('nodemailer');
+
+    var mail = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'firefighteradventure@gmail.com',
+            pass: 'Mazinger72'
+        }
+        });
+
+        var mailOptions = {
+        from: 'firefighteradventure@gmail.com',
+        to: req.params.email,
+        subject: 'Your registration request has not been accepted!',
+        text: 'SORRY!' + '\n' + 'The admin has not accepted your registration request.'
+        };
+          
+        mail.sendMail(mailOptions, function(error: any, info: any){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
     try{
         const results = await User.deleteOne({"workerID": req.params.workerID});
         return res.status(200).json(results);
+
     } catch (err) {
         return res.status(404).json(err);
     }
@@ -240,8 +271,39 @@ const deleteRegisterRequest = async (req: Request, res: Response) => {
 
 const acceptRegisterRequest = async (req: Request, res: Response) => {
     
+    console.log(req.body.email);
+    console.log(req.params.email);
+
     User.updateOne({"workerID": req.params.workerID}, {$set: {"petition": true}}).then((data) => {
         res.status(201).json(data);
+
+        var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: req.params.email,
+            subject: 'You can access now to your account with your credentials!',
+            text: 'WELCOME!' + '\n' + 'The admin has accepted your registration request, access in any time to your account.'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
     }).catch((err) => {
         res.status(500).json(err);
     })

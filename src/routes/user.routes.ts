@@ -16,8 +16,8 @@ router.get('/taskall/:fecha', userController.getTask);
 router.delete('/droptask/:titulo',userController.deleteTask);
 router.post('/newlocation', userController.newLocation);
 router.get('/register/Requests', userController.registerRequests);
-router.delete('/drop/registerRequest/:workerID',userController.deleteRegisterRequest);
-router.put('/accept/:workerID',userController.acceptRegisterRequest);
+router.delete('/drop/registerRequest/:workerID/:email',userController.deleteRegisterRequest);
+router.put('/accept/:workerID/:email',userController.acceptRegisterRequest);
 
 
 
