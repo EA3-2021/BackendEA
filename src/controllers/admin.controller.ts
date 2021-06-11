@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
+import User from "../models/user";
 import Location from "../models/location";
 import Configuration from "../models/configuration";
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
         let checkEmail = await Admin.findOne({"email": admin.email});
+        let checkEmail1 = await User.findOne({"email": admin.email});
         let checkPhone = await Admin.findOne({"phone": admin.phone});
     
-        if(checkEmail) return res.status(409).json({code: 409, message: "This email already exists"});
+        if(checkEmail || checkEmail1) return res.status(409).json({code: 409, message: "This email already exists"});
         else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
         else {
             try{

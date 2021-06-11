@@ -13,14 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const admin_1 = __importDefault(require("../models/admin"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
         let checkEmail = yield user_1.default.findOne({ "email": user.email });
+        let checkEmail1 = yield admin_1.default.findOne({ "email": user.email });
         let checkPhone = yield user_1.default.findOne({ "phone": user.phone });
-        if (checkEmail)
+        if (checkEmail || checkEmail1)
             return res.status(409).json({ code: 409, message: "This email already exists" });
         else if (checkPhone)
             return res.status(410).json({ code: 410, message: "This phone number already exists" });
