@@ -85,7 +85,7 @@ function generateRandomString(length) {
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield user_1.default.find({});
+        const results = yield user_1.default.find({ "company": req.params.company });
         return res.status(200).json(results);
     }
     catch (err) {
@@ -159,16 +159,6 @@ function updateUser(req, res) {
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield user_1.default.deleteOne({ "name": req.params.name });
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
-//Borrar todos los students
-const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield user_1.default.deleteMany({});
         return res.status(200).json(results);
     }
     catch (err) {
@@ -368,4 +358,13 @@ const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return res.status(409).json({ code: 409, message: "This user does not exist" });
     }
 });
-exports.default = { holidayRequest, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield user_1.default.find({ "company": req.params.company }, { "_id": 0, "workerID": 1 });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest };

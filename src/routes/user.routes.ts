@@ -5,10 +5,9 @@ import userController from '../controllers/user.controller'
 const router = Router();
 
 router.post('/registerUser', userController.registerUser);
-router.get('/all', userController.getUsers);
-router.get('/:id', userController.getUser);
+router.get('/all/:company', userController.getUsers);
+//router.get('/:id', userController.getUser);
 router.post('/new',userController.newUser);
-router.delete('/dropall',userController.deleteUsers);
 router.delete('/drop/:name',userController.deleteUser);
 router.put('/update/:id',userController.updateUser);
 router.post('/newtask', userController.newTask);
@@ -20,6 +19,7 @@ router.delete('/drop/registerRequest/:workerID/:email',userController.deleteRegi
 router.put('/accept/:workerID/:email',userController.acceptRegisterRequest);
 router.get('/getPasswordUser/:email', userController.getPasswordUser);
 router.post('/holidayRequest/:workerID', userController.holidayRequest);
+router.get('/getWorkerID/:company', userController.getWorkerID);
 
 
 //Exportamos router para usar rutas en app.ts

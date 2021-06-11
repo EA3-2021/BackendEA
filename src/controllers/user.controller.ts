@@ -77,7 +77,7 @@ function generateRandomString(length: number) {
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
     try{
-        const results = await User.find({});
+        const results = await User.find({"company": req.params.company});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
@@ -156,16 +156,6 @@ function updateUser (req: Request, res: Response){
 const deleteUser = async (req: Request, res: Response) => {
     try{
         const results = await User.deleteOne({"name": req.params.name});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
-//Borrar todos los students
-const deleteUsers = async (req: Request, res: Response) => {
-    try{
-        const results = await User.deleteMany({});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
@@ -385,4 +375,13 @@ const holidayRequest = async (req: Request, res: Response) => {
     }
 }
 
-export default {holidayRequest, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+    const getWorkerID = async (req: Request, res: Response) => {
+        try{
+            const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
+export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest};
