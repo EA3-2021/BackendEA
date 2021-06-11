@@ -16,6 +16,7 @@ const admin_1 = __importDefault(require("../models/admin"));
 const user_1 = __importDefault(require("../models/user"));
 const location_1 = __importDefault(require("../models/location"));
 const configuration_1 = __importDefault(require("../models/configuration"));
+const tarea_1 = __importDefault(require("../models/tarea"));
 function registerAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin = req.body;
@@ -120,4 +121,40 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(409).json({ code: 409, message: "This email does not exist" });
     }
 });
-exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName };
+const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tarea = new tarea_1.default({
+            "workerID": req.body.workerID,
+            "titulo": req.body.titulo,
+            "descripcion": req.body.descripcion,
+            "fecha": req.body.fecha,
+            "horaI": req.body.horaI,
+            "horaF": req.body.horaF
+        });
+        tarea.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield tarea_1.default.find({ "fecha": req.params.fecha });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield tarea_1.default.deleteOne({ "titulo": req.params.titulo });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask };

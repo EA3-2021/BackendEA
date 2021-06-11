@@ -1,6 +1,9 @@
 import mongoose, { Schema, Document} from 'mongoose';
 
 const TareaSchema = new Schema({
+    workerID: {
+        type: String
+    },
     titulo: {
         type: String
     },
@@ -19,6 +22,7 @@ const TareaSchema = new Schema({
 });
 
 export interface ITarea extends Document {
+    workerID: string;
     titulo: string;
     descripcion: string;
     fecha: string;

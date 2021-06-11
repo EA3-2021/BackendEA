@@ -3,6 +3,7 @@ import Admin from "../models/admin";
 import User from "../models/user";
 import Location from "../models/location";
 import Configuration from "../models/configuration";
+import Tarea from "../models/tarea";
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
@@ -111,5 +112,42 @@ import Configuration from "../models/configuration";
         }   
     }
 
+    const newTask = async (req: Request, res: Response) => {
+        try{
+        let tarea = new Tarea({
+            "workerID" : req.body.workerID,
+            "titulo" : req.body.titulo,
+            "descripcion" : req.body.descripcion,
+            "fecha":req.body.fecha,
+            "horaI" : req.body.horaI,
+            "horaF" : req.body.horaF
+        });
+        tarea.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
     
-export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName};
+    const getTask = async (req: Request, res: Response) => {
+        try{
+            const results = await Tarea.find({"fecha": req.params.fecha});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+    
+    const deleteTask = async (req: Request, res: Response) => {
+        try{
+            const results = await Tarea.deleteOne({"titulo": req.params.titulo});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+    
+
+    
+export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask};

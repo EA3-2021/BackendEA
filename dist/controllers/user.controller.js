@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
-const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
 const holiday_1 = __importDefault(require("../models/holiday"));
 function registerUser(req, res) {
@@ -165,41 +164,40 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(404).json(err);
     }
 });
-const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let tarea = new tarea_1.default({
-            "titulo": req.body.titulo,
-            "descripcion": req.body.descripcion,
-            "fecha": req.body.fecha,
-            "horaI": req.body.horaI,
-            "horaF": req.body.horaF
-        });
-        tarea.save().then((data) => {
-            return res.status(201).json(data);
-        });
-    }
-    catch (err) {
+/*const newTask = async (req: Request, res: Response) => {
+    try{
+    let tarea = new Tarea({
+        "titulo" : req.body.titulo,
+        "descripcion" : req.body.descripcion,
+        "fecha":req.body.fecha,
+        "horaI" : req.body.horaI,
+        "horaF" : req.body.horaF
+    });
+    tarea.save().then((data) => {
+        return res.status(201).json(data);
+    });
+    } catch(err) {
         return res.status(500).json(err);
     }
-});
-const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield tarea_1.default.find({ "fecha": req.params.fecha });
+}
+
+const getTask = async (req: Request, res: Response) => {
+    try{
+        const results = await Tarea.find({"fecha": req.params.fecha});
         return res.status(200).json(results);
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(404).json(err);
     }
-});
-const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield tarea_1.default.deleteOne({ "titulo": req.params.titulo });
+}
+
+const deleteTask = async (req: Request, res: Response) => {
+    try{
+        const results = await Tarea.deleteOne({"titulo": req.params.titulo});
         return res.status(200).json(results);
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(404).json(err);
     }
-});
+}*/
 //Añadir nueva localización de un usuario
 const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -367,4 +365,4 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest };
+exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newLocation, getWorkerID, holidayRequest };

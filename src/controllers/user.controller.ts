@@ -162,7 +162,7 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-const newTask = async (req: Request, res: Response) => {
+/*const newTask = async (req: Request, res: Response) => {
     try{
     let tarea = new Tarea({
         "titulo" : req.body.titulo,
@@ -195,7 +195,7 @@ const deleteTask = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(404).json(err);
     }
-}
+}*/
 
 
 //Añadir nueva localización de un usuario
@@ -384,4 +384,4 @@ const holidayRequest = async (req: Request, res: Response) => {
         }
     }
 
-export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest};
+export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newLocation, getWorkerID, holidayRequest};

@@ -9,6 +9,9 @@ router.post('/configuration', adminController.updateConfiguation );
 router.get('/getLocations', adminController.getLocations);
 router.get('/getAdminName', adminController.getAdminName);
 router.get('/getPasswordAdmin/:email', adminController.getPasswordAdmin);
+router.post('/newtask', adminController.newTask);
+router.get('/taskall/:fecha', adminController.getTask);
+router.delete('/droptask/:titulo',adminController.deleteTask);
 
 
 // Exportamos router para usar rutas en app.ts
