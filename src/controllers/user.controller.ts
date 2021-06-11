@@ -161,16 +161,6 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-//Borrar todos los students
-const deleteUsers = async (req: Request, res: Response) => {
-    try{
-        const results = await User.deleteMany({});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
 const newTask = async (req: Request, res: Response) => {
     try{
     let tarea = new Tarea({
@@ -356,4 +346,13 @@ const getPasswordUser = async (req: Request, res: Response) => {
     }   
 }
 
-export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+    const getWorkerID = async (req: Request, res: Response) => {
+        try{
+            const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
+export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID};
