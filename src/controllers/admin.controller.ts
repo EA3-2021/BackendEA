@@ -16,6 +16,8 @@ import Tarea from "../models/tarea";
         else {
             try{
 
+            var crypto = require('crypto');
+
             let u = new Admin({
                 "name": admin.name,
                 "email": admin.email,
@@ -23,7 +25,7 @@ import Tarea from "../models/tarea";
                 "address": admin.address,
                 "postalCode": admin.postalCode,
                 "phone": admin.phone,
-                "password": admin.password
+                "password": crypto.createHash('sha256').update(admin.password).digest('hex')
             });
             u.save().then((data) => {
                 return res.status(201).json(data);

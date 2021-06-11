@@ -29,6 +29,7 @@ function registerAdmin(req, res) {
             return res.status(410).json({ code: 410, message: "This phone number already exists" });
         else {
             try {
+                var crypto = require('crypto');
                 let u = new admin_1.default({
                     "name": admin.name,
                     "email": admin.email,
@@ -36,7 +37,7 @@ function registerAdmin(req, res) {
                     "address": admin.address,
                     "postalCode": admin.postalCode,
                     "phone": admin.phone,
-                    "password": admin.password
+                    "password": crypto.createHash('sha256').update(admin.password).digest('hex')
                 });
                 u.save().then((data) => {
                     return res.status(201).json(data);
@@ -142,6 +143,7 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const results = yield tarea_1.default.find({ "fecha": req.params.fecha });
+        console.log(results);
         return res.status(200).json(results);
     }
     catch (err) {
