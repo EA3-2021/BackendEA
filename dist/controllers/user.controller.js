@@ -333,13 +333,12 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.workerID);
-    let results = yield user_1.default.findOne({ "workerID": req.params.workerID });
+    let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
     if (results) {
         try {
             let holiday = new holiday_1.default({
                 "company": results.company,
-                "workerID": req.params.workerID,
+                "workerID": req.body.workerID,
                 "motivo": req.body.motivo,
                 "descripcion": req.body.descripcion,
                 "fechaI": req.body.fechaI,
@@ -367,4 +366,13 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest };
+const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest };

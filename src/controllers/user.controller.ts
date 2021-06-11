@@ -349,13 +349,12 @@ const getPasswordUser = async (req: Request, res: Response) => {
 
 const holidayRequest = async (req: Request, res: Response) => {
 
-    console.log(req.params.workerID);
-    let results = await User.findOne({"workerID": req.params.workerID});
+    let results = await User.findOne({"workerID": req.body.workerID});
     if(results){  
         try{
             let holiday = new Holiday({
                 "company": results.company,
-                "workerID": req.params.workerID,
+                "workerID": req.body.workerID,
                 "motivo" : req.body.motivo,
                 "descripcion" : req.body.descripcion,
                 "fechaI" : req.body.fechaI,
@@ -384,4 +383,13 @@ const holidayRequest = async (req: Request, res: Response) => {
         }
     }
 
-export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest};
+    const getHolidayPending = async (req: Request, res: Response) => {
+        try{
+            const results = await Holiday.find({"company": req.params.company, "estado": false});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
+export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest};

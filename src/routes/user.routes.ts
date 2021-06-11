@@ -18,8 +18,10 @@ router.get('/register/Requests', userController.registerRequests);
 router.delete('/drop/registerRequest/:workerID/:email',userController.deleteRegisterRequest);
 router.put('/accept/:workerID/:email',userController.acceptRegisterRequest);
 router.get('/getPasswordUser/:email', userController.getPasswordUser);
-router.post('/holidayRequest/:workerID', userController.holidayRequest);
+router.post('/holidayRequest', userController.holidayRequest);
 router.get('/getWorkerID/:company', userController.getWorkerID);
+router.get('/getHolidayPending/:company', userController.getHolidayPending);
+
 
 
 //Exportamos router para usar rutas en app.ts
