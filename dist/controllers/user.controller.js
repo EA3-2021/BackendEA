@@ -13,14 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const admin_1 = __importDefault(require("../models/admin"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
+const holiday_1 = __importDefault(require("../models/holiday"));
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
         let checkEmail = yield user_1.default.findOne({ "email": user.email });
+        let checkEmail1 = yield admin_1.default.findOne({ "email": user.email });
         let checkPhone = yield user_1.default.findOne({ "phone": user.phone });
-        if (checkEmail)
+        if (checkEmail || checkEmail1)
             return res.status(409).json({ code: 409, message: "This email already exists" });
         else if (checkPhone)
             return res.status(410).json({ code: 410, message: "This phone number already exists" });
@@ -84,7 +87,7 @@ function generateRandomString(length) {
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield user_1.default.find({});
+        const results = yield user_1.default.find({ "company": req.params.company });
         return res.status(200).json(results);
     }
     catch (err) {
@@ -164,16 +167,6 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(404).json(err);
     }
 });
-//Borrar todos los students
-const deleteUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield user_1.default.deleteMany({});
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let tarea = new tarea_1.default({
@@ -234,6 +227,31 @@ const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.email);
+    var nodemailer = require('nodemailer');
+    var mail = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'firefighteradventure@gmail.com',
+            pass: 'Mazinger72'
+        }
+    });
+    var mailOptions = {
+        from: 'firefighteradventure@gmail.com',
+        to: req.params.email,
+        subject: 'Your registration request has not been accepted!',
+        text: 'SORRY!' + '\n' + 'The admin has not accepted your registration request.'
+    };
+    mail.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        }
+        else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
     try {
         const results = yield user_1.default.deleteOne({ "workerID": req.params.workerID });
         return res.status(200).json(results);
@@ -243,10 +261,150 @@ const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body.email);
+    console.log(req.params.email);
     user_1.default.updateOne({ "workerID": req.params.workerID }, { $set: { "petition": true } }).then((data) => {
         res.status(201).json(data);
+        var nodemailer = require('nodemailer');
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'firefighteradventure@gmail.com',
+                pass: 'Mazinger72'
+            }
+        });
+        var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: req.params.email,
+            subject: 'You can access now to your account with your credentials!',
+            text: 'WELCOME!' + '\n' + 'The admin has accepted your registration request, access in any time to your account.'
+        };
+        mail.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
     }).catch((err) => {
         res.status(500).json(err);
     });
 });
-exports.default = { acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.email);
+    let checkEmail = yield user_1.default.findOne({ "email": req.params.email });
+    if (checkEmail) {
+        try {
+            const results = yield user_1.default.find({ "email": req.params.email }, { "_id": 0, "password": 1 });
+            console.log(results);
+            var nodemailer = require('nodemailer');
+            var mail = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: 'firefighteradventure@gmail.com',
+                    pass: 'Mazinger72'
+                }
+            });
+            var mailOptions = {
+                from: 'firefighteradventure@gmail.com',
+                to: checkEmail.email,
+                subject: 'Password has been recovered',
+                text: 'Your Password: ' + results
+            };
+            mail.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+            return res.status(200).json({ code: 200, message: "Successfully" });
+        }
+        catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+    else {
+        return res.status(409).json({ code: 409, message: "This email does not exist" });
+    }
+});
+const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
+    if (results) {
+        try {
+            let holiday = new holiday_1.default({
+                "company": results.company,
+                "workerID": req.body.workerID,
+                "motivo": req.body.motivo,
+                "descripcion": req.body.descripcion,
+                "fechaI": req.body.fechaI,
+                "fechaF": req.body.fechaF,
+                "estado": false
+            });
+            holiday.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch (err) {
+            return res.status(500).json(err);
+        }
+    }
+    else {
+        return res.status(409).json({ code: 409, message: "This user does not exist" });
+    }
+});
+const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield user_1.default.find({ "company": req.params.company }, { "_id": 0, "workerID": 1 });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+    newLocation, newTask, getTask, deleteTask, getWorkerID, holidayRequest /*,clockIn, clockOut*/ };

@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
+import User from "../models/user";
 import Location from "../models/location";
 import Configuration from "../models/configuration";
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
         let checkEmail = await Admin.findOne({"email": admin.email});
+        let checkEmail1 = await User.findOne({"email": admin.email});
         let checkPhone = await Admin.findOne({"phone": admin.phone});
     
-        if(checkEmail) return res.status(409).json({code: 409, message: "This email already exists"});
+        if(checkEmail || checkEmail1) return res.status(409).json({code: 409, message: "This email already exists"});
         else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
         else {
             try{
@@ -64,5 +66,50 @@ import Configuration from "../models/configuration";
         }
     }
 
+    const getPasswordAdmin = async (req: Request, res: Response) => {
+        
+        console.log(req.params.email);
+        let checkEmail = await Admin.findOne({"email": req.params.email});
+        if(checkEmail){
+            try{
+                const results = await Admin.find({"email": req.params.email},{ "_id": 0, "password": 1});
+                console.log(results);
+                var nodemailer = require('nodemailer');
+
+                var mail = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: 'firefighteradventure@gmail.com',
+                        pass: 'Mazinger72'
+                    }
+                });
+
+                var mailOptions = {
+                    from: 'firefighteradventure@gmail.com',
+                    to: checkEmail.email,
+                    subject: 'Password has been recovered',
+                    text: 'Your Password: ' + results
+                };
+          
+                mail.sendMail(mailOptions, function(error: any, info: any){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+                });
+
+                return res.status(200).json({code: 200, message: "Successfully"});
+
+            }catch (err) {
+                return res.status(404).json(err);
+            }
+        }else{
+            return res.status(409).json({code: 409, message: "This email does not exist"});
+        }   
+    }
+
     
-export default {registerAdmin, updateConfiguation, getLocations, getAdminName};
+export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName};

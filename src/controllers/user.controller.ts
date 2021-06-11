@@ -1,15 +1,19 @@
 import { Request, Response} from "express";
 import User from "../models/user";
+import Admin from "../models/admin";
 import Tarea from "../models/tarea";
 import Location from "../models/location";
+import Holiday from "../models/holiday";
+import Clock from "../models/clock";
 
 
 async function registerUser(req:Request, res:Response) {
     let user = req.body;
     let checkEmail = await User.findOne({"email": user.email});
+    let checkEmail1 = await Admin.findOne({"email": user.email});
     let checkPhone = await User.findOne({"phone": user.phone});
 
-    if(checkEmail) return res.status(409).json({code: 409, message: "This email already exists"});
+    if(checkEmail || checkEmail1) return res.status(409).json({code: 409, message: "This email already exists"});
     else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
     else {
         try{
@@ -77,7 +81,7 @@ function generateRandomString(length: number) {
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
     try{
-        const results = await User.find({});
+        const results = await User.find({"company": req.params.company});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
@@ -162,16 +166,6 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-//Borrar todos los students
-const deleteUsers = async (req: Request, res: Response) => {
-    try{
-        const results = await User.deleteMany({});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
 const newTask = async (req: Request, res: Response) => {
     try{
     let tarea = new Tarea({
@@ -233,9 +227,40 @@ const registerRequests = async (req: Request, res: Response) => {
 }
 
 const deleteRegisterRequest = async (req: Request, res: Response) => {
+
+    console.log (req.params.email);
+
+    var nodemailer = require('nodemailer');
+
+    var mail = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'firefighteradventure@gmail.com',
+            pass: 'Mazinger72'
+        }
+        });
+
+        var mailOptions = {
+        from: 'firefighteradventure@gmail.com',
+        to: req.params.email,
+        subject: 'Your registration request has not been accepted!',
+        text: 'SORRY!' + '\n' + 'The admin has not accepted your registration request.'
+        };
+          
+        mail.sendMail(mailOptions, function(error: any, info: any){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
     try{
         const results = await User.deleteOne({"workerID": req.params.workerID});
         return res.status(200).json(results);
+
     } catch (err) {
         return res.status(404).json(err);
     }
@@ -243,13 +268,162 @@ const deleteRegisterRequest = async (req: Request, res: Response) => {
 
 const acceptRegisterRequest = async (req: Request, res: Response) => {
     
+    console.log(req.body.email);
+    console.log(req.params.email);
+
     User.updateOne({"workerID": req.params.workerID}, {$set: {"petition": true}}).then((data) => {
         res.status(201).json(data);
+
+        var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: req.params.email,
+            subject: 'You can access now to your account with your credentials!',
+            text: 'WELCOME!' + '\n' + 'The admin has accepted your registration request, access in any time to your account.'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
     }).catch((err) => {
         res.status(500).json(err);
     })
 }
 
+const getPasswordUser = async (req: Request, res: Response) => {
+        
+    console.log(req.params.email);
+    let checkEmail = await User.findOne({"email": req.params.email});
+    if(checkEmail){
+        try{
+            const results = await User.find({"email": req.params.email},{ "_id": 0, "password": 1});
+            console.log(results);
+            var nodemailer = require('nodemailer');
 
+            var mail = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: 'firefighteradventure@gmail.com',
+                    pass: 'Mazinger72'
+                }
+            });
 
-export default {acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+            var mailOptions = {
+                from: 'firefighteradventure@gmail.com',
+                to: checkEmail.email,
+                subject: 'Password has been recovered',
+                text: 'Your Password: ' + results
+            };
+      
+            mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+            });
+
+            return res.status(200).json({code: 200, message: "Successfully"});
+
+        }catch (err) {
+            return res.status(404).json(err);
+        }
+    }else{
+        return res.status(409).json({code: 409, message: "This email does not exist"});
+    }   
+}
+
+const holidayRequest = async (req: Request, res: Response) => {
+
+    let results = await User.findOne({"workerID": req.body.workerID});
+    if(results){  
+        try{
+            let holiday = new Holiday({
+                "company": results.company,
+                "workerID": req.body.workerID,
+                "motivo" : req.body.motivo,
+                "descripcion" : req.body.descripcion,
+                "fechaI" : req.body.fechaI,
+                "fechaF" : req.body.fechaF,
+                "estado": false
+            });
+
+            holiday.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch(err) {
+            return res.status(500).json(err);
+        }
+    }else{
+        return res.status(409).json({code: 409, message: "This user does not exist"});
+    }
+}
+
+    const getWorkerID = async (req: Request, res: Response) => {
+        try{
+            const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+
+const getHolidayPending = async (req: Request, res: Response) => {
+    try{
+        const results = await Holiday.find({"company": req.params.company, "estado": false});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+newLocation, newTask, getTask, deleteTask, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
