@@ -19,6 +19,7 @@ const location_routes_1 = __importDefault(require("./routes/location.routes"));
 const comment_routes_1 = __importDefault(require("./routes/comment.routes"));
 const chat_routes_1 = __importDefault(require("./routes/chat.routes"));
 const message_routes_1 = __importDefault(require("./routes/message.routes"));
+const clock_routes_1 = __importDefault(require("./routes/clock.routes"));
 //Inicializamos express
 const app = express_1.default();
 //Configuración
@@ -41,5 +42,6 @@ app.use('/location', location_routes_1.default);
 app.use('/comment', comment_routes_1.default);
 app.use('/chat', chat_routes_1.default);
 app.use('/message', message_routes_1.default);
+app.use('/clock', clock_routes_1.default);
 //Exportamos fichero como 'app'
 exports.default = app;

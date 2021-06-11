@@ -22,6 +22,8 @@ router.post('/holidayRequest', userController.holidayRequest);
 router.get('/getWorkerID/:company', userController.getWorkerID);
 router.get('/getHolidayPending/:company', userController.getHolidayPending);
 
+//router.post('/clockIn', userController.clockIn);
+//router.post('/clockOut', userController.clockOut);
 
 
 //Exportamos router para usar rutas en app.ts

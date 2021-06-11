@@ -24,5 +24,7 @@ router.get('/getPasswordUser/:email', user_controller_1.default.getPasswordUser)
 router.post('/holidayRequest', user_controller_1.default.holidayRequest);
 router.get('/getWorkerID/:company', user_controller_1.default.getWorkerID);
 router.get('/getHolidayPending/:company', user_controller_1.default.getHolidayPending);
+//router.post('/clockIn', userController.clockIn);
+//router.post('/clockOut', userController.clockOut);
 //Exportamos router para usar rutas en app.ts
 exports.default = router;

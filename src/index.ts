@@ -10,9 +10,9 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
 
 io.on("connection", (socket: Socket) => {
-  console.log("nova connexió");
+  console.log("Un nou usuari s'ha connectat :) ");
 
-//console.log(socket);
+    console.log(socket);
 /*
     socket.on('disconnect', function(){
         io.emit('users-changed', {user: socket.username, event: 'left'});

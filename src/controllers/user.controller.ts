@@ -4,6 +4,7 @@ import Admin from "../models/admin";
 import Tarea from "../models/tarea";
 import Location from "../models/location";
 import Holiday from "../models/holiday";
+import Clock from "../models/clock";
 
 
 async function registerUser(req:Request, res:Response) {
@@ -382,14 +383,44 @@ const holidayRequest = async (req: Request, res: Response) => {
             return res.status(404).json(err);
         }
     }
-
-    const getHolidayPending = async (req: Request, res: Response) => {
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
         try{
-            const results = await Holiday.find({"company": req.params.company, "estado": false});
-            return res.status(200).json(results);
-        } catch (err) {
-            return res.status(404).json(err);
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
         }
     }
 
-export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newTask, newLocation, getTask, deleteTask, getWorkerID, holidayRequest};
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+
+const getHolidayPending = async (req: Request, res: Response) => {
+    try{
+        const results = await Holiday.find({"company": req.params.company, "estado": false});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+newLocation, newTask, getTask, deleteTask, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
