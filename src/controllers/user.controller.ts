@@ -4,6 +4,7 @@ import Admin from "../models/admin";
 import Tarea from "../models/tarea";
 import Location from "../models/location";
 import Holiday from "../models/holiday";
+import Clock from "../models/clock";
 
 
 async function registerUser(req:Request, res:Response) {
@@ -17,12 +18,15 @@ async function registerUser(req:Request, res:Response) {
     else {
         try{
 
+        var crypto = require('crypto');
+
         let u = new User({
             "company": user.company,
             "name": user.name,
             "email": user.email,
             "phone": user.phone,
-            "password": user.password,
+            "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+            "insignias": [],
             "workerID": generateRandomString(6),
             "petition": false
         });
@@ -349,13 +353,12 @@ const getPasswordUser = async (req: Request, res: Response) => {
 
 const holidayRequest = async (req: Request, res: Response) => {
 
-    console.log(req.params.workerID);
-    let results = await User.findOne({"workerID": req.params.workerID});
+    let results = await User.findOne({"workerID": req.body.workerID});
     if(results){  
         try{
             let holiday = new Holiday({
                 "company": results.company,
-                "workerID": req.params.workerID,
+                "workerID": req.body.workerID,
                 "motivo" : req.body.motivo,
                 "descripcion" : req.body.descripcion,
                 "fechaI" : req.body.fechaI,
@@ -383,5 +386,44 @@ const holidayRequest = async (req: Request, res: Response) => {
             return res.status(404).json(err);
         }
     }
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
 
-export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newLocation, getWorkerID, holidayRequest};
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+
+const getHolidayPending = async (req: Request, res: Response) => {
+    try{
+        const results = await Holiday.find({"company": req.params.company, "estado": false});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};

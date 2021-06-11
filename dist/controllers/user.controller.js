@@ -28,12 +28,14 @@ function registerUser(req, res) {
             return res.status(410).json({ code: 410, message: "This phone number already exists" });
         else {
             try {
+                var crypto = require('crypto');
                 let u = new user_1.default({
                     "company": user.company,
                     "name": user.name,
                     "email": user.email,
                     "phone": user.phone,
-                    "password": user.password,
+                    "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+                    "insignias": [],
                     "workerID": generateRandomString(6),
                     "petition": false
                 });
@@ -331,13 +333,12 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.workerID);
-    let results = yield user_1.default.findOne({ "workerID": req.params.workerID });
+    let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
     if (results) {
         try {
             let holiday = new holiday_1.default({
                 "company": results.company,
-                "workerID": req.params.workerID,
+                "workerID": req.body.workerID,
                 "motivo": req.body.motivo,
                 "descripcion": req.body.descripcion,
                 "fechaI": req.body.fechaI,
@@ -365,4 +366,43 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, newLocation, getWorkerID, holidayRequest };
+/*
+    //Fichar entrada trabajo
+    const clockIn = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockIn" : req.body.clockIn
+        });
+        clockIn.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+
+    //Fichar salida trabajo
+    const clockOut = async (req: Request, res: Response) => {
+        try{
+        let clock = new clock({
+            "clockout" : req.body.clockOut
+        });
+        clockOut.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+*/
+const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+    newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/ };

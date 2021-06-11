@@ -8,15 +8,17 @@ async function loginAdmin(req: Request, res: Response) {
     let admin;
         const name = req.body.name;
         const password = req.body.password;
+
+        var crypto = require('crypto');
         
         admin = await Admin.findOne({ $or: [{ "name": name }, { "email": name }]});
     
         if(!admin) return res.status(404).json({message: "Admin not found"});
         else{
-            if(admin.password != password) return res.status(409).json({message: "Password don't match"});
+            if(crypto.createHash('sha256').update(password).digest('hex') != admin.password) return res.status(409).json({message: "Password don't match"});
             else {
                 try{
-                    let t = {token: createTokenAdmin(admin)}
+                    let t = {token: createTokenAdmin(admin), _id: admin._id}
                     return res.status(200).json(t);
                 } catch (err) {
                     return res.status(500).json(err);
@@ -30,16 +32,19 @@ async function loginUser(req: Request, res: Response) {
         const workerID = req.body.workerID;
         const password = req.body.password;
 
+        var crypto = require('crypto');
+
         user = await User.findOne({"workerID":  workerID });
 
         if(!user) return res.status(404).json({message: "User not found"});
         else{
-            if(user.password != password) return res.status(409).json({message: "Password don't match"});
+
+            if(crypto.createHash('sha256').update(password).digest('hex') != user.password) return res.status(409).json({message: "Password don't match"});
             else {
                  if(user.petition == false) return res.status(409).json({message: "Petition don't accepted yet"});
                  else{
                     try{
-                        let t = {token: createTokenUser(user)}
+                        let t = {token: createTokenUser(user), _id: user._id}
                         return res.status(200).json(t);
                     } catch (err) {
                         return res.status(500).json(err);
