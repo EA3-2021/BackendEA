@@ -14,12 +14,15 @@ async function registerUser(req:Request, res:Response) {
     else {
         try{
 
+        var crypto = require('crypto');
+
         let u = new User({
             "company": user.company,
             "name": user.name,
             "email": user.email,
             "phone": user.phone,
-            "password": user.password,
+            "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+            "insignias": [],
             "workerID": generateRandomString(6),
             "petition": false
         });

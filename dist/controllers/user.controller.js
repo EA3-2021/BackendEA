@@ -26,12 +26,14 @@ function registerUser(req, res) {
             return res.status(410).json({ code: 410, message: "This phone number already exists" });
         else {
             try {
+                var crypto = require('crypto');
                 let u = new user_1.default({
                     "company": user.company,
                     "name": user.name,
                     "email": user.email,
                     "phone": user.phone,
-                    "password": user.password,
+                    "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+                    "insignias": [],
                     "workerID": generateRandomString(6),
                     "petition": false
                 });

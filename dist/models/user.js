@@ -42,6 +42,9 @@ const UserSchema = new mongoose_1.Schema({
     },
     petition: {
         type: Boolean
+    },
+    insignias: {
+        type: Array
     }
 });
 //Exportamos modelo para poder usarlo
