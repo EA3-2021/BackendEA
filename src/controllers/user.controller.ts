@@ -76,7 +76,7 @@ function generateRandomString(length: number) {
 //Obtener todos los usuarios
 const getUsers = async (req: Request, res: Response) => {
     try{
-        const results = await User.find({});
+        const results = await User.find({"company": req.params.company});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);

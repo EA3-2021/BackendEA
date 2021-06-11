@@ -84,7 +84,7 @@ function generateRandomString(length) {
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield user_1.default.find({});
+        const results = yield user_1.default.find({ "company": req.params.company });
         return res.status(200).json(results);
     }
     catch (err) {

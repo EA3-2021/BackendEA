@@ -8,7 +8,7 @@ const user_controller_1 = __importDefault(require("../controllers/user.controlle
 //Router nos permite gestionar rutas de la API
 const router = express_1.Router();
 router.post('/registerUser', user_controller_1.default.registerUser);
-router.get('/all', user_controller_1.default.getUsers);
+router.get('/all/:company', user_controller_1.default.getUsers);
 router.get('/:id', user_controller_1.default.getUser);
 router.post('/new', user_controller_1.default.newUser);
 router.delete('/dropall', user_controller_1.default.deleteUsers);
