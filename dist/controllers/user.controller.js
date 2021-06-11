@@ -298,4 +298,45 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json(err);
     });
 });
-exports.default = { acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.email);
+    let checkEmail = yield user_1.default.findOne({ "email": req.params.email });
+    if (checkEmail) {
+        try {
+            const results = yield user_1.default.find({ "email": req.params.email }, { "_id": 0, "password": 1 });
+            console.log(results);
+            var nodemailer = require('nodemailer');
+            var mail = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: 'firefighteradventure@gmail.com',
+                    pass: 'Mazinger72'
+                }
+            });
+            var mailOptions = {
+                from: 'firefighteradventure@gmail.com',
+                to: checkEmail.email,
+                subject: 'Password has been recovered',
+                text: 'Your Password: ' + results
+            };
+            mail.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+            return res.status(200).json({ code: 200, message: "Successfully" });
+        }
+        catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+    else {
+        return res.status(409).json({ code: 409, message: "This email does not exist" });
+    }
+});
+exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };

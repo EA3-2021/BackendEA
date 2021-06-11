@@ -18,10 +18,7 @@ router.post('/newlocation', userController.newLocation);
 router.get('/register/Requests', userController.registerRequests);
 router.delete('/drop/registerRequest/:workerID/:email',userController.deleteRegisterRequest);
 router.put('/accept/:workerID/:email',userController.acceptRegisterRequest);
-
-
-
-
+router.get('/getPasswordUser/:email', userController.getPasswordUser);
 
 
 //Exportamos router para usar rutas en app.ts
