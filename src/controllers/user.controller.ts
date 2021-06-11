@@ -220,4 +220,16 @@ const newLocation = async (req: Request, res: Response) => {
     }
 }
 
-export default {registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+const registerRequests = async (req: Request, res: Response) => {
+    try{
+        const results = await User.find({petition: false});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+
+
+
+export default {registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};

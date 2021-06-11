@@ -15,6 +15,9 @@ router.post('/newtask', userController.newTask);
 router.get('/taskall/:fecha', userController.getTask);
 router.delete('/droptask/:titulo',userController.deleteTask);
 router.post('/newlocation', userController.newLocation);
+router.get('/register/Requests', userController.registerRequests);
+
+
 
 //Exportamos router para usar rutas en app.ts
 export default router;
