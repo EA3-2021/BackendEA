@@ -12,8 +12,8 @@ const socket_io_1 = require("socket.io");
 const httpServer = http_1.createServer(app_1.default);
 const io = new socket_io_1.Server(httpServer, { cors: { origin: '*' } });
 io.on("connection", (socket) => {
-    console.log("nova connexió");
-    //console.log(socket);
+    console.log("Un nou usuari s'ha connectat :) ");
+    console.log(socket);
     /*
         socket.on('disconnect', function(){
             io.emit('users-changed', {user: socket.username, event: 'left'});

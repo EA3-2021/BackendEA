@@ -15,6 +15,7 @@ import locationRoutes from './routes/location.routes'
 import commentRoutes from './routes/comment.routes'
 import chatRoutes from './routes/chat.routes'
 import messageRoutes from './routes/message.routes'
+import clockRoutes from './routes/clock.routes'
 
 //Inicializamos express
 const app = express();
@@ -41,6 +42,7 @@ app.use('/location', locationRoutes);
 app.use('/comment', commentRoutes);
 app.use('/chat', chatRoutes);
 app.use('/message', messageRoutes);
+app.use('/clock', clockRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
