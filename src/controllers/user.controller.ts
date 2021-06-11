@@ -229,7 +229,24 @@ const registerRequests = async (req: Request, res: Response) => {
     }
 }
 
+const deleteRegisterRequest = async (req: Request, res: Response) => {
+    try{
+        const results = await User.deleteOne({"workerID": req.params.workerID});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const acceptRegisterRequest = async (req: Request, res: Response) => {
+    
+    User.updateOne({"workerID": req.params.workerID}, {$set: {"petition": true}}).then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    })
+}
 
 
 
-export default {registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+export default {acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};

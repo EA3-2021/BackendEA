@@ -231,4 +231,20 @@ const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(404).json(err);
     }
 });
-exports.default = { registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield user_1.default.deleteOne({ "workerID": req.params.workerID });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    user_1.default.updateOne({ "workerID": req.params.workerID }, { $set: { "petition": true } }).then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+exports.default = { acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
