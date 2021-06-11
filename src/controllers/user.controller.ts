@@ -3,6 +3,7 @@ import User from "../models/user";
 import Admin from "../models/admin";
 import Tarea from "../models/tarea";
 import Location from "../models/location";
+import Holiday from "../models/holiday";
 
 
 async function registerUser(req:Request, res:Response) {
@@ -356,4 +357,32 @@ const getPasswordUser = async (req: Request, res: Response) => {
     }   
 }
 
-export default {getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};
+const holidayRequest = async (req: Request, res: Response) => {
+
+    console.log(req.params.workerID);
+    let results = await User.findOne({"workerID": req.params.workerID});
+    if(results){  
+        try{
+            let holiday = new Holiday({
+                "company": results.company,
+                "workerID": req.params.workerID,
+                "motivo" : req.body.motivo,
+                "descripcion" : req.body.descripcion,
+                "fechaI" : req.body.fechaI,
+                "fechaF" : req.body.fechaF,
+                "estado": false
+            });
+
+            holiday.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch(err) {
+            return res.status(500).json(err);
+        }
+    }else{
+        return res.status(409).json({code: 409, message: "This user does not exist"});
+    }
+}
+
+export default {holidayRequest, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask};

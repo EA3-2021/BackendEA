@@ -22,5 +22,6 @@ router.get('/register/Requests', user_controller_1.default.registerRequests);
 router.delete('/drop/registerRequest/:workerID/:email', user_controller_1.default.deleteRegisterRequest);
 router.put('/accept/:workerID/:email', user_controller_1.default.acceptRegisterRequest);
 router.get('/getPasswordUser/:email', user_controller_1.default.getPasswordUser);
+router.post('/holidayRequest/:workerID', user_controller_1.default.holidayRequest);
 //Exportamos router para usar rutas en app.ts
 exports.default = router;

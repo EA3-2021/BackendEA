@@ -16,6 +16,7 @@ const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
+const holiday_1 = __importDefault(require("../models/holiday"));
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
@@ -341,4 +342,30 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(409).json({ code: 409, message: "This email does not exist" });
     }
 });
-exports.default = { getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
+const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.workerID);
+    let results = yield user_1.default.findOne({ "workerID": req.params.workerID });
+    if (results) {
+        try {
+            let holiday = new holiday_1.default({
+                "company": results.company,
+                "workerID": req.params.workerID,
+                "motivo": req.body.motivo,
+                "descripcion": req.body.descripcion,
+                "fechaI": req.body.fechaI,
+                "fechaF": req.body.fechaF,
+                "estado": false
+            });
+            holiday.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch (err) {
+            return res.status(500).json(err);
+        }
+    }
+    else {
+        return res.status(409).json({ code: 409, message: "This user does not exist" });
+    }
+});
+exports.default = { holidayRequest, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser, deleteUsers, newTask, newLocation, getTask, deleteTask };
