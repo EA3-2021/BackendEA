@@ -425,5 +425,88 @@ const getHolidayPending = async (req: Request, res: Response) => {
     }
 }
 
-export default {getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+const acceptHoliday = async (req: Request, res: Response) => {
+    
+    const results = await Holiday.find({"_id": req.params.id},{ "_id": 0, "workerID": 1});
+    const resultado = await User.find({"workerID": results[0].workerID},{ "_id": 0, "email": 1});
+
+    Holiday.updateOne({"_id": req.params.id}, {$set: {"estado": true}}).then((data) => {
+        res.status(201).json(data);
+
+        var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: resultado[0].email,
+            subject: 'Holiday request resolution!',
+            text: 'WELCOME!' + '\n' + 'your vacation has been APPROVED'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
+    }).catch((err) => {
+        res.status(500).json(err);
+    })
+    
+}
+
+const refuseHoliday = async (req: Request, res: Response) => {
+
+    const results = await Holiday.find({"_id": req.params.id},{ "_id": 0, "workerID": 1});
+    const resultado = await User.find({"workerID": results[0].workerID},{ "_id": 0, "email": 1});
+    console.log(resultado[0].email)
+
+    var nodemailer = require('nodemailer');
+
+    var mail = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'firefighteradventure@gmail.com',
+            pass: 'Mazinger72'
+        }
+        });
+
+        var mailOptions = {
+        from: 'firefighteradventure@gmail.com',
+        to: resultado[0].email,
+        subject: 'Holiday request resolution!',
+        text: 'SORRY!' + '\n' + 'your vacation has been denied'
+        };
+          
+        mail.sendMail(mailOptions, function(error: any, info: any){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
+    try{
+        const results = await Holiday.deleteOne({"_id": req.params.id});
+        return res.status(200).json(results);
+
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+export default {refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
 newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
