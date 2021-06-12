@@ -122,7 +122,8 @@ import Tarea from "../models/tarea";
             "descripcion" : req.body.descripcion,
             "fecha":req.body.fecha,
             "horaI" : req.body.horaI,
-            "horaF" : req.body.horaF
+            "horaF" : req.body.horaF,
+            "company" : req.body.company
         });
         tarea.save().then((data) => {
             return res.status(201).json(data);
@@ -134,7 +135,7 @@ import Tarea from "../models/tarea";
     
     const getTask = async (req: Request, res: Response) => {
         try{
-            const results = await Tarea.find({"fecha": req.params.fecha});
+            const results = await Tarea.find({"fecha": req.params.fecha, "company": req.params.company });
             return res.status(200).json(results);
         } catch (err) {
             return res.status(404).json(err);

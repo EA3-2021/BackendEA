@@ -130,7 +130,8 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             "descripcion": req.body.descripcion,
             "fecha": req.body.fecha,
             "horaI": req.body.horaI,
-            "horaF": req.body.horaF
+            "horaF": req.body.horaF,
+            "company": req.body.company
         });
         tarea.save().then((data) => {
             return res.status(201).json(data);
@@ -142,8 +143,7 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield tarea_1.default.find({ "fecha": req.params.fecha });
-        console.log(results);
+        const results = yield tarea_1.default.find({ "fecha": req.params.fecha, "company": req.params.company });
         return res.status(200).json(results);
     }
     catch (err) {

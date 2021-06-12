@@ -13,7 +13,7 @@ router.get('/getLocations', admin_controller_1.default.getLocations);
 router.get('/getAdminName', admin_controller_1.default.getAdminName);
 router.get('/getPasswordAdmin/:email', admin_controller_1.default.getPasswordAdmin);
 router.post('/newtask', admin_controller_1.default.newTask);
-router.get('/taskall/:fecha', admin_controller_1.default.getTask);
+router.get('/taskall/:fecha/:company', admin_controller_1.default.getTask);
 router.delete('/droptask/:titulo', admin_controller_1.default.deleteTask);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

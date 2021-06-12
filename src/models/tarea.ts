@@ -18,6 +18,9 @@ const TareaSchema = new Schema({
     },
     horaF: {
         type: String
+    },
+    company: {
+        type: String
     }
 });
 
@@ -28,6 +31,7 @@ export interface ITarea extends Document {
     fecha: string;
     horaI: string;
     horaF: string;
+    company: string;
 }
 
 export default mongoose.model<ITarea>('tarea', TareaSchema);

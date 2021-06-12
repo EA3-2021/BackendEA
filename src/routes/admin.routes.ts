@@ -10,7 +10,7 @@ router.get('/getLocations', adminController.getLocations);
 router.get('/getAdminName', adminController.getAdminName);
 router.get('/getPasswordAdmin/:email', adminController.getPasswordAdmin);
 router.post('/newtask', adminController.newTask);
-router.get('/taskall/:fecha', adminController.getTask);
+router.get('/taskall/:fecha/:company', adminController.getTask);
 router.delete('/droptask/:titulo',adminController.deleteTask);
 
 

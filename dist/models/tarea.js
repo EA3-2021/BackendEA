@@ -38,6 +38,9 @@ const TareaSchema = new mongoose_1.Schema({
     },
     horaF: {
         type: String
+    },
+    company: {
+        type: String
     }
 });
 exports.default = mongoose_1.default.model('tarea', TareaSchema);
