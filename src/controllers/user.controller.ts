@@ -88,17 +88,15 @@ const getUsers = async (req: Request, res: Response) => {
     }
 }
 
-//Obtener 1 usuario a partir del id
 const getUser = async (req: Request, res: Response) => {
     try{
-        const results = await User.find({"_id": req.params.id});
+        const results = await User.find({"workerID": req.params.workerID});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
     }
 }
 
-//Añadir 1 nuevo usuario
 const newUser = async (req: Request, res: Response) => {
  
     let user = req.body;
@@ -158,9 +156,6 @@ const newUser = async (req: Request, res: Response) => {
             return res.status(500).json(err);
         }
     }
-
-
-
 }
 
 //Actualizar name/address user a partir del id
