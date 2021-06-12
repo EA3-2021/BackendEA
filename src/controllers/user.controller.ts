@@ -158,6 +158,50 @@ const newUser = async (req: Request, res: Response) => {
     }
 }
 
+
+function updateProfile (req: Request, res: Response){
+
+    const workerID: string = req.params.workerID;
+    const name: string = req.body.name;
+    const email: string = req.body.email;
+    const phone: string = req.body.phone;
+    const password: string = req.body.password;
+
+    if (name != ""){
+        User.updateMany({"workerID":workerID}, {$set: {"name": name}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (email != ""){
+        User.updateMany({"workerID":workerID}, {$set: {"email": email}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (phone != ""){
+        User.updateMany({"workerID":workerID}, {$set: {"phone": phone}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (password != ""){
+        User.updateMany({"workerID":workerID}, {$set: {"password": password}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+        return;
+    }
+}
+
+
 //Actualizar name/address user a partir del id
 function updateUser (req: Request, res: Response){
     const id: string = req.params.id;
@@ -540,5 +584,5 @@ const refuseHoliday = async (req: Request, res: Response) => {
     }
 }
 
-export default {getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+export default {updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
 newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};

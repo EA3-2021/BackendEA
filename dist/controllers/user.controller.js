@@ -158,6 +158,42 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
+function updateProfile(req, res) {
+    const workerID = req.params.workerID;
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const password = req.body.password;
+    if (name != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (email != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (phone != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (password != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+        return;
+    }
+}
 //Actualizar name/address user a partir del id
 function updateUser(req, res) {
     const id = req.params.id;
@@ -498,5 +534,5 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(404).json(err);
     }
 });
-exports.default = { getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+exports.default = { updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
     newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/ };
