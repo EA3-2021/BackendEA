@@ -3,6 +3,7 @@ import User from "../models/user";
 import Admin from "../models/admin";
 import Location from "../models/location";
 import Holiday from "../models/holiday";
+import Tarea from "../models/tarea";
 import Clock from "../models/clock";
 
 
@@ -99,19 +100,67 @@ const getUser = async (req: Request, res: Response) => {
 
 //Añadir 1 nuevo usuario
 const newUser = async (req: Request, res: Response) => {
-    try{
-    let user = new User({
-        "name" : req.body.name,
-        "email" : req.body.email,
-        "phone" : req.body.phone,
-        "password" : req.body.password
-    });
-    user.save().then((data) => {
-        return res.status(201).json(data);
-    });
-    } catch(err) {
-        return res.status(500).json(err);
+ 
+    let user = req.body;
+    let checkEmail = await User.findOne({"email": user.email});
+    let checkEmail1 = await Admin.findOne({"email": user.email});
+    let checkPhone = await User.findOne({"phone": user.phone});
+
+    if(checkEmail || checkEmail1) return res.status(409).json({code: 409, message: "This email already exists"});
+    else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
+    else {
+        try{
+
+        var crypto = require('crypto');
+
+        let u = new User({
+            "company": user.company,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+            "insignias": [],
+            "workerID": generateRandomString(6),
+            "petition": true
+        });
+
+        var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: user.email,
+            subject: 'Here it is your Worker ID and your password!',
+            text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + u.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
+        u.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
     }
+
+
+
 }
 
 //Actualizar name/address user a partir del id
@@ -159,6 +208,24 @@ function updateUser (req: Request, res: Response){
 const deleteUser = async (req: Request, res: Response) => {
     try{
         const results = await User.deleteOne({"name": req.params.name});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const getTasks = async (req: Request, res: Response) => {
+    try{
+        const results = await Tarea.find({"workerID": req.params.workerID,"fecha": req.params.fecha});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const getHolidays = async (req: Request, res: Response) => {
+    try{
+        const results = await Holiday.find({"workerID": req.params.workerID,"fechaI": req.params.fecha,"estado": true});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
@@ -478,5 +545,5 @@ const refuseHoliday = async (req: Request, res: Response) => {
     }
 }
 
-export default {refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+export default {getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
 newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};

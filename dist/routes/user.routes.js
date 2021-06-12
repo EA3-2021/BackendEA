@@ -14,7 +14,7 @@ router.post('/new', user_controller_1.default.newUser);
 router.delete('/drop/:name', user_controller_1.default.deleteUser);
 router.put('/update/:id', user_controller_1.default.updateUser);
 //router.post('/newtask', userController.newTask);
-//router.get('/taskall/:fecha', userController.getTask);
+router.get('/taskall/:workerID/:fecha', user_controller_1.default.getTasks);
 //router.delete('/droptask/:titulo',userController.deleteTask);
 router.post('/newlocation', user_controller_1.default.newLocation);
 router.get('/register/Requests', user_controller_1.default.registerRequests);
@@ -26,6 +26,7 @@ router.get('/getWorkerID/:company', user_controller_1.default.getWorkerID);
 router.get('/getHolidayPending/:company', user_controller_1.default.getHolidayPending);
 router.delete('/dropRequestHoliday/:id', user_controller_1.default.refuseHoliday);
 router.put('/acceptHoliday/:id', user_controller_1.default.acceptHoliday);
+router.get('/holidayall/:workerID/:fecha', user_controller_1.default.getHolidays);
 //router.post('/clockIn', userController.clockIn);
 //router.post('/clockOut', userController.clockOut);
 //Exportamos router para usar rutas en app.ts
