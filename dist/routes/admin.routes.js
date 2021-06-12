@@ -15,5 +15,6 @@ router.get('/getPasswordAdmin/:email', admin_controller_1.default.getPasswordAdm
 router.post('/newtask', admin_controller_1.default.newTask);
 router.get('/taskall/:fecha/:company', admin_controller_1.default.getTask);
 router.delete('/droptask/:id', admin_controller_1.default.deleteTask);
+router.put('/updatetask/:id', admin_controller_1.default.updateTask);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;
