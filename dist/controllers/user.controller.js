@@ -94,17 +94,15 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-//Obtener 1 usuario a partir del id
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield user_1.default.find({ "_id": req.params.id });
+        const results = yield user_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
     }
     catch (err) {
         return res.status(404).json(err);
     }
 });
-//Añadir 1 nuevo usuario
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user = req.body;
     let checkEmail = yield user_1.default.findOne({ "email": user.email });
