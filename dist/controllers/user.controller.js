@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
+const tarea_1 = __importDefault(require("../models/tarea"));
 const location_1 = __importDefault(require("../models/location"));
 const holiday_1 = __importDefault(require("../models/holiday"));
 function registerUser(req, res) {
@@ -181,18 +182,26 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     } catch(err) {
         return res.status(500).json(err);
     }
-}
-
-const getTask = async (req: Request, res: Response) => {
-    try{
-        const results = await Tarea.find({"fecha": req.params.fecha});
+}*/
+const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield tarea_1.default.find({ "workerID": req.params.workerID, "fecha": req.params.fecha });
         return res.status(200).json(results);
-    } catch (err) {
+    }
+    catch (err) {
         return res.status(404).json(err);
     }
-}
-
-const deleteTask = async (req: Request, res: Response) => {
+});
+const getHolidays = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield holiday_1.default.find({ "workerID": req.params.workerID, "fechaI": req.params.fecha, "estado": true });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+/*const deleteTask = async (req: Request, res: Response) => {
     try{
         const results = await Tarea.deleteOne({"titulo": req.params.titulo});
         return res.status(200).json(results);
@@ -473,5 +482,5 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(404).json(err);
     }
 });
-exports.default = { refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+exports.default = { getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
     newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/ };

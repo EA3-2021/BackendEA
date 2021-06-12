@@ -11,7 +11,7 @@ router.post('/new',userController.newUser);
 router.delete('/drop/:name',userController.deleteUser);
 router.put('/update/:id',userController.updateUser);
 //router.post('/newtask', userController.newTask);
-//router.get('/taskall/:fecha', userController.getTask);
+router.get('/taskall/:workerID/:fecha', userController.getTasks);
 //router.delete('/droptask/:titulo',userController.deleteTask);
 router.post('/newlocation', userController.newLocation);
 router.get('/register/Requests', userController.registerRequests);
@@ -21,9 +21,11 @@ router.get('/getPasswordUser/:email', userController.getPasswordUser);
 router.post('/holidayRequest', userController.holidayRequest);
 router.get('/getWorkerID/:company', userController.getWorkerID);
 router.get('/getHolidayPending/:company', userController.getHolidayPending);
-
 router.delete('/dropRequestHoliday/:id',userController.refuseHoliday);
 router.put('/acceptHoliday/:id',userController.acceptHoliday);
+router.get('/holidayall/:workerID/:fecha', userController.getHolidays);
+
+
 
 
 //router.post('/clockIn', userController.clockIn);

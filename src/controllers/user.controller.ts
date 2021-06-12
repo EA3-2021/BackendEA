@@ -181,18 +181,26 @@ const deleteUser = async (req: Request, res: Response) => {
     } catch(err) {
         return res.status(500).json(err);
     }
-}
+}*/
 
-const getTask = async (req: Request, res: Response) => {
+const getTasks = async (req: Request, res: Response) => {
     try{
-        const results = await Tarea.find({"fecha": req.params.fecha});
+        const results = await Tarea.find({"workerID": req.params.workerID,"fecha": req.params.fecha});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
     }
 }
 
-const deleteTask = async (req: Request, res: Response) => {
+const getHolidays = async (req: Request, res: Response) => {
+    try{
+        const results = await Holiday.find({"workerID": req.params.workerID,"fechaI": req.params.fecha,"estado": true});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+/*const deleteTask = async (req: Request, res: Response) => {
     try{
         const results = await Tarea.deleteOne({"titulo": req.params.titulo});
         return res.status(200).json(results);
@@ -508,5 +516,5 @@ const refuseHoliday = async (req: Request, res: Response) => {
     }
 }
 
-export default {refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+export default {getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
 newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
