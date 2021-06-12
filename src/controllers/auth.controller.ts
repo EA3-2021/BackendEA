@@ -4,18 +4,20 @@ import Admin, { IAdmin } from "../models/admin"
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
+
 async function loginAdmin(req: Request, res: Response) {
     let admin;
         const name = req.body.name;
         const password = req.body.password;
 
         var crypto = require('crypto');
+        let encryptedPass = crypto.createHash('sha256').update(password).digest('hex');
         
         admin = await Admin.findOne({ $or: [{ "name": name }, { "email": name }]});
     
-        if(!admin) return res.status(404).json({message: "Admin not found"});
+        if(!admin) return res.status(404).json({message: "Wrong credentials, try it again. Incorrect Business name."});
         else{
-            if(crypto.createHash('sha256').update(password).digest('hex') != admin.password) return res.status(409).json({message: "Password don't match"});
+            if(admin.password != encryptedPass) return res.status(409).json({message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try{
                     let t = {token: createTokenAdmin(admin), _id: admin._id}
@@ -24,35 +26,41 @@ async function loginAdmin(req: Request, res: Response) {
                     return res.status(500).json(err);
                 }
             }
-        }
     }
+}
 
-async function loginUser(req: Request, res: Response) {
-    let user;
+
+    async function loginUser(req: Request, res: Response) {
+        let user;
+
         const workerID = req.body.workerID;
         const password = req.body.password;
 
         var crypto = require('crypto');
+        let encryptedPass = crypto.createHash('sha256').update(password).digest('hex');
 
-        user = await User.findOne({"workerID":  workerID });
+        user = await User.findOne({ "workerID": workerID });
 
-        if(!user) return res.status(404).json({message: "User not found"});
-        else{
-
-            if(crypto.createHash('sha256').update(password).digest('hex') != user.password) return res.status(409).json({message: "Password don't match"});
+        if (!user)
+            return res.status(404).json({ message: "Wrong credentials, try it again. Incorrect Worker ID." });
+        else {
+            if (user.password != encryptedPass)
+                return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
-                 if(user.petition == false) return res.status(409).json({message: "Petition don't accepted yet"});
-                 else{
-                    try{
-                        let t = {token: createTokenUser(user), _id: user._id}
+                if (user.petition == false)
+                    return res.status(409).json({ message: "Petition don't accepted yet" });
+                else {
+                    try {
+                        let t = { token: createTokenUser(user) };
                         return res.status(200).json(t);
-                    } catch (err) {
+                    }
+                    catch (err) {
                         return res.status(500).json(err);
                     }
-                 }   
-            }
+                }
+             }
         }
-    }
+}
 
 /*async function signout(req:Request, res:Response){
     let t = decodeToken(req.body.token);
@@ -86,4 +94,4 @@ function createTokenUser(user: IUser){
                     
 }*/
 
-export default { loginAdmin, loginUser, createTokenAdmin, createTokenUser };
+export default { loginAdmin, loginUser, createTokenAdmin, createTokenUser }

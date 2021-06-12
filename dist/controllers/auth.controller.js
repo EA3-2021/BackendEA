@@ -22,12 +22,13 @@ function loginAdmin(req, res) {
         const name = req.body.name;
         const password = req.body.password;
         var crypto = require('crypto');
+        let encryptedPass = crypto.createHash('sha256').update(password).digest('hex');
         admin = yield admin_1.default.findOne({ $or: [{ "name": name }, { "email": name }] });
         if (!admin)
-            return res.status(404).json({ message: "Admin not found" });
+            return res.status(404).json({ message: "Wrong credentials, try it again. Incorrect Business name." });
         else {
-            if (crypto.createHash('sha256').update(password).digest('hex') != admin.password)
-                return res.status(409).json({ message: "Password don't match" });
+            if (admin.password != encryptedPass)
+                return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try {
                     let t = { token: createTokenAdmin(admin), _id: admin._id };
@@ -46,18 +47,19 @@ function loginUser(req, res) {
         const workerID = req.body.workerID;
         const password = req.body.password;
         var crypto = require('crypto');
+        let encryptedPass = crypto.createHash('sha256').update(password).digest('hex');
         user = yield user_1.default.findOne({ "workerID": workerID });
         if (!user)
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "Wrong credentials, try it again. Incorrect Worker ID." });
         else {
-            if (crypto.createHash('sha256').update(password).digest('hex') != user.password)
-                return res.status(409).json({ message: "Password don't match" });
+            if (user.password != encryptedPass)
+                return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 if (user.petition == false)
                     return res.status(409).json({ message: "Petition don't accepted yet" });
                 else {
                     try {
-                        let t = { token: createTokenUser(user), _id: user._id };
+                        let t = { token: createTokenUser(user) };
                         return res.status(200).json(t);
                     }
                     catch (err) {
