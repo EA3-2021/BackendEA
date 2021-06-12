@@ -152,7 +152,8 @@ const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield tarea_1.default.deleteOne({ "titulo": req.params.titulo });
+        console.log(req.params.id);
+        const results = yield tarea_1.default.deleteOne({ "_id": req.params.id });
         return res.status(200).json(results);
     }
     catch (err) {

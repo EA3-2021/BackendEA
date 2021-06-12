@@ -11,7 +11,7 @@ router.get('/getAdminName', adminController.getAdminName);
 router.get('/getPasswordAdmin/:email', adminController.getPasswordAdmin);
 router.post('/newtask', adminController.newTask);
 router.get('/taskall/:fecha/:company', adminController.getTask);
-router.delete('/droptask/:titulo',adminController.deleteTask);
+router.delete('/droptask/:id',adminController.deleteTask);
 
 
 // Exportamos router para usar rutas en app.ts

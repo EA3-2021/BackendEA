@@ -144,7 +144,7 @@ import Tarea from "../models/tarea";
     
     const deleteTask = async (req: Request, res: Response) => {
         try{
-            const results = await Tarea.deleteOne({"titulo": req.params.titulo});
+            const results = await Tarea.deleteOne({"_id": req.params.id});
             return res.status(200).json(results);
         } catch (err) {
             return res.status(404).json(err);
