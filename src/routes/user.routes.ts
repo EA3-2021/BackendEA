@@ -24,8 +24,7 @@ router.get('/getHolidayPending/:company', userController.getHolidayPending);
 router.delete('/dropRequestHoliday/:id',userController.refuseHoliday);
 router.put('/acceptHoliday/:id',userController.acceptHoliday);
 router.get('/holidayall/:workerID/:fecha', userController.getHolidays);
-
-
+router.put('/updateProfile/:workerID',userController.updateProfile);
 
 
 //router.post('/clockIn', userController.clockIn);
