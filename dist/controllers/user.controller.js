@@ -351,7 +351,8 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
 });
 const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let password = generateRandomString(9);
-    user_1.default.updateMany({ "email": req.params.email }, { $set: { "password": password } }).then((data) => {
+    var crypto = require('crypto');
+    user_1.default.updateMany({ "email": req.params.email }, { $set: { "password": crypto.createHash('sha256').update(password).digest('hex') } }).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
         res.status(500).json(err);

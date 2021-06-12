@@ -380,7 +380,9 @@ const getPasswordUser = async (req: Request, res: Response) => {
         
     let password = generateRandomString(9);
 
-    User.updateMany({"email": req.params.email}, {$set: {"password": password}}).then((data) => {
+    var crypto = require('crypto');
+
+    User.updateMany({"email": req.params.email}, {$set: {"password": crypto.createHash('sha256').update(password).digest('hex')}}).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
         res.status(500).json(err);
