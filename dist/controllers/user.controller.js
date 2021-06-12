@@ -166,40 +166,6 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(404).json(err);
     }
 });
-/*const newTask = async (req: Request, res: Response) => {
-    try{
-    let tarea = new Tarea({
-        "titulo" : req.body.titulo,
-        "descripcion" : req.body.descripcion,
-        "fecha":req.body.fecha,
-        "horaI" : req.body.horaI,
-        "horaF" : req.body.horaF
-    });
-    tarea.save().then((data) => {
-        return res.status(201).json(data);
-    });
-    } catch(err) {
-        return res.status(500).json(err);
-    }
-}
-
-const getTask = async (req: Request, res: Response) => {
-    try{
-        const results = await Tarea.find({"fecha": req.params.fecha});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
-const deleteTask = async (req: Request, res: Response) => {
-    try{
-        const results = await Tarea.deleteOne({"titulo": req.params.titulo});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}*/
 //Añadir nueva localización de un usuario
 const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -292,12 +258,15 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     });
 });
 const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.email);
+    let password = generateRandomString(9);
+    user_1.default.updateMany({ "email": req.params.email }, { $set: { "password": password } }).then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
     let checkEmail = yield user_1.default.findOne({ "email": req.params.email });
     if (checkEmail) {
         try {
-            const results = yield user_1.default.find({ "email": req.params.email }, { "_id": 0, "password": 1 });
-            console.log(results);
             var nodemailer = require('nodemailer');
             var mail = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
@@ -311,8 +280,8 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
             var mailOptions = {
                 from: 'firefighteradventure@gmail.com',
                 to: checkEmail.email,
-                subject: 'Password has been recovered',
-                text: 'Your Password: ' + results
+                subject: 'Forgot your password? Here you have the new one!',
+                text: 'New Password: ' + password
             };
             mail.sendMail(mailOptions, function (error, info) {
                 if (error) {
