@@ -152,7 +152,6 @@ const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.params.id);
         const results = yield tarea_1.default.deleteOne({ "_id": req.params.id });
         return res.status(200).json(results);
     }
@@ -160,4 +159,49 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask };
+//Actualizar name/address user a partir del id
+function updateTask(req, res) {
+    const id = req.params.id;
+    const titulo = req.body.titulo;
+    const descripcion = req.body.descripcion;
+    const fecha = req.body.fecha;
+    const horaI = req.body.horaI;
+    const horaF = req.body.horaF;
+    if (titulo != "") {
+        tarea_1.default.updateMany({ "_id": id }, { $set: { "titulo": titulo } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (descripcion != "") {
+        tarea_1.default.updateMany({ "_id": id }, { $set: { "descripcion": descripcion } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (fecha != "") {
+        tarea_1.default.updateMany({ "_id": id }, { $set: { "fecha": fecha } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (horaI != "") {
+        tarea_1.default.updateMany({ "_id": id }, { $set: { "horaI": horaI } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (horaF != "") {
+        tarea_1.default.updateMany({ "_id": id }, { $set: { "horaF": horaF } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+        return;
+    }
+}
+exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask };

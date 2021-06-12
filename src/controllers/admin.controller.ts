@@ -150,7 +150,57 @@ import Tarea from "../models/tarea";
             return res.status(404).json(err);
         }
     }
-    
+
+    //Actualizar name/address user a partir del id
+    function updateTask (req: Request, res: Response){
+        const id: string = req.params.id;
+        const titulo: string = req.body.titulo;
+        const descripcion: string = req.body.descripcion;
+        const fecha: string = req.body.fecha;
+        const horaI: string = req.body.horaI;
+        const horaF: string = req.body.horaF;
+
+        if (titulo != ""){
+            Tarea.updateMany({"_id": id}, {$set: {"titulo": titulo}}).then((data) => {
+                res.status(201).json(data);
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+        }
+
+        if (descripcion != ""){
+            Tarea.updateMany({"_id": id}, {$set: {"descripcion": descripcion}}).then((data) => {
+                res.status(201).json(data);
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+        }
+
+        if (fecha != ""){
+            Tarea.updateMany({"_id": id}, {$set: {"fecha": fecha}}).then((data) => {
+                res.status(201).json(data);
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+        }
+
+        if (horaI != ""){
+            Tarea.updateMany({"_id": id}, {$set: {"horaI": horaI}}).then((data) => {
+                res.status(201).json(data);
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+        }
+
+        if (horaF != ""){
+            Tarea.updateMany({"_id": id}, {$set: {"horaF": horaF}}).then((data) => {
+                res.status(201).json(data);
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+            return;
+        }
+    }
 
     
-export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask};
+export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask};

@@ -12,6 +12,7 @@ router.get('/getPasswordAdmin/:email', adminController.getPasswordAdmin);
 router.post('/newtask', adminController.newTask);
 router.get('/taskall/:fecha/:company', adminController.getTask);
 router.delete('/droptask/:id',adminController.deleteTask);
+router.put('/updatetask/:id',adminController.updateTask);
 
 
 // Exportamos router para usar rutas en app.ts
