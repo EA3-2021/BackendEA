@@ -1,9 +1,9 @@
 import { Request, Response} from "express";
 import User from "../models/user";
 import Admin from "../models/admin";
-import Tarea from "../models/tarea";
 import Location from "../models/location";
 import Holiday from "../models/holiday";
+import Tarea from "../models/tarea";
 import Clock from "../models/clock";
 
 
@@ -209,23 +209,6 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-/*const newTask = async (req: Request, res: Response) => {
-    try{
-    let tarea = new Tarea({
-        "titulo" : req.body.titulo,
-        "descripcion" : req.body.descripcion,
-        "fecha":req.body.fecha,
-        "horaI" : req.body.horaI,
-        "horaF" : req.body.horaF
-    });
-    tarea.save().then((data) => {
-        return res.status(201).json(data);
-    });
-    } catch(err) {
-        return res.status(500).json(err);
-    }
-}*/
-
 const getTasks = async (req: Request, res: Response) => {
     try{
         const results = await Tarea.find({"workerID": req.params.workerID,"fecha": req.params.fecha});
@@ -243,14 +226,6 @@ const getHolidays = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
-/*const deleteTask = async (req: Request, res: Response) => {
-    try{
-        const results = await Tarea.deleteOne({"titulo": req.params.titulo});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}*/
 
 
 //Añadir nueva localización de un usuario
@@ -359,12 +334,18 @@ const acceptRegisterRequest = async (req: Request, res: Response) => {
 
 const getPasswordUser = async (req: Request, res: Response) => {
         
-    console.log(req.params.email);
+    let password = generateRandomString(9);
+
+    User.updateMany({"email": req.params.email}, {$set: {"password": password}}).then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    })
+
+    
     let checkEmail = await User.findOne({"email": req.params.email});
     if(checkEmail){
         try{
-            const results = await User.find({"email": req.params.email},{ "_id": 0, "password": 1});
-            console.log(results);
             var nodemailer = require('nodemailer');
 
             var mail = nodemailer.createTransport({
@@ -380,8 +361,8 @@ const getPasswordUser = async (req: Request, res: Response) => {
             var mailOptions = {
                 from: 'firefighteradventure@gmail.com',
                 to: checkEmail.email,
-                subject: 'Password has been recovered',
-                text: 'Your Password: ' + results
+                subject: 'Forgot your password? Here you have the new one!',
+                text: 'New Password: ' + password
             };
       
             mail.sendMail(mailOptions, function(error: any, info: any){
@@ -399,7 +380,7 @@ const getPasswordUser = async (req: Request, res: Response) => {
         }
     }else{
         return res.status(409).json({code: 409, message: "This email does not exist"});
-    }   
+    } 
 }
 
 const holidayRequest = async (req: Request, res: Response) => {
