@@ -97,16 +97,33 @@ import Tarea from "../models/tarea";
         }
     }
 
-    const getPasswordAdmin = async (req: Request, res: Response) => {
-        
-        console.log(req.params.email);
-        let checkEmail = await Admin.findOne({"email": req.params.email});
-        if(checkEmail){
-            try{
-                const results = await Admin.find({"email": req.params.email},{ "_id": 0, "password": 1});
-                console.log(results);
-                var nodemailer = require('nodemailer');
+    function generateRandomString(length: number) {
+        var result           = [];
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+          result.push(characters.charAt(Math.floor(Math.random() * 
+     charactersLength)));
+       }
+       return result.join('');
+    }
 
+    const getPasswordAdmin = async (req: Request, res: Response) => {
+
+        let password = generateRandomString(9);
+        var crypto = require('crypto');
+        let checkEmailadmin = await Admin.findOne({"email": req.params.email});
+    
+        if(!checkEmailadmin) return res.status(409).json({code: 409, message: "This email does not exist"});
+        else{
+        Admin.updateMany({"email": req.params.email}, {$set: {"password": crypto.createHash('sha256').update(password).digest('hex')}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+            try{
+                var nodemailer = require('nodemailer');
+    
                 var mail = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,
@@ -116,12 +133,12 @@ import Tarea from "../models/tarea";
                         pass: 'Mazinger72'
                     }
                 });
-
+    
                 var mailOptions = {
                     from: 'firefighteradventure@gmail.com',
-                    to: checkEmail.email,
-                    subject: 'Password has been recovered',
-                    text: 'Your Password: ' + results
+                    to: checkEmailadmin.email,
+                    subject: 'Forgot your password? Here you have the new one!',
+                    text: 'New Password: ' + password
                 };
           
                 mail.sendMail(mailOptions, function(error: any, info: any){
@@ -131,15 +148,13 @@ import Tarea from "../models/tarea";
                     console.log('Email sent: ' + info.response);
                 }
                 });
-
-                return res.status(200).json({code: 200, message: "Successfully"});
-
+    
+                return res.status(200).json({code: 200, message: "Email sent successfully"});
+    
             }catch (err) {
                 return res.status(404).json(err);
-            }
-        }else{
-            return res.status(409).json({code: 409, message: "This email does not exist"});
-        }   
+            } 
+        }
     }
 
     const newTask = async (req: Request, res: Response) => {

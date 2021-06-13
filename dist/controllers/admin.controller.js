@@ -105,13 +105,29 @@ const getAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(404).json(err);
     }
 });
+function generateRandomString(length) {
+    var result = [];
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+    }
+    return result.join('');
+}
 const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.email);
-    let checkEmail = yield admin_1.default.findOne({ "email": req.params.email });
-    if (checkEmail) {
+    let password = generateRandomString(9);
+    var crypto = require('crypto');
+    let checkEmailadmin = yield admin_1.default.findOne({ "email": req.params.email });
+    if (!checkEmailadmin)
+        return res.status(409).json({ code: 409, message: "This email does not exist" });
+    else {
+        admin_1.default.updateMany({ "email": req.params.email }, { $set: { "password": crypto.createHash('sha256').update(password).digest('hex') } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
         try {
-            const results = yield admin_1.default.find({ "email": req.params.email }, { "_id": 0, "password": 1 });
-            console.log(results);
             var nodemailer = require('nodemailer');
             var mail = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
@@ -124,9 +140,9 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
             });
             var mailOptions = {
                 from: 'firefighteradventure@gmail.com',
-                to: checkEmail.email,
-                subject: 'Password has been recovered',
-                text: 'Your Password: ' + results
+                to: checkEmailadmin.email,
+                subject: 'Forgot your password? Here you have the new one!',
+                text: 'New Password: ' + password
             };
             mail.sendMail(mailOptions, function (error, info) {
                 if (error) {
@@ -136,14 +152,11 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
                     console.log('Email sent: ' + info.response);
                 }
             });
-            return res.status(200).json({ code: 200, message: "Successfully" });
+            return res.status(200).json({ code: 200, message: "Email sent successfully" });
         }
         catch (err) {
             return res.status(404).json(err);
         }
-    }
-    else {
-        return res.status(409).json({ code: 409, message: "This email does not exist" });
     }
 });
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -377,20 +377,18 @@ const acceptRegisterRequest = async (req: Request, res: Response) => {
 }
 
 const getPasswordUser = async (req: Request, res: Response) => {
-        
+
     let password = generateRandomString(9);
-
     var crypto = require('crypto');
+    let checkEmailuser = await User.findOne({"email": req.params.email});
 
+    if(!checkEmailuser) return res.status(409).json({code: 409, message: "This email does not exist"});
+    else{
     User.updateMany({"email": req.params.email}, {$set: {"password": crypto.createHash('sha256').update(password).digest('hex')}}).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
         res.status(500).json(err);
     })
-
-    
-    let checkEmail = await User.findOne({"email": req.params.email});
-    if(checkEmail){
         try{
             var nodemailer = require('nodemailer');
 
@@ -406,7 +404,7 @@ const getPasswordUser = async (req: Request, res: Response) => {
 
             var mailOptions = {
                 from: 'firefighteradventure@gmail.com',
-                to: checkEmail.email,
+                to: checkEmailuser.email,
                 subject: 'Forgot your password? Here you have the new one!',
                 text: 'New Password: ' + password
             };
@@ -419,14 +417,12 @@ const getPasswordUser = async (req: Request, res: Response) => {
             }
             });
 
-            return res.status(200).json({code: 200, message: "Successfully"});
+            return res.status(200).json({code: 200, message: "Email sent successfully"});
 
         }catch (err) {
             return res.status(404).json(err);
-        }
-    }else{
-        return res.status(409).json({code: 409, message: "This email does not exist"});
-    } 
+        } 
+    }
 }
 
 const holidayRequest = async (req: Request, res: Response) => {

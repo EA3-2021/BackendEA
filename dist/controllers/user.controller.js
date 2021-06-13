@@ -53,7 +53,7 @@ function registerUser(req, res) {
                 var mailOptions = {
                     from: 'firefighteradventure@gmail.com',
                     to: user.email,
-                    subject: 'Here it is your Worker ID and your password!',
+                    subject: 'Welcome ' + u.name + '! Here it is your Worker ID and your password!',
                     text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + user.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
                 };
                 mail.sendMail(mailOptions, function (error, info) {
@@ -352,13 +352,15 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
 const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let password = generateRandomString(9);
     var crypto = require('crypto');
-    user_1.default.updateMany({ "email": req.params.email }, { $set: { "password": crypto.createHash('sha256').update(password).digest('hex') } }).then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    });
-    let checkEmail = yield user_1.default.findOne({ "email": req.params.email });
-    if (checkEmail) {
+    let checkEmailuser = yield user_1.default.findOne({ "email": req.params.email });
+    if (!checkEmailuser)
+        return res.status(409).json({ code: 409, message: "This email does not exist" });
+    else {
+        user_1.default.updateMany({ "email": req.params.email }, { $set: { "password": crypto.createHash('sha256').update(password).digest('hex') } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
         try {
             var nodemailer = require('nodemailer');
             var mail = nodemailer.createTransport({
@@ -372,7 +374,7 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
             });
             var mailOptions = {
                 from: 'firefighteradventure@gmail.com',
-                to: checkEmail.email,
+                to: checkEmailuser.email,
                 subject: 'Forgot your password? Here you have the new one!',
                 text: 'New Password: ' + password
             };
@@ -384,14 +386,11 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
                     console.log('Email sent: ' + info.response);
                 }
             });
-            return res.status(200).json({ code: 200, message: "Successfully" });
+            return res.status(200).json({ code: 200, message: "Email sent successfully" });
         }
         catch (err) {
             return res.status(404).json(err);
         }
-    }
-    else {
-        return res.status(409).json({ code: 409, message: "This email does not exist" });
     }
 });
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -485,7 +484,7 @@ const acceptHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             from: 'firefighteradventure@gmail.com',
             to: resultado[0].email,
             subject: 'Holiday request resolution!',
-            text: 'WELCOME!' + '\n' + 'your vacation has been APPROVED'
+            text: 'ACCEPTED!' + '\n' + 'your vacation has been APPROVED'
         };
         mail.sendMail(mailOptions, function (error, info) {
             if (error) {
