@@ -16,7 +16,7 @@ const team_1 = __importDefault(require("../models/team"));
 const user_1 = __importDefault(require("../models/user"));
 const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield team_1.default.find({}).populate('users');
+        const results = yield team_1.default.find({ "company": req.params.companyName }).populate('users');
         return res.status(200).json(results);
     }
     catch (err) {
@@ -74,6 +74,7 @@ const addUserToTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 const addTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const team = new team_1.default({
+        "company": req.params.companyName,
         "name": req.body.name,
         "users": []
     });
@@ -83,4 +84,25 @@ const addTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).json(err);
     });
 });
-exports.default = { getTeams, getTeam, addUserToTeam, addTeam };
+const deleteTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield team_1.default.deleteOne({ "company": req.params.companyName, "name": req.params.teamName });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const deleteUserTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield team_1.default.updateOne({ "company": req.params.companyName, "name": req.params.teamName }, { $pull: { "users": req.params.id } }).then(data => {
+        if (data.nModified == 1) {
+            res.status(201).send({ message: 'User added successfully' });
+        }
+        else {
+            res.status(409).json('User already exists!!!');
+        }
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+exports.default = { getTeams, getTeam, addUserToTeam, addTeam, deleteTeam, deleteUserTeam };

@@ -26,6 +26,9 @@ const mongoose_1 = __importStar(require("mongoose"));
 const user_1 = __importDefault(require("./user"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const teamSchema = new mongoose_1.Schema({
+    company: {
+        type: String
+    },
     name: {
         type: String
     },

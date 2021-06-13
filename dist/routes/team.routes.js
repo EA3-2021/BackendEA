@@ -7,9 +7,11 @@ const express_1 = require("express");
 const team_controller_1 = __importDefault(require("../controllers/team.controller"));
 //Router nos permite gestionar rutas de la API
 const router = express_1.Router();
-router.get('/all', team_controller_1.default.getTeams);
+router.get('/all/:companyName', team_controller_1.default.getTeams);
 router.get('/:id', team_controller_1.default.getTeam);
-router.post('/new', team_controller_1.default.addTeam);
+router.post('/new/:companyName', team_controller_1.default.addTeam);
 router.post('/user-to-team/:teamName', team_controller_1.default.addUserToTeam);
+router.delete('/drop/:teamName/:companyName', team_controller_1.default.deleteTeam);
+router.delete('/dropUser/:teamName/:companyName/:id', team_controller_1.default.deleteUserTeam);
 //Exportamos router para usar rutas en app.ts
 exports.default = router;

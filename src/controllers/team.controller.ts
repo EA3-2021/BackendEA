@@ -4,7 +4,7 @@ import User from "../models/user";
 
 const getTeams = async (req: Request, res: Response) => {
     try{
-        const results = await Team.find({}).populate('users');
+        const results = await Team.find({"company": req.params.companyName}).populate('users');
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
@@ -52,19 +52,24 @@ const addUserToTeam = async (req: Request, res: Response) => {
             s = data;  
         });
     } 
+
     await Team.updateOne({"name": teamName}, {$addToSet: {users: s?._id}}).then(data => { 
         if (data.nModified == 1) { 
             res.status(201).send({message: 'User added successfully'}); 
         } else { 
             res.status(409).json('User already exists!!!') 
-    } }).catch((err) => { 
+        } 
+    }).catch((err) => { 
         console.log("error ", err); 
         res.status(500).json(err); 
     }); 
+
+
 }
 
 const addTeam = async (req: Request, res: Response) => {
     const team = new Team({
+        "company":req.params.companyName,
         "name": req.body.name,
         "users": []
     });
@@ -75,4 +80,31 @@ const addTeam = async (req: Request, res: Response) => {
     })
 }
 
-export default { getTeams, getTeam, addUserToTeam, addTeam };
+const deleteTeam = async (req: Request, res: Response) => {
+    try{
+        const results = await Team.deleteOne({"company": req.params.companyName, "name":req.params.teamName});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const deleteUserTeam = async (req: Request, res: Response) => {
+    
+    
+    await Team.updateOne({"company": req.params.companyName, "name":req.params.teamName},
+    {$pull: {"users": req.params.id}}).then(data => { 
+
+        if (data.nModified == 1) { 
+            res.status(201).send({message: 'User added successfully'}); 
+        } else { 
+            res.status(409).json('User already exists!!!') 
+        } 
+    }).catch((err) => { 
+        res.status(500).json(err); 
+    });
+
+}
+
+
+export default { getTeams, getTeam, addUserToTeam, addTeam, deleteTeam, deleteUserTeam};

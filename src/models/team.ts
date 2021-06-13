@@ -3,6 +3,9 @@ import User, { IUser } from './user';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const teamSchema = new Schema({
+    company:{
+        type: String
+    },
     name: {
         type: String
     },
@@ -14,6 +17,7 @@ const teamSchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface ITeam extends Document {
+    company: string;
     name: string;
     users: IUser['_id']; //Relacion con la coleccion users
 }
