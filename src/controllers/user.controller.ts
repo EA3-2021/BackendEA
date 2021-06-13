@@ -46,7 +46,7 @@ async function registerUser(req:Request, res:Response) {
           var mailOptions = {
             from: 'firefighteradventure@gmail.com',
             to: user.email,
-            subject: 'Here it is your Worker ID and your password!',
+            subject: 'Welcome ' + u.name + '! Here it is your Worker ID and your password!',
             text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + user.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
           };
           
@@ -137,8 +137,8 @@ const newUser = async (req: Request, res: Response) => {
           var mailOptions = {
             from: 'firefighteradventure@gmail.com',
             to: user.email,
-            subject: 'Here it is your Worker ID and your password!',
-            text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + u.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
+            subject: 'Welcome ' + u.name + '! Here it is your Worker ID and your password!',
+            text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + user.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
           };
           
           mail.sendMail(mailOptions, function(error: any, info: any){
@@ -527,7 +527,7 @@ const acceptHoliday = async (req: Request, res: Response) => {
             from: 'firefighteradventure@gmail.com',
             to: resultado[0].email,
             subject: 'Holiday request resolution!',
-            text: 'WELCOME!' + '\n' + 'your vacation has been APPROVED'
+            text: 'ACCEPTED!' + '\n' + 'your vacation has been APPROVED'
           };
           
           mail.sendMail(mailOptions, function(error: any, info: any){
