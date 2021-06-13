@@ -54,7 +54,7 @@ function registerUser(req, res) {
                     from: 'firefighteradventure@gmail.com',
                     to: user.email,
                     subject: 'Here it is your Worker ID and your password!',
-                    text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + u.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
+                    text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + user.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
                 };
                 mail.sendMail(mailOptions, function (error, info) {
                     if (error) {
