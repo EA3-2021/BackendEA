@@ -48,7 +48,7 @@ async function loginAdmin(req: Request, res: Response) {
                 return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 if (user.petition == false)
-                    return res.status(409).json({ message: "Petition don't accepted yet" });
+                    return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
                 else {
                     try {
                         let t = { token: createTokenUser(user) };
