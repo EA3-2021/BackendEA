@@ -27,6 +27,34 @@ import Tarea from "../models/tarea";
                 "phone": admin.phone,
                 "password": crypto.createHash('sha256').update(admin.password).digest('hex')
             });
+
+            var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: admin.email,
+            subject: 'Here it is your Username and your password!',
+            text: 'Your username:' + admin.name + '\n' + 'Your password:' + admin.password + '\n' + '\n' + 'WELCOME!' + '\n' + 'You can now start customizing the app for your workers'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
             u.save().then((data) => {
                 return res.status(201).json(data);
             });
