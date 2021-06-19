@@ -6,7 +6,8 @@ const router = Router();
 
 router.get('/getClocks', clockController.getClocks);
 router.post('/clockIn', clockController.clockIn);
-//router.get('/updateClock', clockController.updateClock);
+router.put('/clockOut', clockController.clockOut);
+
 
 // Exportamos router para usar rutas en app.ts
 export default router;

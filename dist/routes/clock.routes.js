@@ -9,6 +9,6 @@ const clock_controller_1 = __importDefault(require("../controllers/clock.control
 const router = express_1.Router();
 router.get('/getClocks', clock_controller_1.default.getClocks);
 router.post('/clockIn', clock_controller_1.default.clockIn);
-//router.get('/updateClock', clockController.updateClock);
+router.put('/clockOut', clock_controller_1.default.clockOut);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;
