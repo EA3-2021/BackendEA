@@ -22,6 +22,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const ConfigurationSchema = new mongoose_1.Schema({
+    company: {
+        type: String
+    },
+    workerID: {
+        type: String
+    },
     notification: {
         type: Boolean
     },
@@ -31,6 +37,9 @@ const ConfigurationSchema = new mongoose_1.Schema({
     authentication: {
         type: Boolean
     },
+    location: {
+        type: Boolean
+    }
 });
 //Exportamos modelo para poder usarlo
 exports.default = mongoose_1.default.model('configuration', ConfigurationSchema);

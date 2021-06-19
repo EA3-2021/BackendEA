@@ -66,9 +66,11 @@ import Tarea from "../models/tarea";
     
     const updateConfiguation = async (req: Request, res: Response) => {
         const configuration = new Configuration({
+            "company": req.body.company,
             "notification": req.body.notification,
             "private": req.body.private,
-            "authentication": req.body.authentication
+            "authentication": req.body.authentication,
+            "location": req.body.location
         });
         configuration.save().then((data) => {
             return res.status(201).json(data);
@@ -245,5 +247,14 @@ import Tarea from "../models/tarea";
         }
     }
 
+    const getAdmin = async (req: Request, res: Response) => {
+        try{
+            const results = await Admin.find({"name": req.params.companyName});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
     
-export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask};
+export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};

@@ -17,6 +17,7 @@ const admin_1 = __importDefault(require("../models/admin"));
 const location_1 = __importDefault(require("../models/location"));
 const holiday_1 = __importDefault(require("../models/holiday"));
 const tarea_1 = __importDefault(require("../models/tarea"));
+const configuration_1 = __importDefault(require("../models/configuration"));
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
@@ -534,5 +535,21 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(404).json(err);
     }
 });
-exports.default = { updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
+    const configuration = new configuration_1.default({
+        "company": resultado[0].company,
+        "workerID": req.body.workerID,
+        "notification": req.body.notification,
+        "private": req.body.private,
+        "authentication": req.body.authentication,
+        "location": req.body.location
+    });
+    configuration.save().then((data) => {
+        return res.status(201).json(data);
+    }).catch((err) => {
+        return res.status(500).json(err);
+    });
+});
+exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
     newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/ };

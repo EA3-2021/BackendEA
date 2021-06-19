@@ -28,6 +28,7 @@ router.delete('/dropRequestHoliday/:id', user_controller_1.default.refuseHoliday
 router.put('/acceptHoliday/:id', user_controller_1.default.acceptHoliday);
 router.get('/holidayall/:workerID/:fecha', user_controller_1.default.getHolidays);
 router.put('/updateProfile/:workerID', user_controller_1.default.updateProfile);
+router.post('/configuration', user_controller_1.default.updateConfiguation);
 //router.post('/clockIn', userController.clockIn);
 //router.post('/clockOut', userController.clockOut);
 //Exportamos router para usar rutas en app.ts

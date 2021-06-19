@@ -75,9 +75,11 @@ function registerAdmin(req, res) {
 }
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const configuration = new configuration_1.default({
+        "company": req.body.company,
         "notification": req.body.notification,
         "private": req.body.private,
-        "authentication": req.body.authentication
+        "authentication": req.body.authentication,
+        "location": req.body.location
     });
     configuration.save().then((data) => {
         return res.status(201).json(data);
@@ -241,4 +243,14 @@ function updateTask(req, res) {
         return;
     }
 }
-exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask };
+const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.companyName);
+    try {
+        const results = yield admin_1.default.find({ "name": req.params.companyName });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };
