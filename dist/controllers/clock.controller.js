@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const clock_1 = __importDefault(require("../models/clock"));
-//Obtener todos las horas de fichar de todos los usuarios
-const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
+const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield clock_1.default.find({});
+        const results = yield clock_1.default.find({ "clockIn": req.params.clockIn, "company": req.params.company });
         return res.status(200).json(results);
     }
     catch (err) {
@@ -24,7 +24,6 @@ const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.workerID);
     try {
         let date = new Date();
         let c = new clock_1.default({
@@ -54,4 +53,4 @@ const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(500).json(err);
     }
 });
-exports.default = { getClocks, clockIn, clockOut };
+exports.default = { getClock, clockIn, clockOut };

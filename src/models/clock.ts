@@ -10,6 +10,9 @@ const ClockSchema = new Schema({
     },
     clockOut: {
         type: String
+    },
+    company: {
+        type: String
     }
 });
 

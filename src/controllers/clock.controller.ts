@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Clock from "../models/clock"
 
-    //Obtener todos las horas de fichar de todos los usuarios
-    const getClocks = async (req: Request, res: Response) => {
+    //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
+    const getClock = async (req: Request, res: Response) => {
         try{
-            const results = await Clock.find({});
+            const results = await Clock.find({"clockIn": req.params.clockIn, "company": req.params.company });
             return res.status(200).json(results);
         } catch (err) {
             return res.status(404).json(err);
@@ -49,4 +49,4 @@ const clockOut = async (req: Request, res: Response) => {
 
 
 
-export default { getClocks, clockIn, clockOut };
+export default { getClock, clockIn, clockOut };

@@ -30,6 +30,9 @@ const ClockSchema = new mongoose_1.Schema({
     },
     clockOut: {
         type: String
+    },
+    company: {
+        type: String
     }
 });
 //Exportamos modelo para poder usarlo
