@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/getClock/:clockIn', clockController.getClock);
 router.post('/clockIn/:workerID', clockController.clockIn);
-router.put('/clockOut', clockController.clockOut);
+router.put('/clockOut/:workerID', clockController.clockOut);
 
 
 // Exportamos router para usar rutas en app.ts

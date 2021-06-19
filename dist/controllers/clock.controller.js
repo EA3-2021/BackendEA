@@ -33,7 +33,9 @@ const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let c = new clock_1.default({
             "workerID": req.params.workerID,
             "entryDate": fecha,
-            "entryTime": hora
+            "entryTime": hora,
+            "exitDate": "",
+            "exitTime": ""
         });
         c.save().then((data) => {
             return res.status(201).json(data);
@@ -44,18 +46,39 @@ const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let date = new Date();
-        let c = new clock_1.default({
-            "workerID": req.body.workerID,
+    let date1 = new Date();
+    let fecha1 = date_fns_1.format(new Date(date1), "d-M-yyyy");
+    let hora1 = date_fns_1.format(new Date(date1), "HH:mm");
+    const workerID = req.params.workerID;
+    console.log(fecha1);
+    console.log(hora1);
+    if (fecha1 != "") {
+        clock_1.default.updateMany({ "workerID": workerID }, { $set: { "exitDate": fecha1 } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (hora1 != "") {
+        clock_1.default.updateMany({ "workerID": workerID }, { $set: { "exitTime": hora1 } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    /*
+    try{
+    let date: Date = new Date();
+
+        let c = new Clock({
+            "workerID": req.params.workerID,
             "clockOut": date
         });
         c.save().then((data) => {
             return res.status(201).json(data);
         });
-    }
-    catch (err) {
-        return res.status(500).json(err);
-    }
+        } catch(err) {
+            return res.status(500).json(err);
+        }*/
 });
 exports.default = { getClock, clockIn, clockOut };

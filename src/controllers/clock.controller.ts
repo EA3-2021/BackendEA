@@ -23,7 +23,9 @@ const clockIn = async (req: Request, res: Response) => {
         let c = new Clock({
             "workerID": req.params.workerID,
             "entryDate": fecha,
-            "entryTime": hora
+            "entryTime": hora,
+            "exitDate": "",
+            "exitTime": ""
         });
         c.save().then((data) => {
             return res.status(201).json(data);
@@ -35,11 +37,37 @@ const clockIn = async (req: Request, res: Response) => {
 
 const clockOut = async (req: Request, res: Response) => {
 
+    let date1: Date = new Date();
+    let fecha1 = format(new Date(date1), "d-M-yyyy");
+    let hora1 = format(new Date(date1), "HH:mm");
+
+    const workerID: string = req.params.workerID;
+
+    console.log (fecha1);
+    console.log (hora1);
+
+    if (fecha1 != ""){
+        Clock.updateMany({"workerID":workerID}, {$set: {"exitDate": fecha1}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    if (hora1 != ""){
+        Clock.updateMany({"workerID":workerID}, {$set: {"exitTime": hora1}}).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        })
+    }
+
+    /*
     try{
     let date: Date = new Date();
 
         let c = new Clock({
-            "workerID": req.body.workerID,
+            "workerID": req.params.workerID,
             "clockOut": date
         });
         c.save().then((data) => {
@@ -47,7 +75,7 @@ const clockOut = async (req: Request, res: Response) => {
         });
         } catch(err) {
             return res.status(500).json(err);
-        }
+        }*/
 }
 
 
