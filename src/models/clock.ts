@@ -5,7 +5,19 @@ const ClockSchema = new Schema({
     clockIn: {
         type: String
     },
+    latitudeIn: {               //o pongo directamente location?
+        type: String
+    },
+    longitudeIn : {
+        type: String
+    },
     clockOut: {
+        type: String
+    },
+    latitudeOut: {
+        type: String
+    },
+    longitudeOut: {
         type: String
     }
 });
