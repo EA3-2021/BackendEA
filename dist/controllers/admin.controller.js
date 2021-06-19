@@ -241,4 +241,14 @@ function updateTask(req, res) {
         return;
     }
 }
-exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask };
+const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.companyName);
+    try {
+        const results = yield admin_1.default.find({ "name": req.params.companyName });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };

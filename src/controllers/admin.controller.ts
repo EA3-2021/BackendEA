@@ -245,5 +245,14 @@ import Tarea from "../models/tarea";
         }
     }
 
+    const getAdmin = async (req: Request, res: Response) => {
+        try{
+            const results = await Admin.find({"name": req.params.companyName});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
+
     
-export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask};
+export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};

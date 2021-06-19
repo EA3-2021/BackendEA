@@ -24,7 +24,6 @@ const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.workerID);
     try {
         let date = new Date();
         let c = new clock_1.default({
