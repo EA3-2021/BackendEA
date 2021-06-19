@@ -5,7 +5,7 @@ import clockController from '../controllers/clock.controller'
 const router = Router();
 
 router.get('/getClocks', clockController.getClocks);
-router.post('/clockIn', clockController.clockIn);
+router.post('/clockIn/:workerID', clockController.clockIn);
 router.put('/clockOut', clockController.clockOut);
 
 

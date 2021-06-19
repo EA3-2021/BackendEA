@@ -24,13 +24,13 @@ const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.workerID);
     try {
         let date = new Date();
         let c = new clock_1.default({
-            "workerID": req.body.workerID,
+            "workerID": req.params.workerID,
             "clockIn": date
         });
-        console.log(req.body.workerID);
         c.save().then((data) => {
             return res.status(201).json(data);
         });
@@ -46,7 +46,6 @@ const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             "workerID": req.body.workerID,
             "clockOut": date
         });
-        console.log(req.body.workerID);
         c.save().then((data) => {
             return res.status(201).json(data);
         });
