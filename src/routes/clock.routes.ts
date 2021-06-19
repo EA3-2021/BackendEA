@@ -5,8 +5,8 @@ import clockController from '../controllers/clock.controller'
 const router = Router();
 
 router.get('/getClocks', clockController.getClocks);
-router.get('/newClock', clockController.newClock);
-router.get('/updateClock', clockController.updateClock);
+router.post('/clockIn', clockController.clockIn);
+//router.get('/updateClock', clockController.updateClock);
 
 // Exportamos router para usar rutas en app.ts
 export default router;

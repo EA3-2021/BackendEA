@@ -11,26 +11,22 @@ import Clock from "../models/clock"
         }
     }
 
-const newClock = async (req: Request, res: Response) => {
+const clockIn = async (req: Request, res: Response) => {
 
-    let clock = req.body;
+    try{
+    let date: Date = new Date();
 
         let c = new Clock({
-            "clockIn": clock.clockIn,
-            "latitudIn": clock.latitudIn,
-            "longitudIn": clock.longitudIn,
-            "clockOut": clock.clockOut,
-            "latitudOut": clock.latitudIn,
-            "longitudOut": clock.longitudOut
+            "workerID": req.body.workerID,
+            "clockIn": date
         });
-
+                    console.log(req.body.workerID);
         c.save().then((data) => {
             return res.status(201).json(data);
         });
         } catch(err) {
             return res.status(500).json(err);
         }
-    }
 }
 
 
@@ -39,31 +35,13 @@ const newClock = async (req: Request, res: Response) => {
 function updateClock (req: Request, res: Response){
     const id: string = req.params.id;
     const clockIn: string = req.body.clockIn;
-    const latitudeIn: string = req.body.latitudeIn;
-    const longitudeIn: string = req.body.longitudeIn;
     const clockOut: string = req.body.clockOut;
-    const latitudeOut: string = req.body.latitudeOut;
-    const longitudeOut: string = req.body.longitudeOut;
+
+    let date: Date = new Date();
 
     //modificar la hora de entrada
     if (clockIn != ""){
         Clock.updateMany({"_id": id}, {$set: {"clockIn": clockIn}}).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        })
-    }
-    //modificar la latitud a la hora de entrada
-    if (latitudeIn != ""){
-        Clock.updateMany({"_id": id}, {$set: {"latitudeIn": latitudeIn}}).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        })
-    }
-    //modificar la longitud a la hora de entrada
-    if (longitudeIn != ""){
-        Clock.updateMany({"_id": id}, {$set: {"longitudeIn": longitudeIn}}).then((data) => {
             res.status(201).json(data);
         }).catch((err) => {
             res.status(500).json(err);
@@ -79,24 +57,8 @@ function updateClock (req: Request, res: Response){
         })
     }
 
-    //modificar la latitud a la hora de salida
-    if (latitudeOut != ""){
-        Clock.updateMany({"_id": id}, {$set: {"latitudeOut": latitudeOut}}).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        })
-    }
-    //modificar la longitud a la hora de salida
-    if (longitudeOut != ""){
-        Clock.updateMany({"_id": id}, {$set: {"longitudeOut": longitudeOut}}).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        })
-    }
 }
 
 
 
-export default { getClocks, newClock, updateClock };
+export default { getClocks, clockIn, updateClock };

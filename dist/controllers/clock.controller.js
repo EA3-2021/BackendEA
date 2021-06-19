@@ -23,7 +23,43 @@ const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-//Obtener las horas de fichar de un usuario
-//Obtener las horas de entrada de un usuario    (clockIn)
-//Obtener las horas de salida de un usuario    (clockOut)
-exports.default = { getClocks };
+const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let date = new Date();
+        let c = new clock_1.default({
+            "workerID": req.body.workerID,
+            "clockIn": date
+        });
+        console.log(req.body.workerID);
+        c.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+//Actualizar name/address user a partir del id
+function updateClock(req, res) {
+    const id = req.params.id;
+    const clockIn = req.body.clockIn;
+    const clockOut = req.body.clockOut;
+    let date = new Date();
+    //modificar la hora de entrada
+    if (clockIn != "") {
+        clock_1.default.updateMany({ "_id": id }, { $set: { "clockIn": clockIn } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    //modificar la hora de salida
+    if (clockOut != "") {
+        clock_1.default.updateMany({ "_id": id }, { $set: { "clockOut": clockOut } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+}
+exports.default = { getClocks, clockIn, updateClock };
