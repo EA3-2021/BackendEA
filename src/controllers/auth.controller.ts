@@ -4,6 +4,7 @@ import Admin, { IAdmin } from "../models/admin"
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
+let t: string;
 
 async function loginAdmin(req: Request, res: Response) {
     let admin;
@@ -29,7 +30,6 @@ async function loginAdmin(req: Request, res: Response) {
     }
 }
 
-
 async function loginUser(req: Request, res: Response) {
     let user;
 
@@ -51,13 +51,14 @@ async function loginUser(req: Request, res: Response) {
                 return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
             else {
                 try {
-                    let t = { token: createTokenUser(user) };
+                    t =  createTokenUser(user);
                     return res.status(200).json(t);
                 }
                 catch (err) {
                     return res.status(500).json(err);
                 }
             }
+            
         }
     }
 }
@@ -81,8 +82,9 @@ function decodeToken(token: string){
 }
 
 async function signoutUser(req:Request, res:Response){
-    let t = decodeToken(req.body.token);
-    let user = await User.findOne({"_id": t?.id});
+    console.log(t);
+    let t1 = decodeToken(req.body.token);
+    let user = await User.findOne({"_id": t1?.id});
     if(!user) return res.status(404).json({message: "User not found"});
     else {
         return res.status(200).json({message: "Usuario desconectado"});

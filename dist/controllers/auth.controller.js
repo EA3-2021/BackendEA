@@ -16,6 +16,7 @@ const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
+let t;
 function loginAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin;
@@ -59,7 +60,7 @@ function loginUser(req, res) {
                     return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
                 else {
                     try {
-                        let t = { token: createTokenUser(user) };
+                        t = createTokenUser(user);
                         return res.status(200).json(t);
                     }
                     catch (err) {
@@ -87,8 +88,9 @@ function decodeToken(token) {
 }
 function signoutUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        let t = decodeToken(req.body.token);
-        let user = yield user_1.default.findOne({ "_id": t === null || t === void 0 ? void 0 : t.id });
+        console.log(t);
+        let t1 = decodeToken(req.body.token);
+        let user = yield user_1.default.findOne({ "_id": t1 === null || t1 === void 0 ? void 0 : t1.id });
         if (!user)
             return res.status(404).json({ message: "User not found" });
         else {
