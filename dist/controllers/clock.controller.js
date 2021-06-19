@@ -66,19 +66,5 @@ const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(500).json(err);
         });
     }
-    /*
-    try{
-    let date: Date = new Date();
-
-        let c = new Clock({
-            "workerID": req.params.workerID,
-            "clockOut": date
-        });
-        c.save().then((data) => {
-            return res.status(201).json(data);
-        });
-        } catch(err) {
-            return res.status(500).json(err);
-        }*/
 });
 exports.default = { getClock, clockIn, clockOut };

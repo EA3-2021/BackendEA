@@ -70,14 +70,6 @@ function loginUser(req, res) {
         }
     });
 }
-/*async function signout(req:Request, res:Response){
-    let t = decodeToken(req.body.token);
-    let user = await User.findOne({"_id": t?.id});
-    if(!user) return res.status(404).json({message: "User not found"});
-    else {
-        return res.status(200).json({message: "Usuario desconectado"});
-    }
-}*/
 function createTokenAdmin(admin) {
     const expirationTime = 3600; //1h
     return jsonwebtoken_1.default.sign({ id: admin.id, name: admin.name, email: admin.email }, config_1.default.jwtSecret, {
@@ -90,11 +82,22 @@ function createTokenUser(user) {
         expiresIn: expirationTime
     });
 }
-/*function decodeToken(token: string){
-    return jwt.decode(token, {json: true});
-}*/
+function decodeToken(token) {
+    return jsonwebtoken_1.default.decode(token, { json: true });
+}
+function signoutUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let t = decodeToken(req.body.token);
+        let user = yield user_1.default.findOne({ "_id": t === null || t === void 0 ? void 0 : t.id });
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
+        else {
+            return res.status(200).json({ message: "Usuario desconectado" });
+        }
+    });
+}
 /*async function setOnlineStatus(id: String, value: boolean){
     await User.updateOne({"_id":id}, {$set: {"online":value}});
                     
 }*/
-exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser };
+exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser };
