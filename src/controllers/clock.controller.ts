@@ -17,10 +17,9 @@ const clockIn = async (req: Request, res: Response) => {
     let date: Date = new Date();
 
         let c = new Clock({
-            "workerID": req.body.workerID,
+            "workerID": req.params.workerID,
             "clockIn": date
         });
-                    console.log(req.body.workerID);
         c.save().then((data) => {
             return res.status(201).json(data);
         });
@@ -40,7 +39,6 @@ const clockOut = async (req: Request, res: Response) => {
             "workerID": req.body.workerID,
             "clockOut": date
         });
-                    console.log(req.body.workerID);
         c.save().then((data) => {
             return res.status(201).json(data);
         });
