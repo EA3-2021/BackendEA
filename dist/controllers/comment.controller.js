@@ -13,20 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const comment_1 = __importDefault(require("../models/comment"));
+const user_1 = __importDefault(require("../models/user"));
 //Obtener todos los comentarios
 const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield comment_1.default.find({});
+        const results = yield comment_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
     }
     catch (err) {
         return res.status(404).json(err);
     }
 });
-//Obtener 1 comentario a partir del id
-const getComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCommentsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.companyName);
     try {
-        const results = yield comment_1.default.find({ "_id": req.params.id });
+        const results = yield comment_1.default.find({ "company": req.params.companyName, "state": false });
         return res.status(200).json(results);
     }
     catch (err) {
@@ -35,9 +36,14 @@ const getComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 //Añadir 1 nuevo comentario
 const newComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
+    console.log(resultado[0].company);
     try {
         let comment = new comment_1.default({
-            "content": req.body.content
+            "company": resultado[0].company,
+            "workerID": req.body.workerID,
+            "content": req.body.content,
+            "state": false
         });
         comment.save().then((data) => {
             return res.status(201).json(data);
@@ -47,4 +53,21 @@ const newComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(500).json(err);
     }
 });
-exports.default = { getComments, getComment, newComment };
+const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body.id);
+    try {
+        const results = yield comment_1.default.deleteOne({ "_id": req.params.id });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const resolveComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    comment_1.default.updateMany({ "_id": req.params.id }, { $set: { "state": true } }).then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+exports.default = { resolveComment, getCommentsAdmin, deleteComment, getComments, newComment };
