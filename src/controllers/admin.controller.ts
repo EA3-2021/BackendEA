@@ -66,9 +66,11 @@ import Tarea from "../models/tarea";
     
     const updateConfiguation = async (req: Request, res: Response) => {
         const configuration = new Configuration({
+            "company": req.body.company,
             "notification": req.body.notification,
             "private": req.body.private,
-            "authentication": req.body.authentication
+            "authentication": req.body.authentication,
+            "location": req.body.location
         });
         configuration.save().then((data) => {
             return res.status(201).json(data);

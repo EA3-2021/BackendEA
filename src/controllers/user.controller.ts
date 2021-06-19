@@ -5,6 +5,7 @@ import Location from "../models/location";
 import Holiday from "../models/holiday";
 import Tarea from "../models/tarea";
 import Clock from "../models/clock";
+import Configuration from "../models/configuration";
 
 
 async function registerUser(req:Request, res:Response) {
@@ -582,5 +583,24 @@ const refuseHoliday = async (req: Request, res: Response) => {
     }
 }
 
-export default {updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
+const updateConfiguation = async (req: Request, res: Response) => {
+   
+    const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
+   
+    const configuration = new Configuration({
+        "company": resultado[0].company,
+        "workerID": req.body.workerID,
+        "notification": req.body.notification,
+        "private": req.body.private,
+        "authentication": req.body.authentication,
+        "location": req.body.location
+    });
+    configuration.save().then((data) => {
+        return res.status(201).json(data);
+    }).catch((err) => {
+        return res.status(500).json(err);
+    })
+}
+
+export default {updateConfiguation, updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
 newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
