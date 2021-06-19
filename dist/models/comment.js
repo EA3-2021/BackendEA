@@ -22,8 +22,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const CommentSchema = new mongoose_1.Schema({
+    company: {
+        type: String
+    },
+    workerID: {
+        type: String
+    },
     content: {
         type: String
+    },
+    state: {
+        type: Boolean
     }
 });
 //Exportamos modelo para poder usarlo
