@@ -25,10 +25,16 @@ const ClockSchema = new mongoose_1.Schema({
     workerID: {
         type: String
     },
-    clockIn: {
+    entryDate: {
         type: String
     },
-    clockOut: {
+    entryTime: {
+        type: String
+    },
+    exitDate: {
+        type: String
+    },
+    exitTime: {
         type: String
     },
     company: {

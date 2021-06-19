@@ -13,10 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const clock_1 = __importDefault(require("../models/clock"));
+const date_fns_1 = require("date-fns");
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.clockIn);
     try {
-        const results = yield clock_1.default.find({ "clockIn": req.params.clockIn, "company": req.params.company });
+        const results = yield clock_1.default.find({ "entryDate": req.params.clockIn });
         return res.status(200).json(results);
     }
     catch (err) {
@@ -26,9 +28,12 @@ const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let date = new Date();
+        let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
+        let hora = date_fns_1.format(new Date(date), "HH:mm");
         let c = new clock_1.default({
             "workerID": req.params.workerID,
-            "clockIn": date
+            "entryDate": fecha,
+            "entryTime": hora
         });
         c.save().then((data) => {
             return res.status(201).json(data);

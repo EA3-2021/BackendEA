@@ -5,10 +5,16 @@ const ClockSchema = new Schema({
     workerID: {
         type: String
     },
-    clockIn: {
+    entryDate: {
         type: String
     },
-    clockOut: {
+    entryTime: {
+        type: String
+    },
+    exitDate: {
+        type: String
+    },
+    exitTime: {
         type: String
     },
     company: {
@@ -19,8 +25,10 @@ const ClockSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IClock extends Document {
     workerID: string;
-    clockIn: string;
-    clockOut: string;
+    entryDate: string;
+    entryTime: string;
+    exitDate: string;
+    exitTime: string;
 }
 
 //Exportamos modelo para poder usarlo
