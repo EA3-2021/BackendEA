@@ -2,6 +2,9 @@ import mongoose, { Schema, Document} from 'mongoose';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const ClockSchema = new Schema({
+    workerID: {
+        type: String
+    },
     clockIn: {
         type: String
     },
@@ -12,6 +15,7 @@ const ClockSchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface IClock extends Document {
+    workerID: string;
     clockIn: string;
     clockOut: string;
 }

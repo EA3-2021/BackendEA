@@ -23,7 +23,36 @@ const getClocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-//Obtener las horas de fichar de un usuario
-//Obtener las horas de entrada de un usuario    (clockIn)
-//Obtener las horas de salida de un usuario    (clockOut)
-exports.default = { getClocks };
+const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let date = new Date();
+        let c = new clock_1.default({
+            "workerID": req.body.workerID,
+            "clockIn": date
+        });
+        console.log(req.body.workerID);
+        c.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let date = new Date();
+        let c = new clock_1.default({
+            "workerID": req.body.workerID,
+            "clockOut": date
+        });
+        console.log(req.body.workerID);
+        c.save().then((data) => {
+            return res.status(201).json(data);
+        });
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+exports.default = { getClocks, clockIn, clockOut };

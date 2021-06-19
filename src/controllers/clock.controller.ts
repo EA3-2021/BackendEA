@@ -11,12 +11,44 @@ import Clock from "../models/clock"
         }
     }
 
-    //Obtener las horas de fichar de un usuario
+const clockIn = async (req: Request, res: Response) => {
 
-    //Obtener las horas de entrada de un usuario    (clockIn)
+    try{
+    let date: Date = new Date();
 
-    //Obtener las horas de salida de un usuario    (clockOut)
+        let c = new Clock({
+            "workerID": req.body.workerID,
+            "clockIn": date
+        });
+                    console.log(req.body.workerID);
+        c.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+}
 
 
 
-export default { getClocks };
+const clockOut = async (req: Request, res: Response) => {
+
+    try{
+    let date: Date = new Date();
+
+        let c = new Clock({
+            "workerID": req.body.workerID,
+            "clockOut": date
+        });
+                    console.log(req.body.workerID);
+        c.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+}
+
+
+
+export default { getClocks, clockIn, clockOut };

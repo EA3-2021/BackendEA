@@ -22,6 +22,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const ClockSchema = new mongoose_1.Schema({
+    workerID: {
+        type: String
+    },
     clockIn: {
         type: String
     },
