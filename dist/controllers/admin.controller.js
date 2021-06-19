@@ -75,9 +75,11 @@ function registerAdmin(req, res) {
 }
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const configuration = new configuration_1.default({
+        "company": req.body.company,
         "notification": req.body.notification,
         "private": req.body.private,
-        "authentication": req.body.authentication
+        "authentication": req.body.authentication,
+        "location": req.body.location
     });
     configuration.save().then((data) => {
         return res.status(201).json(data);
