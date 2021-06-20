@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const token_1 = __importDefault(require("../models/token"));
 const admin_1 = __importDefault(require("../models/admin"));
 const location_1 = __importDefault(require("../models/location"));
 const holiday_1 = __importDefault(require("../models/holiday"));
@@ -98,6 +99,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.headers.authorization);
+        console.log(token_1.default.findOne({ token: req.headers.authorization }));
         const results = yield user_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
     }

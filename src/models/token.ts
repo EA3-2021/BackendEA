@@ -1,11 +1,11 @@
-import mongoose, { Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const TokenSchema = new Schema({
     workerID: {
         type: String
     },
-    patata: {
+    token: {
         type: String
     }
 });
@@ -13,7 +13,7 @@ const TokenSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IToken extends Document {
     workerID: string;
-    patata: string;
+    token: string;
 }
 
 //Exportamos modelo para poder usarlo

@@ -63,7 +63,7 @@ function loginUser(req, res) {
                     try {
                         let t = new token_1.default({
                             "workerID": id[0]._id,
-                            "patata": createTokenUser(user)
+                            "token": createTokenUser(user)
                         });
                         t.save().then((data) => {
                             return res.status(201).json(data);
@@ -95,7 +95,6 @@ function decodeToken(token) {
 }
 const signoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let t1 = decodeToken(req.params.token);
-    console.log(req.params.token);
     let user = yield user_1.default.findOne({ "_id": t1 === null || t1 === void 0 ? void 0 : t1.id });
     if (!user)
         return res.status(404).json({ message: "User not found" });

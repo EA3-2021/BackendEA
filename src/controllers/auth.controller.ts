@@ -53,7 +53,7 @@ async function loginUser(req: Request, res: Response) {
                 try {
                     let t = new Token({
                         "workerID": id[0]._id,
-                        "patata": createTokenUser(user)
+                        "token": createTokenUser(user)
                     });
             
                     t.save().then((data) => {

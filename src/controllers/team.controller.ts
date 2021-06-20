@@ -1,8 +1,15 @@
 import { Request, Response} from "express";
 import Team from "../models/team";
 import User from "../models/user";
+import Token from "../models/token";
 
 const getTeams = async (req: Request, res: Response) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try{
         const results = await Team.find({"company": req.params.companyName}).populate('users');
         return res.status(200).json(results);
@@ -12,6 +19,11 @@ const getTeams = async (req: Request, res: Response) => {
 }
 
 const getTeam = async (req: Request, res: Response) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try{
         const results = await Team.find({"_id": req.params.id}).populate('users');
         return res.status(200).json(results);
@@ -36,6 +48,13 @@ const getTeam = async (req: Request, res: Response) => {
 }*/
 
 const addUserToTeam = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     let teamName = req.params.teamName;
     
     let userId = req.body.id; 
@@ -68,6 +87,13 @@ const addUserToTeam = async (req: Request, res: Response) => {
 }
 
 const addTeam = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     const team = new Team({
         "company":req.params.companyName,
         "name": req.body.name,
@@ -81,6 +107,13 @@ const addTeam = async (req: Request, res: Response) => {
 }
 
 const deleteTeam = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try{
         const results = await Team.deleteOne({"company": req.params.companyName, "name":req.params.teamName});
         return res.status(200).json(results);
@@ -90,7 +123,12 @@ const deleteTeam = async (req: Request, res: Response) => {
 }
 
 const deleteUserTeam = async (req: Request, res: Response) => {
-    
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
     
     await Team.updateOne({"company": req.params.companyName, "name":req.params.teamName},
     {$pull: {"users": req.params.id}}).then(data => { 
