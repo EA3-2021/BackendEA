@@ -7,6 +7,9 @@ const TokenSchema = new Schema({
     },
     token: {
         type: String
+    },
+    admin: {
+        type: Boolean
     }
 });
 
@@ -14,6 +17,7 @@ const TokenSchema = new Schema({
 export interface IToken extends Document {
     workerID: string;
     token: string;
+    admin: boolean;
 }
 
 //Exportamos modelo para poder usarlo

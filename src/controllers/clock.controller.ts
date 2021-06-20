@@ -3,23 +3,47 @@ import Clock from "../models/clock"
 import Token from "../models/token";
 import {format} from "date-fns";
 
-    //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
-const getClock = async (req: Request, res: Response) => {
-        console.log (req.params.clockIn);
-        try{
-            if (!req.headers.authorization) {
-                return res.status(401).json({}); //Unauthorized
-            }else if (!Token.findOne({token: req.headers.authorization})) {
-                return res.status(401).json({}); //Unauthorized
+async function check_auth(req: Request, must_be_admin: Boolean) { 
+
+    if (!req.headers.authorization) {
+        return false; //User is not authorized as request does not include a token
+    } 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if (must_be_admin == true){
+
+            if (tok.admin == false) {
+
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+
             }
-            const results = await Clock.find({"entryDate": req.params.clockIn});
-            return res.status(200).json(results);
-        } catch (err) {
-            return res.status(404).json(err);
+            
         }
+
+    } catch (err) {
+        return false; //User is not authorized
     }
 
-const clockIn = async (req: Request, res: Response) => {
+    return true; //User is authorized
+
+}
+
+//Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
+const getClock = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    console.log (req.params.clockIn);
 
     try{
         if (!req.headers.authorization) {
@@ -27,10 +51,26 @@ const clockIn = async (req: Request, res: Response) => {
         }else if (!Token.findOne({token: req.headers.authorization})) {
             return res.status(401).json({}); //Unauthorized
         }
+        const results = await Clock.find({"entryDate": req.params.clockIn});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
 
-    let date: Date = new Date();
-    let fecha = format(new Date(date), "d-M-yyyy");
-    let hora = format(new Date(date), "HH:mm");
+}
+
+const clockIn = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    try{
+        let date: Date = new Date();
+        let fecha = format(new Date(date), "d-M-yyyy");
+        let hora = format(new Date(date), "HH:mm");
 
         let c = new Clock({
             "workerID": req.params.workerID,
@@ -42,15 +82,16 @@ const clockIn = async (req: Request, res: Response) => {
         c.save().then((data) => {
             return res.status(201).json(data);
         });
-        } catch(err) {
-            return res.status(500).json(err);
-        }
+    } catch(err) {
+        return res.status(500).json(err);
+    }
 }
 
 const clockOut = async (req: Request, res: Response) => {
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+    
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
     

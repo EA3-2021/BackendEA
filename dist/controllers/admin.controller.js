@@ -18,7 +18,25 @@ const location_1 = __importDefault(require("../models/location"));
 const configuration_1 = __importDefault(require("../models/configuration"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const code_1 = __importDefault(require("../models/code"));
+const token_1 = __importDefault(require("../models/token"));
 const date_fns_1 = require("date-fns");
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+        }
+        else if (must_be_admin == true) {
+            if (tok.admin == false) {
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+            }
+        }
+        return true; //User is authorized
+    });
+}
 function registerAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin = req.body;
@@ -34,6 +52,7 @@ function registerAdmin(req, res) {
                 var crypto = require('crypto');
                 let u = new admin_1.default({
                     "name": admin.name,
+                    "workerID": generateRandomString(6),
                     "email": admin.email,
                     "cif": admin.cif,
                     "address": admin.address,
@@ -76,6 +95,10 @@ function registerAdmin(req, res) {
     });
 }
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const configuration = new configuration_1.default({
         "company": req.body.company,
         "notification": req.body.notification,
@@ -91,6 +114,10 @@ const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 //Obtener todos las localizaciones de los usuarios
 const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield location_1.default.find({});
         console.log(results);
@@ -101,6 +128,10 @@ const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield admin_1.default.find({}, { "_id": 0, "name": 1 });
         return res.status(200).json(results);
@@ -120,6 +151,10 @@ function generateRandomString(length) {
     return result.join('');
 }
 const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let password = generateRandomString(9);
     var crypto = require('crypto');
     let checkEmailadmin = yield admin_1.default.findOne({ "email": req.params.email });
@@ -165,6 +200,9 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!check_auth(req, true)) {
+            return res.status(401).json({}); //Unauthorized 
+        }
         let tarea = new tarea_1.default({
             "workerID": req.body.workerID,
             "titulo": req.body.titulo,
@@ -183,6 +221,10 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield tarea_1.default.find({ "fecha": req.params.fecha, "company": req.params.company });
         return res.status(200).json(results);
@@ -192,6 +234,10 @@ const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield tarea_1.default.deleteOne({ "_id": req.params.id });
         return res.status(200).json(results);
@@ -201,7 +247,11 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 //Actualizar name/address user a partir del id
-function updateTask(req, res) {
+const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const id = req.params.id;
     const titulo = req.body.titulo;
     const descripcion = req.body.descripcion;
@@ -244,8 +294,12 @@ function updateTask(req, res) {
         });
         return;
     }
-}
+});
 const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield admin_1.default.find({ "name": req.params.companyName });
         return res.status(200).json(results);
@@ -255,6 +309,10 @@ const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const generateCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let date = new Date();
     let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
     let checkCode = yield code_1.default.findOne({ "company": req.params.companyName, "date": fecha });
@@ -277,6 +335,10 @@ const generateCode = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield code_1.default.find({ "company": req.params.companyName, "date": req.params.date });
         return res.status(200).json(results);

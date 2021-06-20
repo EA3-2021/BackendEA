@@ -20,8 +20,12 @@ async function loginAdmin(req: Request, res: Response) {
             if(admin.password != encryptedPass) return res.status(409).json({message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try{
-                    let t = {token: createTokenAdmin(admin), _id: admin._id}
-                    return res.status(200).json(t);
+                    let t = new Token({"token": createTokenAdmin(admin), "admin": true, "workerID": admin.workerID});
+
+                    t.save().then((data) => {
+                        return res.status(201).json(data);
+                    });
+
                 } catch (err) {
                     return res.status(500).json(err);
                 }
@@ -48,12 +52,13 @@ async function loginUser(req: Request, res: Response) {
             return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
         else {
             if (user.petition == false)
-                return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
+                return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
             else {
                 try {
                     let t = new Token({
-                        "workerID": id[0]._id,
-                        "token": createTokenUser(user)
+                        "workerID": user.workerID,
+                        "token": createTokenUser(user),
+                        "admin": false
                     });
             
                     t.save().then((data) => {

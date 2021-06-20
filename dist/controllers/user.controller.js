@@ -19,6 +19,28 @@ const location_1 = __importDefault(require("../models/location"));
 const holiday_1 = __importDefault(require("../models/holiday"));
 const tarea_1 = __importDefault(require("../models/tarea"));
 const configuration_1 = __importDefault(require("../models/configuration"));
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        try {
+            let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+            if (tok == null) {
+                return false; //User is not authorized as token does not exist
+            }
+            else if (must_be_admin == true) {
+                if (tok.admin == false) {
+                    return false; //User is not authorized as he is not an admin and has to be one to use that function
+                }
+            }
+        }
+        catch (err) {
+            return false; //User is not authorized
+        }
+        return true; //User is authorized
+    });
+}
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
@@ -88,6 +110,10 @@ function generateRandomString(length) {
 }
 //Obtener todos los usuarios
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield user_1.default.find({ "company": req.params.company });
         return res.status(200).json(results);
@@ -97,9 +123,11 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
-        console.log(req.headers.authorization);
-        console.log(token_1.default.findOne({ token: req.headers.authorization }));
         const results = yield user_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
     }
@@ -162,80 +190,84 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
-function updateProfile(req, res) {
-    const workerID = req.params.workerID;
-    const name = req.body.name;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const password = req.body.password;
-    if (name != "") {
-        user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
     }
-    if (email != "") {
-        user_1.default.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+    try {
+        const workerID = req.params.workerID;
+        const name = req.body.name;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const password = req.body.password;
+        if (name != "") {
+            user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        if (email != "") {
+            user_1.default.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        if (phone != "") {
+            user_1.default.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        if (password != "") {
+            user_1.default.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
+                return res.status(201).json(data);
+            });
+        }
     }
-    if (phone != "") {
-        user_1.default.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+    catch (err) {
+        return res.status(500).json(err);
     }
-    if (password != "") {
-        user_1.default.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
-        return;
-    }
-}
+});
 //Actualizar name/address user a partir del id
-function updateUser(req, res) {
-    const id = req.params.id;
-    const name = req.body.name;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const password = req.body.password;
-    if (name != "") {
-        user_1.default.updateMany({ "_id": id }, { $set: { "name": name } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
     }
-    if (email != "") {
-        user_1.default.updateMany({ "_id": id }, { $set: { "email": email } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+    try {
+        const id = req.params.id;
+        const name = req.body.name;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const password = req.body.password;
+        if (name != "") {
+            user_1.default.updateMany({ "_id": id }, { $set: { "name": name } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (email != "") {
+            user_1.default.updateMany({ "_id": id }, { $set: { "email": email } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (phone != "") {
+            user_1.default.updateMany({ "_id": id }, { $set: { "phone": phone } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (password != "") {
+            user_1.default.updateMany({ "_id": id }, { $set: { "password": password } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
     }
-    if (phone != "") {
-        user_1.default.updateMany({ "_id": id }, { $set: { "phone": phone } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
+    catch (err) {
+        return res.status(500).json(err);
     }
-    if (password != "") {
-        user_1.default.updateMany({ "_id": id }, { $set: { "password": password } }).then((data) => {
-            res.status(201).json(data);
-        }).catch((err) => {
-            res.status(500).json(err);
-        });
-        return;
-    }
-}
+});
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield user_1.default.deleteOne({ "name": req.params.name });
         return res.status(200).json(results);
@@ -245,6 +277,10 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield tarea_1.default.find({ "workerID": req.params.workerID, "fecha": req.params.fecha });
         return res.status(200).json(results);
@@ -254,6 +290,10 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const getHolidays = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield holiday_1.default.find({ "workerID": req.params.workerID, "fechaI": req.params.fecha, "estado": true });
         return res.status(200).json(results);
@@ -264,6 +304,10 @@ const getHolidays = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 //Añadir nueva localización de un usuario
 const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         let location = new location_1.default({
             "latitude": req.body.latitude,
@@ -278,6 +322,10 @@ const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield user_1.default.find({ petition: false });
         return res.status(200).json(results);
@@ -287,6 +335,10 @@ const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     console.log(req.params.email);
     var nodemailer = require('nodemailer');
     var mail = nodemailer.createTransport({
@@ -321,6 +373,10 @@ const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     console.log(req.body.email);
     console.log(req.params.email);
     user_1.default.updateOne({ "workerID": req.params.workerID }, { $set: { "petition": true } }).then((data) => {
@@ -354,6 +410,10 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     });
 });
 const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let password = generateRandomString(9);
     var crypto = require('crypto');
     let checkEmailuser = yield user_1.default.findOne({ "email": req.params.email });
@@ -398,6 +458,10 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
     if (results) {
         try {
@@ -423,6 +487,10 @@ const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield user_1.default.find({ "company": req.params.company }, { "_id": 0, "workerID": 1 });
         return res.status(200).json(results);
@@ -432,6 +500,10 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
         return res.status(200).json(results);
@@ -441,6 +513,10 @@ const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 const acceptHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
     const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
     holiday_1.default.updateOne({ "_id": req.params.id }, { $set: { "estado": true } }).then((data) => {
@@ -474,6 +550,10 @@ const acceptHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
     const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
     console.log(resultado[0].email);
@@ -510,6 +590,10 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
     const configuration = new configuration_1.default({
         "company": resultado[0].company,

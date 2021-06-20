@@ -3,14 +3,47 @@ import Comment from "../models/comment";
 import User from "../models/user";
 import Token from "../models/token";
 
+async function check_auth(req: Request, must_be_admin: Boolean) { 
+
+    if (!req.headers.authorization) {
+        return false; //User is not authorized as request does not include a token
+    } 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if (must_be_admin == true){
+
+            if (tok.admin == false) {
+
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+
+            }
+            
+        }
+
+    } catch (err) {
+        return false; //User is not authorized
+    }
+
+    return true; //User is authorized
+
+}
+
 //Obtener todos los comentarios
 const getComments = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try{
-        if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }else if (!Token.findOne({token: req.headers.authorization})) {
-            return res.status(401).json({}); //Unauthorized
-        }
         const results = await Comment.find({"workerID": req.params.workerID});
         return res.status(200).json(results);
     } catch (err) {
@@ -19,14 +52,15 @@ const getComments = async (req: Request, res: Response) => {
 }
 
 const getCommentsAdmin = async (req: Request, res: Response) => {
-   
-   console.log(req.params.companyName);
+
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    console.log(req.params.companyName);
     try{
-        if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }else if (!Token.findOne({token: req.headers.authorization})) {
-            return res.status(401).json({}); //Unauthorized
-        }
         const results = await Comment.find({"company": req.params.companyName, "state": false});
         return res.status(200).json(results);
     } catch (err) {
@@ -37,15 +71,15 @@ const getCommentsAdmin = async (req: Request, res: Response) => {
 
 //Añadir 1 nuevo comentario
 const newComment = async (req: Request, res: Response) => {
-    
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
     console.log(resultado[0].company)
-
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
-        return res.status(401).json({}); //Unauthorized
-    } 
 
     try{
     let comment = new Comment({
@@ -64,11 +98,11 @@ const newComment = async (req: Request, res: Response) => {
 
 const deleteComment = async (req: Request, res: Response) => {
 
-        if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }else if (!Token.findOne({token: req.headers.authorization})) {
-            return res.status(401).json({}); //Unauthorized
-        }
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
 
     console.log(req.body.id);
     try{
@@ -80,11 +114,12 @@ const deleteComment = async (req: Request, res: Response) => {
 }
 
 const resolveComment = async (req: Request, res: Response) => {
-         if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }else if (!Token.findOne({token: req.headers.authorization})) {
-            return res.status(401).json({}); //Unauthorized
-        }
+
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
            
     Comment.updateMany({"_id":req.params.id}, {$set: {"state": true}}).then((data) => {
         res.status(201).json(data);
@@ -93,7 +128,5 @@ const resolveComment = async (req: Request, res: Response) => {
     })
 
 }
-
-
 
 export default {resolveComment, getCommentsAdmin, deleteComment, getComments, newComment};

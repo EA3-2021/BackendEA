@@ -13,8 +13,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const location_1 = __importDefault(require("../models/location"));
+const token_1 = __importDefault(require("../models/token"));
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+        }
+        else if (must_be_admin == true) {
+            if (tok.admin == false) {
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+            }
+        }
+        console.log(tok.admin);
+        return true; //User is authorized
+    });
+}
 //Obtener todos las localizaciones de los usuarios
 const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield location_1.default.find({});
         return res.status(200).json(results);

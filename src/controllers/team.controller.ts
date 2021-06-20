@@ -3,10 +3,42 @@ import Team from "../models/team";
 import User from "../models/user";
 import Token from "../models/token";
 
-const getTeams = async (req: Request, res: Response) => {
+async function check_auth(req: Request, must_be_admin: Boolean) { 
+
     if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return false; //User is not authorized as request does not include a token
+    } 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if (must_be_admin == true){
+
+            if (tok.admin == false) {
+
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+
+            }
+            
+        }
+
+    } catch (err) {
+        return false; //User is not authorized
+    }
+
+    return true; //User is authorized
+
+}
+
+const getTeams = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -19,11 +51,13 @@ const getTeams = async (req: Request, res: Response) => {
 }
 
 const getTeam = async (req: Request, res: Response) => {
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
+
     try{
         const results = await Team.find({"_id": req.params.id}).populate('users');
         return res.status(200).json(results);
@@ -49,9 +83,9 @@ const getTeam = async (req: Request, res: Response) => {
 
 const addUserToTeam = async (req: Request, res: Response) => {
 
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -88,9 +122,9 @@ const addUserToTeam = async (req: Request, res: Response) => {
 
 const addTeam = async (req: Request, res: Response) => {
 
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -108,9 +142,9 @@ const addTeam = async (req: Request, res: Response) => {
 
 const deleteTeam = async (req: Request, res: Response) => {
 
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -124,9 +158,9 @@ const deleteTeam = async (req: Request, res: Response) => {
 
 const deleteUserTeam = async (req: Request, res: Response) => {
 
-    if (!req.headers.authorization) {
-        return res.status(401).json({}); //Unauthorized
-    }else if (!Token.findOne({token: req.headers.authorization})) {
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
     

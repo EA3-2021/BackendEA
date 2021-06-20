@@ -8,6 +8,9 @@ const AdminSchema = new Schema({
     email: {
         type: String
     },
+    workerID: {
+        type: String
+    },
     cif: {
         type: String
     },
@@ -34,6 +37,7 @@ export interface IAdmin extends Document {
     postalCode: string;
     phone: string;
     password: string;
+    workerID: string;
 }
 
 //Exportamos modelo para poder usarlo

@@ -13,11 +13,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const clock_1 = __importDefault(require("../models/clock"));
+const token_1 = __importDefault(require("../models/token"));
 const date_fns_1 = require("date-fns");
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+        }
+        else if (must_be_admin == true) {
+            if (tok.admin == false) {
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+            }
+        }
+        console.log(tok.admin);
+        return true; //User is authorized
+    });
+}
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     console.log(req.params.clockIn);
     try {
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }
+        else if (!token_1.default.findOne({ token: req.headers.authorization })) {
+            return res.status(401).json({}); //Unauthorized
+        }
         const results = yield clock_1.default.find({ "entryDate": req.params.clockIn });
         return res.status(200).json(results);
     }
@@ -26,6 +55,10 @@ const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         let date = new Date();
         let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
@@ -46,6 +79,10 @@ const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let date1 = new Date();
     let fecha1 = date_fns_1.format(new Date(date1), "d-M-yyyy");
     let hora1 = date_fns_1.format(new Date(date1), "HH:mm");
