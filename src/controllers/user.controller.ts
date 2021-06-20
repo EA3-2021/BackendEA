@@ -91,6 +91,8 @@ const getUsers = async (req: Request, res: Response) => {
 
 const getUser = async (req: Request, res: Response) => {
     try{
+
+        console.log(req.headers.authorization);
         const results = await User.find({"workerID": req.params.workerID});
         return res.status(200).json(results);
     } catch (err) {

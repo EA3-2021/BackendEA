@@ -79,16 +79,17 @@ function loginUser(req, res) {
     }
 }*/
 function createTokenAdmin(admin) {
-    const expirationTime = 3600; //1h
+    const expirationTime = 604800; //1 week
     return jsonwebtoken_1.default.sign({ id: admin.id, name: admin.name, email: admin.email }, config_1.default.jwtSecret, {
         expiresIn: expirationTime
     });
 }
 function createTokenUser(user) {
-    const expirationTime = 3600; //1h
-    return jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email }, config_1.default.jwtSecret, {
+    const expirationTime = 604800; //1 week
+    var token = jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email }, config_1.default.jwtSecret, {
         expiresIn: expirationTime
     });
+    return token;
 }
 /*function decodeToken(token: string){
     return jwt.decode(token, {json: true});

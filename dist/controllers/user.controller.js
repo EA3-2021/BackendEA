@@ -97,6 +97,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.headers.authorization);
         const results = yield user_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
     }

@@ -72,17 +72,20 @@ async function loginAdmin(req: Request, res: Response) {
 }*/
 
 function createTokenAdmin(admin: IAdmin){
-    const expirationTime = 3600; //1h
+    const expirationTime = 604800; //1 week
     return jwt.sign({id:admin.id, name: admin.name, email: admin.email}, config.jwtSecret, {
         expiresIn: expirationTime
     });
 }
 
 function createTokenUser(user: IUser){
-    const expirationTime = 3600; //1h
-    return jwt.sign({id:user.id, name: user.name, email: user.email}, config.jwtSecret, {
+    const expirationTime = 604800; //1 week
+    
+    var token = jwt.sign({id:user.id, name: user.name, email: user.email}, config.jwtSecret, {
         expiresIn: expirationTime
     });
+
+    return token;
 }
 
 /*function decodeToken(token: string){ 
