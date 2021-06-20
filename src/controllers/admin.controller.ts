@@ -4,6 +4,8 @@ import User from "../models/user";
 import Location from "../models/location";
 import Configuration from "../models/configuration";
 import Tarea from "../models/tarea";
+import Code from "../models/code";
+import {format} from "date-fns";
 
     async function registerAdmin(req:Request, res:Response) {
         let admin = req.body;
@@ -256,5 +258,38 @@ import Tarea from "../models/tarea";
         }
     }
 
+    const generateCode = async (req:Request, res:Response) => {
+
+        let date: Date = new Date();
+        let fecha = format(new Date(date), "d-M-yyyy");
+        let checkCode = await Code.findOne({"company": req.params.companyName, "date": fecha});
+
+        if(checkCode) return res.status(409).json({code: 409, message: "The code is already generated for today"});
+        else {
+            try{  
+                let u = new Code({
+                    "company": req.params.companyName,
+                    "date": fecha,
+                    "code": generateRandomString(12)
+                });
+
+                u.save().then((data) => {
+                    return res.status(201).json(data);
+                 });
+            } catch(err) {
+                return res.status(500).json(err);
+            }
+        }
+    }
+
+    const getCode = async (req: Request, res: Response) => {
+        try{
+            const results = await Code.find({"company": req.params.companyName, "date": req.params.date});
+            return res.status(200).json(results);
+        } catch (err) {
+            return res.status(404).json(err);
+        }
+    }
     
-export default {getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};
+    
+export default {getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};

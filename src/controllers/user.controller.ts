@@ -463,35 +463,6 @@ const holidayRequest = async (req: Request, res: Response) => {
             return res.status(404).json(err);
         }
     }
-/*
-    //Fichar entrada trabajo
-    const clockIn = async (req: Request, res: Response) => {
-        try{
-        let clock = new clock({
-            "clockIn" : req.body.clockIn
-        });
-        clockIn.save().then((data) => {
-            return res.status(201).json(data);
-        });
-        } catch(err) {
-            return res.status(500).json(err);
-        }
-    }
-
-    //Fichar salida trabajo
-    const clockOut = async (req: Request, res: Response) => {
-        try{
-        let clock = new clock({
-            "clockout" : req.body.clockOut
-        });
-        clockOut.save().then((data) => {
-            return res.status(201).json(data);
-        });
-        } catch(err) {
-            return res.status(500).json(err);
-        }
-    }
-*/
 
 const getHolidayPending = async (req: Request, res: Response) => {
     try{
@@ -605,4 +576,4 @@ const updateConfiguation = async (req: Request, res: Response) => {
 }
 
 export default {updateConfiguation, updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, newUser, updateUser, deleteUser,
-newLocation, getWorkerID, holidayRequest /*,clockIn, clockOut*/};
+newLocation, getWorkerID, holidayRequest };
