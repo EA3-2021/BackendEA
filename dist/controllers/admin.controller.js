@@ -17,6 +17,8 @@ const user_1 = __importDefault(require("../models/user"));
 const location_1 = __importDefault(require("../models/location"));
 const configuration_1 = __importDefault(require("../models/configuration"));
 const tarea_1 = __importDefault(require("../models/tarea"));
+const code_1 = __importDefault(require("../models/code"));
+const date_fns_1 = require("date-fns");
 function registerAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin = req.body;
@@ -252,4 +254,35 @@ const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-exports.default = { getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };
+const generateCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let date = new Date();
+    let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
+    let checkCode = yield code_1.default.findOne({ "company": req.params.companyName, "date": fecha });
+    if (checkCode)
+        return res.status(409).json({ code: 409, message: "The code is already generated for today" });
+    else {
+        try {
+            let u = new code_1.default({
+                "company": req.params.companyName,
+                "date": fecha,
+                "code": generateRandomString(12)
+            });
+            u.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch (err) {
+            return res.status(500).json(err);
+        }
+    }
+});
+const getCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield code_1.default.find({ "company": req.params.companyName, "date": req.params.date });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };

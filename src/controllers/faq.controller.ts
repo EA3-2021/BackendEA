@@ -1,5 +1,6 @@
 import { Request, Response} from "express";
 import Faq from "../models/faq"
+import Token from "../models/token";
 
 //Obtener todos los usuarios
 const getFaqs = async (req: Request, res: Response) => {
@@ -23,6 +24,12 @@ const getFaq = async (req: Request, res: Response) => {
 
 //Añadir 1 nuevo usuario
 const newFaq = async (req: Request, res: Response) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try{
     let user = new Faq({
         "title" : req.body.title,
@@ -40,6 +47,12 @@ function updateFaq (req: Request, res: Response){
     const id: string = req.params.id;
     const title: string = req.body.title;
     const content: string = req.body.content;
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
 
     if (title != ""){
         Faq.updateMany({"_id": id}, {$set: {"title": title}}).then((data) => {
@@ -60,6 +73,12 @@ function updateFaq (req: Request, res: Response){
 }
 
 const deleteFaq = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try{
         const results = await Faq.deleteOne({"title": req.params.title});
         return res.status(200).json(results);

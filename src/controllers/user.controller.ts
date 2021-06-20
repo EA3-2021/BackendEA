@@ -1,5 +1,6 @@
 import { Request, Response} from "express";
 import User from "../models/user";
+import Token from "../models/token";
 import Admin from "../models/admin";
 import Location from "../models/location";
 import Holiday from "../models/holiday";
@@ -91,6 +92,13 @@ const getUsers = async (req: Request, res: Response) => {
 
 const getUser = async (req: Request, res: Response) => {
     try{
+
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }else if (!Token.findOne({token: req.headers.authorization})) {
+            return res.status(401).json({}); //Unauthorized
+        }
+
         const results = await User.find({"workerID": req.params.workerID});
         return res.status(200).json(results);
     } catch (err) {
@@ -276,6 +284,12 @@ const getHolidays = async (req: Request, res: Response) => {
 //Añadir nueva localización de un usuario
 const newLocation = async (req: Request, res: Response) => {
     try{
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }else if (!Token.findOne({token: req.headers.authorization})) {
+            return res.status(401).json({}); //Unauthorized
+        }
+
     let location = new Location({
         "latitude" : req.body.latitude,
         "longitude" : req.body.longitude
@@ -290,6 +304,12 @@ const newLocation = async (req: Request, res: Response) => {
 
 const registerRequests = async (req: Request, res: Response) => {
     try{
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }else if (!Token.findOne({token: req.headers.authorization})) {
+            return res.status(401).json({}); //Unauthorized
+        }
+
         const results = await User.find({petition: false});
         return res.status(200).json(results);
     } catch (err) {
@@ -298,6 +318,11 @@ const registerRequests = async (req: Request, res: Response) => {
 }
 
 const deleteRegisterRequest = async (req: Request, res: Response) => {
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }else if (!Token.findOne({token: req.headers.authorization})) {
+            return res.status(401).json({}); //Unauthorized
+        }
 
     console.log (req.params.email);
 
@@ -338,6 +363,12 @@ const deleteRegisterRequest = async (req: Request, res: Response) => {
 }
 
 const acceptRegisterRequest = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
     
     console.log(req.body.email);
     console.log(req.params.email);
@@ -378,6 +409,12 @@ const acceptRegisterRequest = async (req: Request, res: Response) => {
 }
 
 const getPasswordUser = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
 
     let password = generateRandomString(9);
     var crypto = require('crypto');
@@ -428,6 +465,12 @@ const getPasswordUser = async (req: Request, res: Response) => {
 
 const holidayRequest = async (req: Request, res: Response) => {
 
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     let results = await User.findOne({"workerID": req.body.workerID});
     if(results){  
         try{
@@ -453,8 +496,15 @@ const holidayRequest = async (req: Request, res: Response) => {
     }
 }
 
-    const getWorkerID = async (req: Request, res: Response) => {
+const getWorkerID = async (req: Request, res: Response) => {
+
+        
         try{
+            if (!req.headers.authorization) {
+                return res.status(401).json({}); //Unauthorized
+            }else if (!Token.findOne({token: req.headers.authorization})) {
+                return res.status(401).json({}); //Unauthorized
+            }
             const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
             return res.status(200).json(results);
         } catch (err) {
@@ -464,6 +514,12 @@ const holidayRequest = async (req: Request, res: Response) => {
 
 const getHolidayPending = async (req: Request, res: Response) => {
     try{
+        if (!req.headers.authorization) {
+            return res.status(401).json({}); //Unauthorized
+        }else if (!Token.findOne({token: req.headers.authorization})) {
+            return res.status(401).json({}); //Unauthorized
+        }
+
         const results = await Holiday.find({"company": req.params.company, "estado": false});
         return res.status(200).json(results);
     } catch (err) {
@@ -472,7 +528,13 @@ const getHolidayPending = async (req: Request, res: Response) => {
 }
 
 const acceptHoliday = async (req: Request, res: Response) => {
-    
+        
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     const results = await Holiday.find({"_id": req.params.id},{ "_id": 0, "workerID": 1});
     const resultado = await User.find({"workerID": results[0].workerID},{ "_id": 0, "email": 1});
 
@@ -513,6 +575,12 @@ const acceptHoliday = async (req: Request, res: Response) => {
 }
 
 const refuseHoliday = async (req: Request, res: Response) => {
+
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
 
     const results = await Holiday.find({"_id": req.params.id},{ "_id": 0, "workerID": 1});
     const resultado = await User.find({"workerID": results[0].workerID},{ "_id": 0, "email": 1});
@@ -555,7 +623,13 @@ const refuseHoliday = async (req: Request, res: Response) => {
 }
 
 const updateConfiguation = async (req: Request, res: Response) => {
-   
+    
+    if (!req.headers.authorization) {
+        return res.status(401).json({}); //Unauthorized
+    }else if (!Token.findOne({token: req.headers.authorization})) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
    
     const configuration = new Configuration({

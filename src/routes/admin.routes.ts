@@ -14,6 +14,8 @@ router.get('/taskall/:fecha/:company', adminController.getTask);
 router.delete('/droptask/:id',adminController.deleteTask);
 router.put('/updatetask/:id',adminController.updateTask);
 router.get('/profile/:companyName', adminController.getAdmin);
+router.post('/generate/code/:companyName', adminController.generateCode);
+router.get('/getCode/:companyName/:date', adminController.getCode);
 
 
 // Exportamos router para usar rutas en app.ts

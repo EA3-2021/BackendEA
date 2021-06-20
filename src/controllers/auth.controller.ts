@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import User, { IUser } from "../models/user"
 import Admin, { IAdmin } from "../models/admin"
+import Token from "../models/token"
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
-
-let t: string;
 
 async function loginAdmin(req: Request, res: Response) {
     let admin;
@@ -33,6 +32,7 @@ async function loginAdmin(req: Request, res: Response) {
 async function loginUser(req: Request, res: Response) {
     let user;
 
+    const id = await User.find({"workerID": req.body.workerID},{ "_id": 1});
     const workerID = req.body.workerID;
     const password = req.body.password;
 
@@ -51,12 +51,17 @@ async function loginUser(req: Request, res: Response) {
                 return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
             else {
                 try {
-                    t =  createTokenUser(user);
-                    return res.status(200).json(t);
-                }
-                catch (err) {
-                    return res.status(500).json(err);
-                }
+                    let t = new Token({
+                        "workerID": id[0]._id,
+                        "token": createTokenUser(user)
+                    });
+            
+                    t.save().then((data) => {
+                        return res.status(201).json(data);
+                    });
+                    } catch(err) {
+                        return res.status(500).json(err);
+                    }
             }
             
         }
@@ -64,26 +69,28 @@ async function loginUser(req: Request, res: Response) {
 }
 
 function createTokenAdmin(admin: IAdmin){
-    const expirationTime = 3600; //1h
+    const expirationTime = 604800; //1 week
     return jwt.sign({id:admin.id, name: admin.name, email: admin.email}, config.jwtSecret, {
         expiresIn: expirationTime
     });
 }
 
 function createTokenUser(user: IUser){
-    const expirationTime = 3600; //1h
-    return jwt.sign({id:user.id, name: user.name, email: user.email}, config.jwtSecret, {
+    const expirationTime = 604800; //1 week
+    
+    var token = jwt.sign({id:user.id, name: user.name, email: user.email}, config.jwtSecret, {
         expiresIn: expirationTime
     });
+
+    return token;
 }
 
 function decodeToken(token: string){ 
     return jwt.decode(token, {json: true});
 }
 
-async function signoutUser(req:Request, res:Response){
-    console.log(t);
-    let t1 = decodeToken(req.body.token);
+const signoutUser = async (req: Request, res: Response) => {
+    let t1 = decodeToken(req.params.token);
     let user = await User.findOne({"_id": t1?.id});
     if(!user) return res.status(404).json({message: "User not found"});
     else {
