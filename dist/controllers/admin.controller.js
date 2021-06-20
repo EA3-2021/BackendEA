@@ -25,14 +25,19 @@ function check_auth(req, must_be_admin) {
         if (!req.headers.authorization) {
             return false; //User is not authorized as request does not include a token
         }
-        let tok = yield token_1.default.findOne({ token: req.headers.authorization });
-        if (tok == null) {
-            return false; //User is not authorized as token does not exist
-        }
-        else if (must_be_admin == true) {
-            if (tok.admin == false) {
-                return false; //User is not authorized as he is not an admin and has to be one to use that function
+        try {
+            let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+            if (tok == null) {
+                return false; //User is not authorized as token does not exist
             }
+            else if (must_be_admin == true) {
+                if (tok.admin == false) {
+                    return false; //User is not authorized as he is not an admin and has to be one to use that function
+                }
+            }
+        }
+        catch (err) {
+            return false; //User is not authorized
         }
         return true; //User is authorized
     });
@@ -151,10 +156,6 @@ function generateRandomString(length) {
     return result.join('');
 }
 const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
     let password = generateRandomString(9);
     var crypto = require('crypto');
     let checkEmailadmin = yield admin_1.default.findOne({ "email": req.params.email });
@@ -199,10 +200,11 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
-        if (!check_auth(req, true)) {
-            return res.status(401).json({}); //Unauthorized 
-        }
         let tarea = new tarea_1.default({
             "workerID": req.body.workerID,
             "titulo": req.body.titulo,
@@ -221,7 +223,7 @@ const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    const auth = yield check_auth(req, false);
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }

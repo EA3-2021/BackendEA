@@ -136,6 +136,10 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     let user = req.body;
     let checkEmail = yield user_1.default.findOne({ "email": user.email });
     let checkEmail1 = yield admin_1.default.findOne({ "email": user.email });
@@ -228,7 +232,7 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 //Actualizar name/address user a partir del id
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    const auth = yield check_auth(req, true);
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
@@ -322,7 +326,7 @@ const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    const auth = yield check_auth(req, false);
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
@@ -410,10 +414,6 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     });
 });
 const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
     let password = generateRandomString(9);
     var crypto = require('crypto');
     let checkEmailuser = yield user_1.default.findOne({ "email": req.params.email });
