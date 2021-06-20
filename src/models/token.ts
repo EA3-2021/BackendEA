@@ -2,18 +2,18 @@ import mongoose, { Schema, Document} from 'mongoose';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const TokenSchema = new Schema({
-    id: {
+    workerID: {
         type: String
     },
-    token: {
+    patata: {
         type: String
     }
 });
 
 //Interfaz para tratar respuesta como documento
 export interface IToken extends Document {
-    id: string;
-    token: string;
+    workerID: string;
+    patata: string;
 }
 
 //Exportamos modelo para poder usarlo

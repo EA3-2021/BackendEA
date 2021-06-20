@@ -52,8 +52,8 @@ async function loginUser(req: Request, res: Response) {
             else {
                 try {
                     let t = new Token({
-                        "id": id[0]._id,
-                        "token": createTokenUser(user)
+                        "workerID": id[0]._id,
+                        "patata": createTokenUser(user)
                     });
             
                     t.save().then((data) => {
@@ -86,8 +86,8 @@ function decodeToken(token: string){
     return jwt.decode(token, {json: true});
 }
 
-async function signoutUser(req:Request, res:Response){
-    let t1 = decodeToken(req.body.token);
+const signoutUser = async (req: Request, res: Response) => {
+    let t1 = decodeToken(req.params.token);
     let user = await User.findOne({"_id": t1?.id});
     if(!user) return res.status(404).json({message: "User not found"});
     else {
