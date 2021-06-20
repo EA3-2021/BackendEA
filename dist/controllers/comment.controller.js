@@ -14,8 +14,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const comment_1 = __importDefault(require("../models/comment"));
 const user_1 = __importDefault(require("../models/user"));
+const token_1 = __importDefault(require("../models/token"));
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+        }
+        else if (must_be_admin == true) {
+            if (tok.admin == false) {
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+            }
+        }
+        console.log(tok.admin);
+        return true; //User is authorized
+    });
+}
 //Obtener todos los comentarios
 const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield comment_1.default.find({ "workerID": req.params.workerID });
         return res.status(200).json(results);
@@ -25,6 +48,10 @@ const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getCommentsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     console.log(req.params.companyName);
     try {
         const results = yield comment_1.default.find({ "company": req.params.companyName, "state": false });
@@ -36,6 +63,10 @@ const getCommentsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 //Añadir 1 nuevo comentario
 const newComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
     console.log(resultado[0].company);
     try {
@@ -54,6 +85,10 @@ const newComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     console.log(req.body.id);
     try {
         const results = yield comment_1.default.deleteOne({ "_id": req.params.id });
@@ -64,6 +99,10 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 const resolveComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, true);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
     comment_1.default.updateMany({ "_id": req.params.id }, { $set: { "state": true } }).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {

@@ -28,6 +28,9 @@ const AdminSchema = new mongoose_1.Schema({
     email: {
         type: String
     },
+    workerID: {
+        type: String
+    },
     cif: {
         type: String
     },
