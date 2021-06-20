@@ -36,7 +36,7 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 
 const getTeams = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized

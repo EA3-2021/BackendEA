@@ -145,6 +145,12 @@ const getUser = async (req: Request, res: Response) => {
 
 const newUser = async (req: Request, res: Response) => {
  
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     let user = req.body;
     let checkEmail = await User.findOne({"email": user.email});
     let checkEmail1 = await Admin.findOne({"email": user.email});
@@ -254,7 +260,7 @@ const updateProfile = async(req: Request, res: Response) => {
 //Actualizar name/address user a partir del id
 const updateUser = async(req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
@@ -371,7 +377,7 @@ const newLocation = async (req: Request, res: Response) => {
 
 const registerRequests = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
@@ -478,12 +484,6 @@ const acceptRegisterRequest = async (req: Request, res: Response) => {
 }
 
 const getPasswordUser = async (req: Request, res: Response) => {
-
-    const auth = await check_auth(req, false);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
 
     let password = generateRandomString(9);
     var crypto = require('crypto');
@@ -701,6 +701,7 @@ const updateConfiguation = async (req: Request, res: Response) => {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
+    
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
    
     const configuration = new Configuration({

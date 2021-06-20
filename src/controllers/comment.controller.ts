@@ -98,7 +98,7 @@ const newComment = async (req: Request, res: Response) => {
 
 const deleteComment = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized

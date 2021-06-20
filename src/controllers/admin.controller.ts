@@ -168,12 +168,6 @@ function generateRandomString(length: number) {
 
 const getPasswordAdmin = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
     let password = generateRandomString(9);
     var crypto = require('crypto');
     let checkEmailadmin = await Admin.findOne({"email": req.params.email});
@@ -222,31 +216,35 @@ const getPasswordAdmin = async (req: Request, res: Response) => {
 }
 
 const newTask = async (req: Request, res: Response) => {
-    try{
-        if (!check_auth(req, true)) {
-            return res.status(401).json({}); //Unauthorized 
-        }
 
-    let tarea = new Tarea({
-        "workerID" : req.body.workerID,
-        "titulo" : req.body.titulo,
-        "descripcion" : req.body.descripcion,
-        "fecha":req.body.fecha,
-        "horaI" : req.body.horaI,
-        "horaF" : req.body.horaF,
-        "company" : req.body.company
-    });
-    tarea.save().then((data) => {
-        return res.status(201).json(data);
-    });
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    try{
+        let tarea = new Tarea({
+            "workerID" : req.body.workerID,
+            "titulo" : req.body.titulo,
+            "descripcion" : req.body.descripcion,
+            "fecha":req.body.fecha,
+            "horaI" : req.body.horaI,
+            "horaF" : req.body.horaF,
+            "company" : req.body.company
+        });
+        tarea.save().then((data) => {
+            return res.status(201).json(data);
+        });
     } catch(err) {
         return res.status(500).json(err);
     }
+
 }
 
 const getTask = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
