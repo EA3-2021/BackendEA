@@ -17,6 +17,28 @@ const admin_1 = __importDefault(require("../models/admin"));
 const token_1 = __importDefault(require("../models/token"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
+function check_auth(req, must_be_admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.headers.authorization) {
+            return false; //User is not authorized as request does not include a token
+        }
+        try {
+            let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+            if (tok == null) {
+                return false; //User is not authorized as token does not exist
+            }
+            else if (must_be_admin == true) {
+                if (tok.admin == false) {
+                    return false; //User is not authorized as he is not an admin and has to be one to use that function
+                }
+            }
+        }
+        catch (err) {
+            return false; //User is not authorized
+        }
+        return true; //User is authorized
+    });
+}
 function loginAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin;
@@ -32,6 +54,7 @@ function loginAdmin(req, res) {
                 return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try {
+                    token_1.default.deleteMany({ "workerID": admin.workerID });
                     let t = new token_1.default({ "token": createTokenAdmin(admin), "admin": true, "workerID": admin.workerID });
                     t.save().then((data) => {
                         return res.status(201).json(data);
@@ -62,6 +85,7 @@ function loginUser(req, res) {
                 if (user.petition == false)
                     return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
                 else {
+                    token_1.default.remove({ "workerID": user.workerID });
                     try {
                         let t = new token_1.default({
                             "workerID": user.workerID,
@@ -93,13 +117,12 @@ function createTokenUser(user) {
     });
     return token;
 }
-function decodeToken(token) {
-    return jsonwebtoken_1.default.decode(token, { json: true });
-}
 const signoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let t1 = decodeToken(req.params.token);
-    let user = yield user_1.default.findOne({ "_id": t1 === null || t1 === void 0 ? void 0 : t1.id });
-    if (!user)
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    if (!token_1.default.deleteOne({ "token": req.body.token }))
         return res.status(404).json({ message: "User not found" });
     else {
         return res.status(200).json({ message: "Usuario desconectado" });

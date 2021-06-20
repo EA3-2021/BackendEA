@@ -5,6 +5,38 @@ import Token from "../models/token"
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
+async function check_auth(req: Request, must_be_admin: Boolean) { 
+
+    if (!req.headers.authorization) {
+        return false; //User is not authorized as request does not include a token
+    } 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if (must_be_admin == true){
+
+            if (tok.admin == false) {
+
+                return false; //User is not authorized as he is not an admin and has to be one to use that function
+
+            }
+            
+        }
+
+    } catch (err) {
+        return false; //User is not authorized
+    }
+
+    return true; //User is authorized
+
+}
+
+
 async function loginAdmin(req: Request, res: Response) {
     let admin;
         const name = req.body.name;
@@ -20,6 +52,8 @@ async function loginAdmin(req: Request, res: Response) {
             if(admin.password != encryptedPass) return res.status(409).json({message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try{
+                    Token.deleteMany({"workerID": admin.workerID});
+
                     let t = new Token({"token": createTokenAdmin(admin), "admin": true, "workerID": admin.workerID});
 
                     t.save().then((data) => {
@@ -54,7 +88,12 @@ async function loginUser(req: Request, res: Response) {
             if (user.petition == false)
                 return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
             else {
+
+                Token.deleteMany({"workerID": workerID});
+
                 try {
+
+                    
                     let t = new Token({
                         "workerID": user.workerID,
                         "token": createTokenUser(user),
@@ -90,17 +129,19 @@ function createTokenUser(user: IUser){
     return token;
 }
 
-function decodeToken(token: string){ 
-    return jwt.decode(token, {json: true});
-}
-
 const signoutUser = async (req: Request, res: Response) => {
-    let t1 = decodeToken(req.params.token);
-    let user = await User.findOne({"_id": t1?.id});
-    if(!user) return res.status(404).json({message: "User not found"});
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    if(!Token.deleteOne({"token": req.body.token})) return res.status(404).json({message: "User not found"});
     else {
         return res.status(200).json({message: "Usuario desconectado"});
     }
+
 }
 
 /*async function setOnlineStatus(id: String, value: boolean){
