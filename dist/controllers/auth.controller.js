@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const admin_1 = __importDefault(require("../models/admin"));
+const token_1 = __importDefault(require("../models/token"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
-let t;
 function loginAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let admin;
@@ -45,6 +45,7 @@ function loginAdmin(req, res) {
 function loginUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user;
+        const id = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 1 });
         const workerID = req.body.workerID;
         const password = req.body.password;
         var crypto = require('crypto');
@@ -60,8 +61,13 @@ function loginUser(req, res) {
                     return res.status(409).json({ message: "Registrartion petition don't accepted yet by the Admin" });
                 else {
                     try {
-                        t = createTokenUser(user);
-                        return res.status(200).json(t);
+                        let t = new token_1.default({
+                            "workerID": id[0]._id,
+                            "patata": createTokenUser(user)
+                        });
+                        t.save().then((data) => {
+                            return res.status(201).json(data);
+                        });
                     }
                     catch (err) {
                         return res.status(500).json(err);
@@ -86,18 +92,16 @@ function createTokenUser(user) {
 function decodeToken(token) {
     return jsonwebtoken_1.default.decode(token, { json: true });
 }
-function signoutUser(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log(t);
-        let t1 = decodeToken(req.body.token);
-        let user = yield user_1.default.findOne({ "_id": t1 === null || t1 === void 0 ? void 0 : t1.id });
-        if (!user)
-            return res.status(404).json({ message: "User not found" });
-        else {
-            return res.status(200).json({ message: "Usuario desconectado" });
-        }
-    });
-}
+const signoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let t1 = decodeToken(req.params.token);
+    console.log(req.params.token);
+    let user = yield user_1.default.findOne({ "_id": t1 === null || t1 === void 0 ? void 0 : t1.id });
+    if (!user)
+        return res.status(404).json({ message: "User not found" });
+    else {
+        return res.status(200).json({ message: "Usuario desconectado" });
+    }
+});
 /*async function setOnlineStatus(id: String, value: boolean){
     await User.updateOne({"_id":id}, {$set: {"online":value}});
                     

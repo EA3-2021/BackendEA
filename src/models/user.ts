@@ -25,9 +25,6 @@ const UserSchema = new Schema({
     },
     insignias: {
         type: Array
-    },
-    token: {
-        type: String
     }
 });
 
@@ -41,7 +38,6 @@ export interface IUser extends Document {
     workerID: string;
     petition: boolean;
     insignias: Array<String>;
-    token: string;
 }
 
 //Exportamos modelo para poder usarlo

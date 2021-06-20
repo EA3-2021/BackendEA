@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/login-admin', authController.loginAdmin);
 router.post('/loginUser', authController.loginUser);
-router.put('/signoutUser', authController.signoutUser);
+router.put('/signoutUser/:token', authController.signoutUser);
 
 // Exportamos router para usar rutas en app.ts
 export default router;
