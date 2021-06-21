@@ -349,4 +349,54 @@ const getCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-exports.default = { getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };
+const updateAdminProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    try {
+        console.log(req.params.companyName);
+        const cif = req.body.cif;
+        const name = req.params.companyName;
+        const mail = req.body.mail;
+        const phone = req.body.phone;
+        const password = req.body.password;
+        const address = req.body.address;
+        const postalCode = req.body.postalCode;
+        if (cif != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "cif": cif } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (mail != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "email": mail } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (phone != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "phone": phone } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (password != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "password": password } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (address != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "address": address } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        if (postalCode != "") {
+            admin_1.default.updateMany({ "name": name }, { $set: { "postalCode": postalCode } }).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+    }
+    catch (err) {
+        return res.status(500).json(err);
+    }
+});
+exports.default = { updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin };

@@ -19,5 +19,6 @@ router.put('/updatetask/:id', admin_controller_1.default.updateTask);
 router.get('/profile/:companyName', admin_controller_1.default.getAdmin);
 router.post('/generate/code/:companyName', admin_controller_1.default.generateCode);
 router.get('/getCode/:companyName/:date', admin_controller_1.default.getCode);
+router.put('/updateAdminProfile/:companyName', admin_controller_1.default.updateAdminProfile);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

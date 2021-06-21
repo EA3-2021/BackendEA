@@ -7,6 +7,7 @@ import Tarea from "../models/tarea";
 import Code from "../models/code";
 import Token from "../models/token";
 import {format} from "date-fns";
+import admin from "../models/admin";
 
 async function check_auth(req: Request, must_be_admin: Boolean) { 
 
@@ -395,6 +396,69 @@ const getCode = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
+
+const updateAdminProfile = async(req: Request, res: Response) => {
+
+    /*const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+
+    try {
+
+        console.log(req.params.companyName);
+
+        const cif: string = req.body.cif;
+        const name: string = req.params.companyName;
+        const mail: string = req.body.mail;
+        const phone: string = req.body.phone;
+        const password: string = req.body.password;
+        const address: string = req.body.address;
+        const postalCode: string = req.body.postalCode;
+
+        if (cif != ""){
+            Admin.updateMany({"name": name}, {$set: {"cif": cif}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+
+        if (mail != ""){
+            Admin.updateMany({"name": name}, {$set: {"email": mail}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+        
+        if (phone != ""){
+            Admin.updateMany({"name": name}, {$set: {"phone": phone}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+
+        if (password != ""){
+            Admin.updateMany({"name": name}, {$set: {"password": password}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+
+        if (address != ""){
+            Admin.updateMany({"name": name}, {$set: {"address": address}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+
+        if (postalCode != ""){
+            Admin.updateMany({"name": name}, {$set: {"postalCode": postalCode}}).then((data) => {
+                res.status(201).json(data);
+            });
+        }
+
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+
+}
+
     
     
-export default {getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};
+export default {updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};

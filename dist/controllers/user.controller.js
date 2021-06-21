@@ -41,6 +41,25 @@ function check_auth(req, must_be_admin) {
         return true; //User is authorized
     });
 }
+function check_self(req, workerID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+            if (tok == null) {
+                return false; //User is not authorized as token does not exist
+            }
+            else if ((tok.workerID == workerID) || tok.admin) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (err) {
+            return false; //User is not authorized
+        }
+    });
+}
 function registerUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user = req.body;
@@ -199,6 +218,10 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
+    const sel = yield check_self(req, req.params.workerID);
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const workerID = req.params.workerID;
         const name = req.body.name;
@@ -285,6 +308,10 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
+    const sel = yield check_self(req, req.params.workerID);
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }
     try {
         const results = yield tarea_1.default.find({ "workerID": req.params.workerID, "fecha": req.params.fecha });
         return res.status(200).json(results);
@@ -296,6 +323,10 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const getHolidays = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    const sel = yield check_self(req, req.params.workerID);
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     try {
@@ -326,7 +357,7 @@ const newLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const registerRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    const auth = yield check_auth(req, true);
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
@@ -343,7 +374,6 @@ const deleteRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    console.log(req.params.email);
     var nodemailer = require('nodemailer');
     var mail = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -381,8 +411,6 @@ const acceptRegisterRequest = (req, res) => __awaiter(void 0, void 0, void 0, fu
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    console.log(req.body.email);
-    console.log(req.params.email);
     user_1.default.updateOne({ "workerID": req.params.workerID }, { $set: { "petition": true } }).then((data) => {
         res.status(201).json(data);
         var nodemailer = require('nodemailer');
@@ -460,6 +488,10 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    const sel = yield check_self(req, req.body.workerID);
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
@@ -592,6 +624,10 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    const sel = yield check_self(req, req.body.workerID);
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
