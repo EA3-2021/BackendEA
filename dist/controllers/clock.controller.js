@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const clock_1 = __importDefault(require("../models/clock"));
 const token_1 = __importDefault(require("../models/token"));
+const code_1 = __importDefault(require("../models/code"));
 const date_fns_1 = require("date-fns");
 function check_auth(req, must_be_admin) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -63,23 +64,29 @@ const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    try {
-        let date = new Date();
-        let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
-        let hora = date_fns_1.format(new Date(date), "HH:mm");
-        let c = new clock_1.default({
-            "workerID": req.params.workerID,
-            "entryDate": fecha,
-            "entryTime": hora,
-            "exitDate": "",
-            "exitTime": ""
-        });
-        c.save().then((data) => {
-            return res.status(201).json(data);
-        });
+    let checkCode = yield code_1.default.findOne({ "code": req.params.code });
+    if (checkCode) {
+        try {
+            let date = new Date();
+            let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
+            let hora = date_fns_1.format(new Date(date), "HH:mm");
+            let c = new clock_1.default({
+                "workerID": req.params.workerID,
+                "entryDate": fecha,
+                "entryTime": hora,
+                "exitDate": "",
+                "exitTime": ""
+            });
+            c.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        }
+        catch (err) {
+            return res.status(500).json(err);
+        }
     }
-    catch (err) {
-        return res.status(500).json(err);
+    else {
+        return res.status(409).json({ code: 409, message: "Incorrect clock-in code" });
     }
 });
 const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

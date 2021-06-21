@@ -85,7 +85,6 @@ function loginUser(req, res) {
                 if (user.petition == false)
                     return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
                 else {
-                    token_1.default.deleteMany({ "workerID": workerID });
                     const tokdel = yield token_1.default.deleteMany({ 'workerID': user.workerID });
                     try {
                         let t = new token_1.default({

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Clock from "../models/clock"
 import Token from "../models/token";
+import Code from "../models/code";
 import {format} from "date-fns";
 
 async function check_auth(req: Request, must_be_admin: Boolean) { 
@@ -67,23 +68,30 @@ const clockIn = async (req: Request, res: Response) => {
         return res.status(401).json({}); //Unauthorized
     }
 
-    try{
-        let date: Date = new Date();
-        let fecha = format(new Date(date), "d-M-yyyy");
-        let hora = format(new Date(date), "HH:mm");
+    let checkCode = await Code.findOne({"code": req.params.code});
 
-        let c = new Clock({
-            "workerID": req.params.workerID,
-            "entryDate": fecha,
-            "entryTime": hora,
-            "exitDate": "",
-            "exitTime": ""
-        });
-        c.save().then((data) => {
-            return res.status(201).json(data);
-        });
-    } catch(err) {
-        return res.status(500).json(err);
+    if(checkCode) {
+        try{
+            let date: Date = new Date();
+            let fecha = format(new Date(date), "d-M-yyyy");
+            let hora = format(new Date(date), "HH:mm");
+
+            let c = new Clock({
+                "workerID": req.params.workerID,
+                "entryDate": fecha,
+                "entryTime": hora,
+                "exitDate": "",
+                "exitTime": ""
+            });
+            c.save().then((data) => {
+                return res.status(201).json(data);
+            });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+    else {
+        return res.status(409).json({code: 409, message: "Incorrect clock-in code"});
     }
 }
 
