@@ -54,7 +54,7 @@ function loginAdmin(req, res) {
                 return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
             else {
                 try {
-                    token_1.default.deleteMany({ "workerID": admin.workerID });
+                    const tokdel = yield token_1.default.deleteMany({ 'workerID': admin.workerID });
                     let t = new token_1.default({ "token": createTokenAdmin(admin), "admin": true, "workerID": admin.workerID });
                     t.save().then((data) => {
                         return res.status(201).json(data);
@@ -86,6 +86,7 @@ function loginUser(req, res) {
                     return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
                 else {
                     token_1.default.deleteMany({ "workerID": workerID });
+                    const tokdel = yield token_1.default.deleteMany({ 'workerID': user.workerID });
                     try {
                         let t = new token_1.default({
                             "workerID": user.workerID,
@@ -122,14 +123,7 @@ const signoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    if (!token_1.default.deleteOne({ "token": req.body.token }))
-        return res.status(404).json({ message: "User not found" });
-    else {
-        return res.status(200).json({ message: "Usuario desconectado" });
-    }
+    const tokdel = yield token_1.default.deleteMany({ 'token': req.headers.authorization });
+    return res.status(200).json({ message: "Usuario desconectado" });
 });
-/*async function setOnlineStatus(id: String, value: boolean){
-    await User.updateOne({"_id":id}, {$set: {"online":value}});
-                    
-}*/
 exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser };
