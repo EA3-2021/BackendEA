@@ -72,11 +72,11 @@ const getCommentsAdmin = async (req: Request, res: Response) => {
 //Añadir 1 nuevo comentario
 const newComment = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    /*const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
     console.log(resultado[0].company)

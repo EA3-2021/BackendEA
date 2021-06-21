@@ -67,10 +67,11 @@ const getCommentsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 //Añadir 1 nuevo comentario
 const newComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
     console.log(resultado[0].company);
     try {
