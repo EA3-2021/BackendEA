@@ -34,6 +34,28 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 
 }
 
+
+async function check_self(req: Request, workerID: String) { 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if ((tok.workerID == workerID) || tok.admin) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (err) {
+        return false; //User is not authorized
+    }
+
+}
+
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = async (req: Request, res: Response) => {
 
@@ -43,14 +65,7 @@ const getClock = async (req: Request, res: Response) => {
         return res.status(401).json({}); //Unauthorized
     }
 
-    console.log (req.params.clockIn);
-
     try{
-        if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }else if (!Token.findOne({token: req.headers.authorization})) {
-            return res.status(401).json({}); //Unauthorized
-        }
         const results = await Clock.find({"entryDate": req.params.clockIn});
         return res.status(200).json(results);
     } catch (err) {
@@ -64,6 +79,12 @@ const clockIn = async (req: Request, res: Response) => {
     const auth = await check_auth(req, false);
 
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.params.workerID);
+
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -94,6 +115,12 @@ const clockOut = async (req: Request, res: Response) => {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
+
+    const sel = await check_self(req, req.params.workerID);
+
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }
     
     let date1: Date = new Date();
     let fecha1 = format(new Date(date1), "d-M-yyyy");
@@ -120,7 +147,5 @@ const clockOut = async (req: Request, res: Response) => {
         })
     }
 }
-
-
 
 export default { getClock, clockIn, clockOut };
