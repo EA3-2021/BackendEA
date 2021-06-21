@@ -64,6 +64,7 @@ const getTeam = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(404).json(err);
     }
+    
 }
 
 /*const addUserToTeam = async (req: Request, res: Response) => {

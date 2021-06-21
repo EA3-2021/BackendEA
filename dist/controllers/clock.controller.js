@@ -38,20 +38,32 @@ function check_auth(req, must_be_admin) {
         return true; //User is authorized
     });
 }
+function check_self(req, workerID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let tok = yield token_1.default.findOne({ token: req.headers.authorization });
+            if (tok == null) {
+                return false; //User is not authorized as token does not exist
+            }
+            else if ((tok.workerID == workerID) || tok.admin) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (err) {
+            return false; //User is not authorized
+        }
+    });
+}
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, true);
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    console.log(req.params.clockIn);
     try {
-        if (!req.headers.authorization) {
-            return res.status(401).json({}); //Unauthorized
-        }
-        else if (!token_1.default.findOne({ token: req.headers.authorization })) {
-            return res.status(401).json({}); //Unauthorized
-        }
         const results = yield clock_1.default.find({ "entryDate": req.params.clockIn });
         return res.status(200).json(results);
     }
@@ -62,6 +74,10 @@ const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    const sel = yield check_self(req, req.params.workerID);
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     let checkCode = yield code_1.default.findOne({ "code": req.params.code });
@@ -92,6 +108,10 @@ const clockIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const clockOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    const sel = yield check_self(req, req.params.workerID);
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     let date1 = new Date();

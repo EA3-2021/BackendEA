@@ -39,6 +39,28 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 
 }
 
+
+async function check_self(req: Request, workerID: String) { 
+
+    try {
+
+        let tok = await Token.findOne({token: req.headers.authorization});
+
+        if (tok == null) {
+            return false; //User is not authorized as token does not exist
+
+        } else if ((tok.workerID == workerID) || tok.admin) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (err) {
+        return false; //User is not authorized
+    }
+
+}
+
 async function registerUser(req:Request, res:Response) {
     let user = req.body;
     let checkEmail = await User.findOne({"email": user.email});
@@ -219,6 +241,12 @@ const updateProfile = async(req: Request, res: Response) => {
         return res.status(401).json({}); //Unauthorized
     }   
 
+    const sel = await check_self(req, req.params.workerID);
+
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try { 
 
         const workerID: string = req.params.workerID;
@@ -328,6 +356,12 @@ const getTasks = async (req: Request, res: Response) => {
         return res.status(401).json({}); //Unauthorized
     }
 
+    const sel = await check_self(req, req.params.workerID);
+
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
     try{
         const results = await Tarea.find({"workerID": req.params.workerID,"fecha": req.params.fecha});
         return res.status(200).json(results);
@@ -341,6 +375,12 @@ const getHolidays = async (req: Request, res: Response) => {
     const auth = await check_auth(req, false);
 
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.params.workerID);
+
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -377,7 +417,7 @@ const newLocation = async (req: Request, res: Response) => {
 
 const registerRequests = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
@@ -398,8 +438,6 @@ const deleteRegisterRequest = async (req: Request, res: Response) => {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-
-    console.log (req.params.email);
 
     var nodemailer = require('nodemailer');
 
@@ -444,9 +482,6 @@ const acceptRegisterRequest = async (req: Request, res: Response) => {
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    
-    console.log(req.body.email);
-    console.log(req.params.email);
 
     User.updateOne({"workerID": req.params.workerID}, {$set: {"petition": true}}).then((data) => {
         res.status(201).json(data);
@@ -537,6 +572,12 @@ const holidayRequest = async (req: Request, res: Response) => {
     const auth = await check_auth(req, false);
 
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.body.workerID);
+
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
 
@@ -699,6 +740,12 @@ const updateConfiguation = async (req: Request, res: Response) => {
     const auth = await check_auth(req, false);
 
     if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.body.workerID);
+
+    if (!sel) {
         return res.status(401).json({}); //Unauthorized
     }
     
