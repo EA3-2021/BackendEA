@@ -425,14 +425,17 @@ const getPasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    const sel = yield check_self(req, req.body.workerID);
+
+    const sel = await check_self(req, req.body.workerID);
+
     if (!sel) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     let results = yield user_1.default.findOne({ "workerID": req.body.workerID });
     if (results) {
         try {
@@ -470,96 +473,6 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(404).json(err);
     }
 });
-const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-    try {
-        const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
-const acceptHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-    const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
-    const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
-    holiday_1.default.updateOne({ "_id": req.params.id }, { $set: { "estado": true } }).then((data) => {
-        res.status(201).json(data);
-        var nodemailer = require('nodemailer');
-        var mail = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: 'firefighteradventure@gmail.com',
-                pass: 'Mazinger72'
-            }
-        });
-        var mailOptions = {
-            from: 'firefighteradventure@gmail.com',
-            to: resultado[0].email,
-            subject: 'Holiday request resolution!',
-            text: 'ACCEPTED!' + '\n' + 'your vacation has been APPROVED'
-        };
-        mail.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
-    }).catch((err) => {
-        res.status(500).json(err);
-    });
-});
-const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-    const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
-    const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
-    console.log(resultado[0].email);
-    var nodemailer = require('nodemailer');
-    var mail = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'firefighteradventure@gmail.com',
-            pass: 'Mazinger72'
-        }
-    });
-    var mailOptions = {
-        from: 'firefighteradventure@gmail.com',
-        to: resultado[0].email,
-        subject: 'Holiday request resolution!',
-        text: 'SORRY!' + '\n' + 'your vacation has been denied'
-    };
-    mail.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        }
-        else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
-    try {
-        const results = yield holiday_1.default.deleteOne({ "_id": req.params.id });
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
@@ -584,5 +497,5 @@ const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(500).json(err);
     });
 });
-exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, refuseHoliday, acceptHoliday, getHolidayPending, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
+exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
     newLocation, getWorkerID, holidayRequest };

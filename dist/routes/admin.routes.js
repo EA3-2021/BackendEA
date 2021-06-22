@@ -21,5 +21,8 @@ router.post('/generate/code/:companyName', admin_controller_1.default.generateCo
 router.get('/getCode/:companyName/:date', admin_controller_1.default.getCode);
 router.put('/updateAdminProfile/:companyName', admin_controller_1.default.updateAdminProfile);
 router.post('/new', admin_controller_1.default.newUser);
+router.get('/getHolidayPending/:company', admin_controller_1.default.getHolidayPending);
+router.delete('/dropRequestHoliday/:id', admin_controller_1.default.refuseHoliday);
+router.put('/acceptHoliday/:id', admin_controller_1.default.acceptHoliday);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

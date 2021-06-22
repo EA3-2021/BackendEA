@@ -20,6 +20,7 @@ const tarea_1 = __importDefault(require("../models/tarea"));
 const code_1 = __importDefault(require("../models/code"));
 const token_1 = __importDefault(require("../models/token"));
 const date_fns_1 = require("date-fns");
+const holiday_1 = __importDefault(require("../models/holiday"));
 function check_auth(req, must_be_admin) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!req.headers.authorization) {
@@ -454,4 +455,97 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
-exports.default = { updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser };
+const getHolidayPending = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    try {
+        const results = yield holiday_1.default.find({ "company": req.params.company, "estado": false });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const acceptHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
+    const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
+    holiday_1.default.updateOne({ "_id": req.params.id }, { $set: { "estado": true } }).then((data) => {
+        res.status(201).json(data);
+        var nodemailer = require('nodemailer');
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'firefighteradventure@gmail.com',
+                pass: 'Mazinger72'
+            }
+        });
+        var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: resultado[0].email,
+            subject: 'Holiday request resolution!',
+            text: 'ACCEPTED!' + '\n' + 'your vacation has been APPROVED'
+        };
+        mail.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    const results = yield holiday_1.default.find({ "_id": req.params.id }, { "_id": 0, "workerID": 1 });
+    const resultado = yield user_1.default.find({ "workerID": results[0].workerID }, { "_id": 0, "email": 1 });
+    console.log(resultado[0].email);
+    var nodemailer = require('nodemailer');
+    var mail = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'firefighteradventure@gmail.com',
+            pass: 'Mazinger72'
+        }
+    });
+    var mailOptions = {
+        from: 'firefighteradventure@gmail.com',
+        to: resultado[0].email,
+        subject: 'Holiday request resolution!',
+        text: 'SORRY!' + '\n' + 'your vacation has been denied'
+    };
+    mail.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        }
+        else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+    try {
+        const results = yield holiday_1.default.deleteOne({ "_id": req.params.id });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser, refuseHoliday, acceptHoliday, getHolidayPending };

@@ -22,9 +22,6 @@ router.put('/accept/:workerID/:email', user_controller_1.default.acceptRegisterR
 router.get('/getPasswordUser/:email', user_controller_1.default.getPasswordUser);
 router.post('/holidayRequest', user_controller_1.default.holidayRequest);
 router.get('/getWorkerID/:company', user_controller_1.default.getWorkerID);
-router.get('/getHolidayPending/:company', user_controller_1.default.getHolidayPending);
-router.delete('/dropRequestHoliday/:id', user_controller_1.default.refuseHoliday);
-router.put('/acceptHoliday/:id', user_controller_1.default.acceptHoliday);
 router.get('/holidayall/:workerID/:fecha', user_controller_1.default.getHolidays);
 router.put('/updateProfile/:workerID', user_controller_1.default.updateProfile);
 router.post('/configuration', user_controller_1.default.updateConfiguation);
