@@ -38,10 +38,11 @@ function check_auth(req, must_be_admin) {
 }
 //Obtener todos las localizaciones de los usuarios
 const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield location_1.default.find({});
         return res.status(200).json(results);

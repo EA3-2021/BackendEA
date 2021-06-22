@@ -60,11 +60,11 @@ async function check_self(req: Request, workerID: String) {
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Clock.find({"entryDate": req.params.clockIn});

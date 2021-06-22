@@ -345,11 +345,11 @@ const getAdmin = async (req: Request, res: Response) => {
 
 const generateCode = async (req:Request, res:Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     let date: Date = new Date();
     let fecha = format(new Date(date), "d-M-yyyy");
@@ -375,11 +375,11 @@ const generateCode = async (req:Request, res:Response) => {
 
 const getCode = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     
     try{
         const results = await Code.find({"company": req.params.companyName, "date": req.params.date});

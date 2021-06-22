@@ -36,11 +36,11 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 //Obtener todos las localizaciones de los usuarios
 const getLocations = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Location.find({});

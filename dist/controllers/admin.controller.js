@@ -307,10 +307,11 @@ const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const generateCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     let date = new Date();
     let fecha = date_fns_1.format(new Date(date), "d-M-yyyy");
     let checkCode = yield code_1.default.findOne({ "company": req.params.companyName, "date": fecha });
@@ -333,10 +334,11 @@ const generateCode = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield code_1.default.find({ "company": req.params.companyName, "date": req.params.date });
         return res.status(200).json(results);

@@ -59,10 +59,11 @@ function check_self(req, workerID) {
 }
 //Obtener todos las horas de fichar de todos los usuarios a partir de su hora de entrada y compañia
 const getClock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield clock_1.default.find({ "entryDate": req.params.clockIn });
         return res.status(200).json(results);
