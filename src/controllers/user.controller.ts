@@ -239,6 +239,9 @@ const updateProfile = async(req: Request, res: Response) => {
     const email = req.body.email;
     const phone = req.body.phone;
     const password = req.body.password;
+
+    console.log(email);
+    console.log(name);
     
     if (name != "") {
         User.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {

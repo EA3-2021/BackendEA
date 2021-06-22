@@ -275,12 +275,6 @@ const deleteTask = async (req: Request, res: Response) => {
 //Actualizar name/address user a partir del id
 const updateTask = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
     const id: string = req.params.id;
     const titulo: string = req.body.titulo;
     const descripcion: string = req.body.descripcion;

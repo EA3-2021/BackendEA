@@ -219,6 +219,8 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const email = req.body.email;
     const phone = req.body.phone;
     const password = req.body.password;
+    console.log(email);
+    console.log(name);
     if (name != "") {
         user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
             res.status(201).json(data);
