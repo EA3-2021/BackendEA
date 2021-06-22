@@ -9,6 +9,7 @@ const user_controller_1 = __importDefault(require("../controllers/user.controlle
 const router = express_1.Router();
 router.post('/registerUser', user_controller_1.default.registerUser);
 router.get('/profile/:workerID', user_controller_1.default.getUser);
+router.put('/check', user_controller_1.default.checkUser);
 router.delete('/drop/:name', user_controller_1.default.deleteUser);
 router.put('/update/:id', user_controller_1.default.updateUser);
 //router.post('/newtask', userController.newTask);

@@ -112,6 +112,52 @@ async function loginUser(req: Request, res: Response) {
     }
 }
 
+
+async function loginUserGoogle(req: Request, res: Response) {
+    let user;
+    
+    const workerID = req.body.workerID;
+    const password = req.body.password;
+
+    console.log(workerID);
+    console.log(password);
+
+    let encryptedPass = password;
+
+    user = await User.findOne({ "workerID": workerID });
+
+    if (!user)
+        return res.status(404).json({ message: "Wrong credentials, try it again. Incorrect Worker ID." });
+    else {
+        if (user.password != encryptedPass)
+            return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
+        else {
+            if (user.petition == false)
+                return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
+            else {
+
+                const tokdel = await Token.deleteMany({'workerID': user.workerID});
+
+                try {
+
+                    let t = new Token({
+                        "workerID": user.workerID,
+                        "token": createTokenUser(user),
+                        "admin": false
+                    });
+            
+                    t.save().then((data) => {
+                        return res.status(201).json(data);
+                    });
+                    } catch(err) {
+                        return res.status(500).json(err);
+                    }
+            }
+            
+        }
+    }
+}
+
 function createTokenAdmin(admin: IAdmin){
     const expirationTime = 604800; //1 week
     return jwt.sign({id:admin.id, name: admin.name, email: admin.email}, config.jwtSecret, {
@@ -141,6 +187,6 @@ const signoutUser = async (req: Request, res: Response) => {
     
     return res.status(200).json({message: "Usuario desconectado"});
 
-}
+} 
 
-export default { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser }
+export default { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser, loginUserGoogle}

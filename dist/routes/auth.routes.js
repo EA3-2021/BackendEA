@@ -9,6 +9,7 @@ const auth_controller_1 = __importDefault(require("../controllers/auth.controlle
 const router = express_1.Router();
 router.post('/login-admin', auth_controller_1.default.loginAdmin);
 router.post('/loginUser', auth_controller_1.default.loginUser);
+router.post('/loginUserGoogle', auth_controller_1.default.loginUserGoogle);
 router.put('/signoutUser', auth_controller_1.default.signoutUser);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

@@ -6,6 +6,7 @@ const router = Router();
 
 router.post('/registerUser', userController.registerUser);
 router.get('/profile/:workerID', userController.getUser);
+router.put('/check', userController.checkUser);
 router.delete('/drop/:name',userController.deleteUser);
 router.put('/update/:id',userController.updateUser);
 //router.post('/newtask', userController.newTask);

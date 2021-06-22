@@ -104,6 +104,44 @@ function loginUser(req, res) {
         }
     });
 }
+function loginUserGoogle(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user;
+        const id = yield user_1.default.find({ "workerID": req.body.workerID });
+        const workerID = req.body.workerID;
+        const password = req.body.password;
+        console.log(workerID);
+        console.log(password);
+        let encryptedPass = password;
+        user = yield user_1.default.findOne({ "workerID": workerID });
+        if (!user)
+            return res.status(404).json({ message: "Wrong credentials, try it again. Incorrect Worker ID." });
+        else {
+            if (user.password != encryptedPass)
+                return res.status(409).json({ message: "Wrong credentials, try it again. Incorrect password." });
+            else {
+                if (user.petition == false)
+                    return res.status(409).json({ message: "Registration petition don't accepted yet by the Admin" });
+                else {
+                    const tokdel = yield token_1.default.deleteMany({ 'workerID': user.workerID });
+                    try {
+                        let t = new token_1.default({
+                            "workerID": user.workerID,
+                            "token": createTokenUser(user),
+                            "admin": false
+                        });
+                        t.save().then((data) => {
+                            return res.status(201).json(data);
+                        });
+                    }
+                    catch (err) {
+                        return res.status(500).json(err);
+                    }
+                }
+            }
+        }
+    });
+}
 function createTokenAdmin(admin) {
     const expirationTime = 604800; //1 week
     return jsonwebtoken_1.default.sign({ id: admin.id, name: admin.name, email: admin.email }, config_1.default.jwtSecret, {
@@ -125,4 +163,4 @@ const signoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const tokdel = yield token_1.default.deleteMany({ 'token': req.headers.authorization });
     return res.status(200).json({ message: "Usuario desconectado" });
 });
-exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser };
+exports.default = { loginAdmin, loginUser, createTokenAdmin, createTokenUser, signoutUser, loginUserGoogle };

@@ -28,9 +28,6 @@ io.on("connection", (socket: Socket) => {
           io.emit('message', {msg: message.text, createdAt: new Date()});   //, user: socket.username,
     });
 
-
-
-
 });
 
 httpServer.listen(app.get('port')); //Recuperamos puerto de app.ts

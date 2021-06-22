@@ -132,6 +132,24 @@ function generateRandomString(length: number) {
    return result.join('');
 }
 
+const checkUser = async (req: Request, res: Response) => {
+
+    try{
+        const results = await User.find({"email": req.body.email});
+
+        if (!results) {
+            return res.status(404).json({});
+        } else {
+            console.log(results);
+            return res.status(200).json(results);
+        }
+        
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+
+}
+
 const getUser = async (req: Request, res: Response) => {
 
     const auth = await check_auth(req, false);
@@ -590,4 +608,4 @@ const getUsers = async (req: Request, res: Response) => {
 }
 
 export default {updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
-newLocation, holidayRequest, checkLocationConfig, getUsers};
+newLocation, holidayRequest, checkLocationConfig, getUsers, checkUser};

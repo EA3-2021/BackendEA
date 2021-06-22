@@ -127,6 +127,21 @@ function generateRandomString(length) {
     }
     return result.join('');
 }
+const checkUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield user_1.default.find({ "email": req.body.email });
+        if (!results) {
+            return res.status(404).json({});
+        }
+        else {
+            console.log(results);
+            return res.status(200).json(results);
+        }
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
@@ -512,4 +527,4 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
-    newLocation, holidayRequest, checkLocationConfig, getUsers };
+    newLocation, holidayRequest, checkLocationConfig, getUsers, checkUser };
