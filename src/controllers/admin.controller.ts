@@ -449,6 +449,74 @@ const updateAdminProfile = async(req: Request, res: Response) => {
 
 }
 
+const newUser = async (req: Request, res: Response) => {
+ 
+    const auth = await check_auth(req, true);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    let user = req.body;
+    let checkEmail = await User.findOne({"email": user.email});
+    let checkEmail1 = await Admin.findOne({"email": user.email});
+    let checkPhone = await User.findOne({"phone": user.phone});
+
+    if(checkEmail || checkEmail1) return res.status(409).json({code: 409, message: "This email already exists"});
+    else if (checkPhone) return res.status(410).json({code: 410, message: "This phone number already exists"});
+    else {
+        try{
+
+        var crypto = require('crypto');
+        console.log(user.company);
+
+        let u = new User({
+            "company": user.company,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "password": crypto.createHash('sha256').update(user.password).digest('hex'),
+            "insignias": [],
+            "workerID": generateRandomString(6),
+            "petition": true
+        });
+
+        var nodemailer = require('nodemailer');
+
+        var mail = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+              user: 'firefighteradventure@gmail.com',
+              pass: 'Mazinger72'
+            }
+          });
+
+          var mailOptions = {
+            from: 'firefighteradventure@gmail.com',
+            to: user.email,
+            subject: 'Welcome ' + u.name + '! Here it is your Worker ID and your password!',
+            text: 'Your worker ID:' + u.workerID + '\n' + 'Your password:' + user.password + '\n' + '\n' + 'REMEMBER!' + '\n' + 'The admin has to accept your registration first before logging in, wait for the acceptance email.'
+          };
+          
+          mail.sendMail(mailOptions, function(error: any, info: any){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        });
+
+        u.save().then((data) => {
+            return res.status(201).json(data);
+        });
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    }
+}
+
     
     
-export default {updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin};
+export default {updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser};

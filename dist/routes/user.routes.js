@@ -10,7 +10,6 @@ const router = express_1.Router();
 router.post('/registerUser', user_controller_1.default.registerUser);
 router.get('/all/:company', user_controller_1.default.getUsers);
 router.get('/profile/:workerID', user_controller_1.default.getUser);
-router.post('/new', user_controller_1.default.newUser);
 router.delete('/drop/:name', user_controller_1.default.deleteUser);
 router.put('/update/:id', user_controller_1.default.updateUser);
 //router.post('/newtask', userController.newTask);

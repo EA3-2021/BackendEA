@@ -20,5 +20,6 @@ router.get('/profile/:companyName', admin_controller_1.default.getAdmin);
 router.post('/generate/code/:companyName', admin_controller_1.default.generateCode);
 router.get('/getCode/:companyName/:date', admin_controller_1.default.getCode);
 router.put('/updateAdminProfile/:companyName', admin_controller_1.default.updateAdminProfile);
+router.post('/new', admin_controller_1.default.newUser);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;
