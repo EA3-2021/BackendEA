@@ -38,10 +38,11 @@ function check_auth(req, must_be_admin) {
     });
 }
 const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield team_1.default.find({ "company": req.params.companyName }).populate('users');
         return res.status(200).json(results);
@@ -51,10 +52,11 @@ const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const getTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield team_1.default.find({ "_id": req.params.id }).populate('users');
         return res.status(200).json(results);
@@ -78,10 +80,11 @@ const getTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }*/
 const addUserToTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     let teamName = req.params.teamName;
     let userId = req.body.id;
     let userName = req.body.name;
@@ -108,10 +111,11 @@ const addUserToTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 const addTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     const team = new team_1.default({
         "company": req.params.companyName,
         "name": req.body.name,
@@ -124,10 +128,11 @@ const addTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 const deleteTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield team_1.default.deleteOne({ "company": req.params.companyName, "name": req.params.teamName });
         return res.status(200).json(results);
@@ -137,10 +142,11 @@ const deleteTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const deleteUserTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     yield team_1.default.updateOne({ "company": req.params.companyName, "name": req.params.teamName }, { $pull: { "users": req.params.id } }).then(data => {
         if (data.nModified == 1) {
             res.status(201).send({ message: 'User added successfully' });

@@ -36,11 +36,11 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 
 const getTeams = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Team.find({"company": req.params.companyName}).populate('users');
@@ -52,11 +52,11 @@ const getTeams = async (req: Request, res: Response) => {
 
 const getTeam = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    /*const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Team.find({"_id": req.params.id}).populate('users');
@@ -84,11 +84,11 @@ const getTeam = async (req: Request, res: Response) => {
 
 const addUserToTeam = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     let teamName = req.params.teamName;
     
@@ -123,11 +123,11 @@ const addUserToTeam = async (req: Request, res: Response) => {
 
 const addTeam = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     const team = new Team({
         "company":req.params.companyName,
@@ -143,11 +143,11 @@ const addTeam = async (req: Request, res: Response) => {
 
 const deleteTeam = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Team.deleteOne({"company": req.params.companyName, "name":req.params.teamName});
@@ -159,11 +159,11 @@ const deleteTeam = async (req: Request, res: Response) => {
 
 const deleteUserTeam = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     
     await Team.updateOne({"company": req.params.companyName, "name":req.params.teamName},
     {$pull: {"users": req.params.id}}).then(data => { 

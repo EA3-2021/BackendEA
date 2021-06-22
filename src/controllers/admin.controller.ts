@@ -214,11 +214,13 @@ const getPasswordAdmin = async (req: Request, res: Response) => {
 
 const newTask = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    //No funciona con token
+
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         let tarea = new Tarea({

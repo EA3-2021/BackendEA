@@ -197,10 +197,12 @@ const getPasswordAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 const newTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    //No funciona con token
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         let tarea = new tarea_1.default({
             "workerID": req.body.workerID,
