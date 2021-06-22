@@ -133,10 +133,6 @@ const getLocations = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
     try {
         const results = yield admin_1.default.find({}, { "_id": 0, "name": 1 });
         return res.status(200).json(results);

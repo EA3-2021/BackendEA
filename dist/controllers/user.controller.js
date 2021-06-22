@@ -214,43 +214,39 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
+    const workerID = req.params.workerID;
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const password = req.body.password;
+    if (name != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
     }
-    const sel = yield check_self(req, req.params.workerID);
-    if (!sel) {
-        return res.status(401).json({}); //Unauthorized
+    if (email != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
     }
-    try {
-        const workerID = req.params.workerID;
-        const name = req.body.name;
-        const email = req.body.email;
-        const phone = req.body.phone;
-        const password = req.body.password;
-        if (name != "") {
-            user_1.default.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-        if (email != "") {
-            user_1.default.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-        if (phone != "") {
-            user_1.default.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-        if (password != "") {
-            user_1.default.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
+    if (phone != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
     }
-    catch (err) {
-        return res.status(500).json(err);
+    if (password != "") {
+        user_1.default.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+        return;
     }
 });
 //Actualizar name/address user a partir del id

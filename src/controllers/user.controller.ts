@@ -234,53 +234,41 @@ const newUser = async (req: Request, res: Response) => {
 
 
 const updateProfile = async(req: Request, res: Response) => {
+    const workerID = req.params.workerID;
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const password = req.body.password;
     
-    const auth = await check_auth(req, false);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
+    if (name != "") {
+        User.updateMany({ "workerID": workerID }, { $set: { "name": name } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
     }   
 
-    const sel = await check_self(req, req.params.workerID);
-
-    if (!sel) {
-        return res.status(401).json({}); //Unauthorized
+    if (email != "") {
+        User.updateMany({ "workerID": workerID }, { $set: { "email": email } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
     }
-
-    try { 
-
-        const workerID: string = req.params.workerID;
-        const name: string = req.body.name;
-        const email: string = req.body.email;
-        const phone: string = req.body.phone;
-        const password: string = req.body.password;
-
-        if (name != ""){
-            User.updateMany({"workerID":workerID}, {$set: {"name": name}}).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-
-        if (email != ""){
-            User.updateMany({"workerID":workerID}, {$set: {"email": email}}).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-
-        if (phone != ""){
-            User.updateMany({"workerID":workerID}, {$set: {"phone": phone}}).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-
-        if (password != ""){
-            User.updateMany({"workerID":workerID}, {$set: {"password": password}}).then((data) => {
-                return res.status(201).json(data);
-            });
-        }
-        
-    } catch (err) {
-        return res.status(500).json(err);
+    if (phone != "") {
+        User.updateMany({ "workerID": workerID }, { $set: { "phone": phone } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    if (password != "") {
+        User.updateMany({ "workerID": workerID }, { $set: { "password": password } }).then((data) => {
+            res.status(201).json(data);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+        return;
     }
 }
 

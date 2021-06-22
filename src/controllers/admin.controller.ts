@@ -142,12 +142,8 @@ const getLocations = async (req: Request, res: Response) => {
 
 const getAdminName = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
+    //Token no tiene que estar porque sirve para el Admin register
+    
     try{
         const results = await Admin.find({}, { "_id": 0, "name": 1});
         return res.status(200).json(results);
