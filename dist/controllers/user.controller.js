@@ -461,7 +461,7 @@ const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return res.status(409).json({ code: 409, message: "This user does not exist" });
     }
 });
-const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createConfiguration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*const auth = await check_auth(req, false);
 
     if (!auth) {
@@ -488,14 +488,51 @@ const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(500).json(err);
     });
 });
-const getConfigurations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    /*try{
-        const results = await Configuration.find({"workerID": req.params.workerID});
-        console.log(results[0].location);
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
+const updateConfiguration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.body.workerID);
+
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
     }*/
+    try {
+        const notification = req.body.notification;
+        const privateAcc = req.body.private;
+        const authentication = req.body.authentication;
+        const location = req.body.location;
+        console.log(notification, privateAcc, authentication, location);
+        configuration_1.default.updateMany({ "workerID": req.params.workerID }, { $set: { "notification": notification } }).then((data) => {
+            res.status(201).json(data);
+            return;
+        });
+        configuration_1.default.updateMany({ "workerID": req.params.workerID }, { $set: { "private": privateAcc } }).then((data) => {
+            res.status(201).json(data);
+            return;
+        });
+        configuration_1.default.updateMany({ "workerID": req.params.workerID }, { $set: { "authentication": authentication } }).then((data) => {
+            res.status(201).json(data);
+            return;
+        });
+        configuration_1.default.updateMany({ "workerID": req.params.workerID }, { $set: { "location": location } }).then((data) => {
+            res.status(201).json(data);
+            return;
+        });
+    }
+    catch (err) { }
+});
+const getConfigurations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield configuration_1.default.find({ "workerID": req.params.workerID });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
 });
 const checkLocationConfig = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*const auth = await check_auth(req, false);
@@ -526,5 +563,6 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
-    newLocation, holidayRequest, checkLocationConfig, getUsers, checkUser };
+
+exports.default = { updateConfiguration, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
+    newLocation, holidayRequest, checkLocationConfig, getUsers, getConfigurations, createConfiguration, checkUser};

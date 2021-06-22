@@ -530,7 +530,7 @@ const holidayRequest = async (req: Request, res: Response) => {
     }
 }
 
-const updateConfiguation = async (req: Request, res: Response) => {
+const createConfiguration = async (req: Request, res: Response) => {
     
     /*const auth = await check_auth(req, false);
 
@@ -545,32 +545,72 @@ const updateConfiguation = async (req: Request, res: Response) => {
     }*/
 
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
-   
-    const configuration = new Configuration({
-        "company": resultado[0].company,
-        "workerID": req.body.workerID,
-        "notification": req.body.notification,
-        "private": req.body.private,
-        "authentication": req.body.authentication,
-        "location": req.body.location
-    });
-    configuration.save().then((data) => {
-        return res.status(201).json(data);
-    }).catch((err) => {
-        return res.status(500).json(err);
-    })
+
+        const configuration = new Configuration({
+            "company": resultado[0].company,
+            "workerID": req.body.workerID,
+            "notification": req.body.notification,
+            "private": req.body.private,
+            "authentication": req.body.authentication,
+            "location": req.body.location
+        });
+        configuration.save().then((data) => {
+            return res.status(201).json(data);
+        }).catch((err) => {
+            return res.status(500).json(err);
+        })
+}
+
+const updateConfiguration = async (req: Request, res: Response) => {
+    
+    /*const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    const sel = await check_self(req, req.body.workerID);
+
+    if (!sel) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+        try {
+
+            const notification: boolean = req.body.notification;
+            const privateAcc: boolean = req.body.private;
+            const authentication: boolean = req.body.authentication;
+            const location: boolean = req.body.location;
+
+            console.log(notification, privateAcc, authentication, location);
+    
+            Configuration.updateMany({"workerID": req.params.workerID}, {$set: {"notification": notification}}).then((data) => {
+                res.status(201).json(data);
+                return});
+
+            Configuration.updateMany({"workerID": req.params.workerID}, {$set: {"private": privateAcc}}).then((data) => {
+                res.status(201).json(data);
+                return});
+            
+            Configuration.updateMany({"workerID": req.params.workerID}, {$set: {"authentication": authentication}}).then((data) => {
+                res.status(201).json(data);
+                return});
+
+            Configuration.updateMany({"workerID": req.params.workerID}, {$set: {"location": location}}).then((data) => {
+                res.status(201).json(data);
+                return});
+            
+        } catch (err) {}
 }
 
 
 const getConfigurations = async (req: Request, res: Response) => {
 
-    /*try{
+    try{
         const results = await Configuration.find({"workerID": req.params.workerID});
-        console.log(results[0].location);
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
-    }*/
+    }
 }
 
 const checkLocationConfig = async (req: Request, res: Response) => {
@@ -607,5 +647,5 @@ const getUsers = async (req: Request, res: Response) => {
     }
 }
 
-export default {updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
-newLocation, holidayRequest, checkLocationConfig, getUsers, checkUser};
+export default {updateConfiguration, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
+newLocation, holidayRequest, checkLocationConfig, getUsers, getConfigurations, createConfiguration, checkUser};

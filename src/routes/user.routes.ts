@@ -20,9 +20,11 @@ router.get('/getPasswordUser/:email', userController.getPasswordUser);
 router.post('/holidayRequest', userController.holidayRequest);
 router.get('/holidayall/:workerID/:fecha', userController.getHolidays);
 router.put('/updateProfile/:workerID',userController.updateProfile);
-router.post('/configuration', userController.updateConfiguation );
+router.post('/newConfiguration', userController.createConfiguration );
+router.put('/updateConfiguration/:workerID', userController.updateConfiguration );
 router.get('/locationConfiguration/:workerID', userController.checkLocationConfig);
 router.get('/all/:workerID', userController.getUsers);
+router.get('/currentConfig/:workerID', userController.getConfigurations);
 
 //router.post('/clockIn', userController.clockIn);
 //router.post('/clockOut', userController.clockOut);
