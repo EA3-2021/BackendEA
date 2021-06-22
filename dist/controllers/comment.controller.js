@@ -52,10 +52,11 @@ const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getCommentsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     console.log(req.params.companyName);
     try {
         const results = yield comment_1.default.find({ "company": req.params.companyName, "state": false });
@@ -104,10 +105,11 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 const resolveComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     comment_1.default.updateMany({ "_id": req.params.id }, { $set: { "state": true } }).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {

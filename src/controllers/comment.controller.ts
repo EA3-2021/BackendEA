@@ -53,11 +53,11 @@ const getComments = async (req: Request, res: Response) => {
 
 const getCommentsAdmin = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     console.log(req.params.companyName);
     try{
@@ -115,11 +115,11 @@ const deleteComment = async (req: Request, res: Response) => {
 
 const resolveComment = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
            
     Comment.updateMany({"_id":req.params.id}, {$set: {"state": true}}).then((data) => {
         res.status(201).json(data);
