@@ -38,10 +38,11 @@ function check_auth(req, must_be_admin) {
 }
 //Obtener todos los usuarios
 const getFaqs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield faq_1.default.find({});
         return res.status(200).json(results);
@@ -52,10 +53,11 @@ const getFaqs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Obtener 1 usuario a partir del id
 const getFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield faq_1.default.find({ "_id": req.params.id });
         return res.status(200).json(results);
@@ -66,10 +68,11 @@ const getFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Añadir 1 nuevo usuario
 const newFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         let user = new faq_1.default({
             "title": req.body.title,
@@ -84,10 +87,11 @@ const newFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const updateFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     const id = req.params.id;
     const title = req.body.title;
     const content = req.body.content;
@@ -107,10 +111,11 @@ const updateFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const deleteFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield faq_1.default.deleteOne({ "title": req.params.title });
         return res.status(200).json(results);

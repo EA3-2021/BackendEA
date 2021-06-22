@@ -36,11 +36,11 @@ async function check_auth(req: Request, must_be_admin: Boolean) {
 //Obtener todos los usuarios
 const getFaqs = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    /*const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Faq.find({});
@@ -53,11 +53,11 @@ const getFaqs = async (req: Request, res: Response) => {
 //Obtener 1 usuario a partir del id
 const getFaq = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, false);
+    /*const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Faq.find({"_id": req.params.id});
@@ -70,11 +70,11 @@ const getFaq = async (req: Request, res: Response) => {
 //Añadir 1 nuevo usuario
 const newFaq = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
     let user = new Faq({
@@ -91,11 +91,11 @@ const newFaq = async (req: Request, res: Response) => {
 
 const updateFaq = async(req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     const id: string = req.params.id;
     const title: string = req.body.title;
@@ -121,11 +121,11 @@ const updateFaq = async(req: Request, res: Response) => {
 
 const deleteFaq = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Faq.deleteOne({"title": req.params.title});
