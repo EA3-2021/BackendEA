@@ -25,6 +25,7 @@ router.get('/getWorkerID/:company', user_controller_1.default.getWorkerID);
 router.get('/holidayall/:workerID/:fecha', user_controller_1.default.getHolidays);
 router.put('/updateProfile/:workerID', user_controller_1.default.updateProfile);
 router.post('/configuration', user_controller_1.default.updateConfiguation);
+router.get('/locationConfiguration/:workerID', user_controller_1.default.checkLocationConfig);
 //router.post('/clockIn', userController.clockIn);
 //router.post('/clockOut', userController.clockOut);
 //Exportamos router para usar rutas en app.ts

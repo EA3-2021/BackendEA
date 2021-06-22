@@ -474,14 +474,17 @@ const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
+    /*const auth = await check_auth(req, false);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
     }
-    const sel = yield check_self(req, req.body.workerID);
+
+    const sel = await check_self(req, req.body.workerID);
+
     if (!sel) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     const resultado = yield user_1.default.find({ "workerID": req.body.workerID }, { "_id": 0, "company": 1 });
     const configuration = new configuration_1.default({
         "company": resultado[0].company,
@@ -497,5 +500,28 @@ const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(500).json(err);
     });
 });
+const getConfigurations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield configuration_1.default.find({ "workerID": req.params.workerID });
+        console.log(results[0].location);
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const checkLocationConfig = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    /*const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    const results = yield configuration_1.default.find({ "workerID": req.params.workerID });
+    if (results[0].location == !1)
+        return res.status(409).json({ code: 409, message: "Activate the location first in settings!" });
+    else {
+        return res.status(200).json({ code: 200, message: "Puedes fichar!" });
+    }
+});
 exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
-    newLocation, getWorkerID, holidayRequest };
+    newLocation, getWorkerID, holidayRequest, getConfigurations, checkLocationConfig };

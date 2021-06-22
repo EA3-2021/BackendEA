@@ -548,7 +548,7 @@ const getWorkerID = async (req: Request, res: Response) => {
 
 const updateConfiguation = async (req: Request, res: Response) => {
     
-    const auth = await check_auth(req, false);
+    /*const auth = await check_auth(req, false);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
@@ -558,8 +558,8 @@ const updateConfiguation = async (req: Request, res: Response) => {
 
     if (!sel) {
         return res.status(401).json({}); //Unauthorized
-    }
-    
+    }*/
+
     const resultado = await User.find({"workerID": req.body.workerID},{ "_id": 0, "company": 1});
    
     const configuration = new Configuration({
@@ -577,5 +577,31 @@ const updateConfiguation = async (req: Request, res: Response) => {
     })
 }
 
+const getConfigurations = async (req: Request, res: Response) => {
+
+    try{
+        const results = await Configuration.find({"workerID": req.params.workerID});
+        console.log(results[0].location);
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const checkLocationConfig = async (req: Request, res: Response) => {
+
+    /*const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }*/
+    const results = await Configuration.find({"workerID": req.params.workerID});
+
+    if(results[0].location == !1) return res.status(409).json({code: 409, message: "Activate the location first in settings!"});
+    else {
+        return res.status(200).json({code: 200, message: "Puedes fichar!"});
+    }
+}
+
 export default {updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
-newLocation, getWorkerID, holidayRequest };
+newLocation, getWorkerID, holidayRequest, getConfigurations, checkLocationConfig};

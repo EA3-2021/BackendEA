@@ -29,7 +29,7 @@ export interface IConfiguration extends Document {
     notification: boolean;
     private: boolean;
     authentication: boolean;
-    loaction: boolean;
+    location: boolean;
 }
 
 //Exportamos modelo para poder usarlo
