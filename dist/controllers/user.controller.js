@@ -127,20 +127,6 @@ function generateRandomString(length) {
     }
     return result.join('');
 }
-//Obtener todos los usuarios
-const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-    try {
-        const results = yield user_1.default.find({ "company": req.params.company });
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const auth = yield check_auth(req, false);
     if (!auth) {
@@ -460,19 +446,6 @@ const holidayRequest = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return res.status(409).json({ code: 409, message: "This user does not exist" });
     }
 });
-const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, false);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-    try {
-        const results = yield user_1.default.find({ "company": req.params.company }, { "_id": 0, "workerID": 1 });
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        return res.status(404).json(err);
-    }
-});
 const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*const auth = await check_auth(req, false);
 
@@ -501,14 +474,13 @@ const updateConfiguation = (req, res) => __awaiter(void 0, void 0, void 0, funct
     });
 });
 const getConfigurations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield configuration_1.default.find({ "workerID": req.params.workerID });
+    /*try{
+        const results = await Configuration.find({"workerID": req.params.workerID});
         console.log(results[0].location);
         return res.status(200).json(results);
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(404).json(err);
-    }
+    }*/
 });
 const checkLocationConfig = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*const auth = await check_auth(req, false);
@@ -523,5 +495,21 @@ const checkLocationConfig = (req, res) => __awaiter(void 0, void 0, void 0, func
         return res.status(200).json({ code: 200, message: "Puedes fichar!" });
     }
 });
-exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
-    newLocation, getWorkerID, holidayRequest, getConfigurations, checkLocationConfig };
+//Obtener todos los usuarios
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    try {
+        const company = yield user_1.default.find({ "workerID": req.params.workerID }, { "_id": 0, "company": 1 });
+        console.log(company[0].company);
+        const results = yield user_1.default.find({ "company": company[0].company });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
+    newLocation, holidayRequest, checkLocationConfig, getUsers };

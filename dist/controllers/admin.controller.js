@@ -551,4 +551,33 @@ const refuseHoliday = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(404).json(err);
     }
 });
-exports.default = { updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser, refuseHoliday, acceptHoliday, getHolidayPending };
+//Obtener todos los usuarios
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    try {
+        const results = yield user_1.default.find({ "company": req.params.company });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+const getWorkerID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const auth = yield check_auth(req, false);
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+    try {
+        const results = yield user_1.default.find({ "company": req.params.company }, { "_id": 0, "workerID": 1 });
+        return res.status(200).json(results);
+    }
+    catch (err) {
+        return res.status(404).json(err);
+    }
+});
+exports.default = { updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations,
+    getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser, refuseHoliday, acceptHoliday, getHolidayPending,
+    getUsers, getWorkerID };

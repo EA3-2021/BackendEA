@@ -630,6 +630,42 @@ const refuseHoliday = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
+
+//Obtener todos los usuarios
+const getUsers = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    try{
+        const results = await User.find({"company": req.params.company});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const getWorkerID = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    try{
+        const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+
+}
     
     
-export default {updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser, refuseHoliday, acceptHoliday, getHolidayPending};
+export default {updateAdminProfile, getCode, generateCode, getPasswordAdmin, registerAdmin, updateConfiguation, getLocations, 
+    getAdminName, newTask, getTask, deleteTask, updateTask, getAdmin, newUser, refuseHoliday, acceptHoliday, getHolidayPending,
+    getUsers, getWorkerID};

@@ -132,23 +132,6 @@ function generateRandomString(length: number) {
    return result.join('');
 }
 
-//Obtener todos los usuarios
-const getUsers = async (req: Request, res: Response) => {
-
-    const auth = await check_auth(req, false);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
-    try{
-        const results = await User.find({"company": req.params.company});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
 const getUser = async (req: Request, res: Response) => {
 
     const auth = await check_auth(req, false);
@@ -529,23 +512,6 @@ const holidayRequest = async (req: Request, res: Response) => {
     }
 }
 
-const getWorkerID = async (req: Request, res: Response) => {
-
-    const auth = await check_auth(req, false);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
-    try{
-        const results = await User.find({"company": req.params.company}, { "_id": 0, "workerID": 1});
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-
-}
-
 const updateConfiguation = async (req: Request, res: Response) => {
     
     /*const auth = await check_auth(req, false);
@@ -577,15 +543,16 @@ const updateConfiguation = async (req: Request, res: Response) => {
     })
 }
 
+
 const getConfigurations = async (req: Request, res: Response) => {
 
-    try{
+    /*try{
         const results = await Configuration.find({"workerID": req.params.workerID});
         console.log(results[0].location);
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
-    }
+    }*/
 }
 
 const checkLocationConfig = async (req: Request, res: Response) => {
@@ -603,5 +570,24 @@ const checkLocationConfig = async (req: Request, res: Response) => {
     }
 }
 
-export default {updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUsers, getUser, updateUser, deleteUser,
-newLocation, getWorkerID, holidayRequest, getConfigurations, checkLocationConfig};
+//Obtener todos los usuarios
+const getUsers = async (req: Request, res: Response) => {
+
+    const auth = await check_auth(req, false);
+
+    if (!auth) {
+        return res.status(401).json({}); //Unauthorized
+    }
+
+    try{
+        const company = await User.find({"workerID": req.params.workerID}, { "_id": 0, "company": 1});
+        console.log(company[0].company);
+        const results = await User.find({"company": company[0].company});
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+export default {updateConfiguation, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
+newLocation, holidayRequest, checkLocationConfig, getUsers};

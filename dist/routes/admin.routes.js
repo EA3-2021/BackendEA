@@ -24,5 +24,7 @@ router.post('/new', admin_controller_1.default.newUser);
 router.get('/getHolidayPending/:company', admin_controller_1.default.getHolidayPending);
 router.delete('/dropRequestHoliday/:id', admin_controller_1.default.refuseHoliday);
 router.put('/acceptHoliday/:id', admin_controller_1.default.acceptHoliday);
+router.get('/all/:company', admin_controller_1.default.getUsers);
+router.get('/getWorkerID/:company', admin_controller_1.default.getWorkerID);
 // Exportamos router para usar rutas en app.ts
 exports.default = router;

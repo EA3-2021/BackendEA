@@ -5,7 +5,6 @@ import userController from '../controllers/user.controller'
 const router = Router();
 
 router.post('/registerUser', userController.registerUser);
-router.get('/all/:company', userController.getUsers);
 router.get('/profile/:workerID', userController.getUser);
 router.delete('/drop/:name',userController.deleteUser);
 router.put('/update/:id',userController.updateUser);
@@ -18,11 +17,11 @@ router.delete('/drop/registerRequest/:workerID/:email',userController.deleteRegi
 router.put('/accept/:workerID/:email',userController.acceptRegisterRequest);
 router.get('/getPasswordUser/:email', userController.getPasswordUser);
 router.post('/holidayRequest', userController.holidayRequest);
-router.get('/getWorkerID/:company', userController.getWorkerID);
 router.get('/holidayall/:workerID/:fecha', userController.getHolidays);
 router.put('/updateProfile/:workerID',userController.updateProfile);
 router.post('/configuration', userController.updateConfiguation );
 router.get('/locationConfiguration/:workerID', userController.checkLocationConfig);
+router.get('/all/:workerID', userController.getUsers);
 
 //router.post('/clockIn', userController.clockIn);
 //router.post('/clockOut', userController.clockOut);
