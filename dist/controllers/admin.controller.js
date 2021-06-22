@@ -398,10 +398,11 @@ const updateAdminProfile = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     let user = req.body;
     let checkEmail = yield user_1.default.findOne({ "email": user.email });
     let checkEmail1 = yield admin_1.default.findOne({ "email": user.email });

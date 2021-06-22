@@ -453,11 +453,11 @@ const updateAdminProfile = async(req: Request, res: Response) => {
 
 const newUser = async (req: Request, res: Response) => {
  
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     let user = req.body;
     let checkEmail = await User.findOne({"email": user.email});
