@@ -258,12 +258,6 @@ const updateUser = async(req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
     try{
         const results = await User.deleteOne({"name": req.params.name});
         return res.status(200).json(results);

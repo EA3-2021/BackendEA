@@ -235,10 +235,6 @@ const getTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
     try {
         const results = yield tarea_1.default.deleteOne({ "_id": req.params.id });
         return res.status(200).json(results);
@@ -293,10 +289,11 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
+    /*const auth = await check_auth(req, true);
+
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
     try {
         const results = yield admin_1.default.find({ "name": req.params.companyName });
         return res.status(200).json(results);

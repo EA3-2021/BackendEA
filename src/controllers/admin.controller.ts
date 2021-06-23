@@ -258,12 +258,6 @@ const getTask = async (req: Request, res: Response) => {
 
 const deleteTask = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
-
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
-
     try{
         const results = await Tarea.deleteOne({"_id": req.params.id});
         return res.status(200).json(results);
@@ -326,11 +320,11 @@ const updateTask = async (req: Request, res: Response) => {
 
 const getAdmin = async (req: Request, res: Response) => {
 
-    const auth = await check_auth(req, true);
+    /*const auth = await check_auth(req, true);
 
     if (!auth) {
         return res.status(401).json({}); //Unauthorized
-    }
+    }*/
 
     try{
         const results = await Admin.find({"name": req.params.companyName});

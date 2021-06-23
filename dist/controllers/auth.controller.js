@@ -107,7 +107,6 @@ function loginUser(req, res) {
 function loginUserGoogle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let user;
-        const id = yield user_1.default.find({ "workerID": req.body.workerID });
         const workerID = req.body.workerID;
         const password = req.body.password;
         console.log(workerID);

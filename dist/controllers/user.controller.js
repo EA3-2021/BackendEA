@@ -231,10 +231,6 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const auth = yield check_auth(req, true);
-    if (!auth) {
-        return res.status(401).json({}); //Unauthorized
-    }
     try {
         const results = yield user_1.default.deleteOne({ "name": req.params.name });
         return res.status(200).json(results);
@@ -563,6 +559,5 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(404).json(err);
     }
 });
-
 exports.default = { updateConfiguration, updateProfile, getHolidays, getTasks, getPasswordUser, acceptRegisterRequest, deleteRegisterRequest, registerRequests, registerUser, getUser, updateUser, deleteUser,
-    newLocation, holidayRequest, checkLocationConfig, getUsers, getConfigurations, createConfiguration, checkUser};
+    newLocation, holidayRequest, checkLocationConfig, getUsers, getConfigurations, createConfiguration, checkUser };
